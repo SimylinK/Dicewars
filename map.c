@@ -42,6 +42,8 @@ void displayMap(){
 	SDL_Renderer* renderer;
 	SDL_Texture *texture;
 	SDL_Event event;
+	int end = 0;
+
 
 	SDL_Init(SDL_INIT_VIDEO);              // Initialise SDL2
 
@@ -52,21 +54,22 @@ void displayMap(){
 			SDL_WINDOWPOS_UNDEFINED,           // initial y position
 			1024,                               // width, in pixels
 			768,                               // height, in pixels
-			SDL_WINDOW_OPENGL                  // flags - see below
+			SDL_WINDOW_SHOWN                  // flags - see below
 	);
 
 	// Initialise le renderer et la texture
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1024, 768);
 
-	SDL_SetRenderDrawColor(renderer, 77, 77, 77, 255); // On définit la couleur
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // On définit la couleur
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-	while(1){
-		SDL_PollEvent(&event);
-		if(event.type == SDL_QUIT)
-			break;
+	while(!end){
+		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
+			if (event.type == SDL_QUIT)
+				end = 1;
+		}
 
 		SDL_Point points[100];
 		for (int i=0; i<99;i++){
@@ -81,7 +84,7 @@ void displayMap(){
 		SDL_RenderPresent(renderer);
 
 	}
-
+	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
