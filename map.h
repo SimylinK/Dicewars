@@ -4,18 +4,24 @@
 	#define WIDTH 1024
 	#define HEIGHT 768
 
-typedef struct Point{
+// Structure qui représente une cellule
+typedef struct Centre{
 
 	unsigned int x;
 	unsigned int y;
 	int id;	// Id de la cellule
 	int owner;	// Id du joueur qui la possède
-	}Point;
+	}Centre;
+
+typedef struct Pixel{
+	int id;	// Id de la cellule
+	int owner;	// Id du joueur qui la possède
+} Pixel;
 
 	void initMap(unsigned int nbPlayer);
 	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void displayMap();
-	void generateGraph(Point*** graph, int nbNodes, SMap *map);
+	void generateGraph(Pixel*** graph, int nbNodes, SMap *map);
 
 
 

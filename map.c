@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <float.h>
 #include <math.h>
 #include "map.h"
 #include "util.h"
@@ -12,12 +11,12 @@ void initMap(unsigned int nbPlayer){
 
 	SMap *map = malloc(sizeof(SMap));
 	// Nombre de cases sur la map
-	unsigned int nbNodes = randomBounds(30, 60);
+	unsigned int nbNodes = randomBounds(30,60);
 	assignSCell(nbPlayer, nbNodes, map);
-	Point** graph = malloc(WIDTH * sizeof(Point*));
-	for (int i=0; i< WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Point));
+	Pixel** graph = malloc(WIDTH * sizeof(Pixel*));
+	for (int i=0; i< WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
 	generateGraph(&graph, nbNodes, map);
-
+	printf("graph generated\n");
 	displayMap();
 
 }
@@ -73,7 +72,7 @@ void displayMap(){
 
 	SDL_Point points[100];
 	for (int i=0; i<99;i++) {
-		points[i].x = i;
+		points[i].x = WIDTH;
 		points[i].y = i;
 
 	}
@@ -101,31 +100,49 @@ void displayMap(){
 
 
 // Popule un tableau avec les SCell
-void generateGraph(Point*** graph, int nbNodes, SMap *map){
+void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 
 	// On attribue à chaque SCell une place aléatoire dans ce tableau
-	Point *cellsList = malloc(sizeof(Point)*(map->nbCells));
+	Centre *cellsList = malloc(sizeof(Centre)*(map->nbCells));
+	unsigned int x;
+	unsigned int y;
+	int same = 0;
 	for (int i=0; i<nbNodes; i++){
-		cellsList[i].x = randomBounds(0, WIDTH);
-		cellsList[i].y = randomBounds(0, HEIGHT);
+		same = 0;
+
+		do {
+			x = randomBounds(0, WIDTH);
+			y = randomBounds(0, HEIGHT);
+
+			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
+			for (int j = 0; j<i; j++){
+				if (cellsList[j].x == x && cellsList[j].y == y){
+					same = 1;
+				}
+			}
+		} while (same==1);
+
+
+
 	}
 
-	for (int x=0; x<WIDTH; x++){
-		for (int y=0; y<HEIGHT; y++){
+	 // On trouve les distances minimales
+	double minDist;
+	int minIndex;
+	double dist;
+	for (unsigned int x=0; x<WIDTH; x++){
+		for (unsigned int y=0; y<HEIGHT; y++){
 			// On trouve le SCell le plus près dans la liste de SCells
-			double minDist = DBL_MAX;
-			int minIndex = 0;
-			double dist = 0.0;
+			minDist = sqrt(pow((cellsList[0].x - (double)x), 2) + pow((cellsList[0].y - (double)y), 2));
+			minIndex = 0;
 
-			for (int i=0; i<nbNodes; i++) {
+			for (int i=1; i<nbNodes; i++) {
 				dist = sqrt(pow((cellsList[i].x - x), 2) + pow((cellsList[i].y - y), 2)); // Distance euclidienne
-
 				if (dist < minDist) {
 					minIndex = i;
 					minDist = dist;
 				}
 			}
-
 			(*graph)[x][y].owner = cellsList[minIndex].owner; // On associe au pixel le même owner et id de SCell
 			(*graph)[x][y].id = cellsList[minIndex].id;
 		}
