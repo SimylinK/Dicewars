@@ -10,15 +10,19 @@
 void initMap(unsigned int nbPlayer){
 
 	SMap *map = malloc(sizeof(SMap));
-	// Nombre de cases sur la map
-	unsigned int nbNodes = randomBounds(30,60);
+	// Nombre de SCell sur la map
+	unsigned int nbNodes = randomBounds(30, 60);
+
 	assignSCell(nbPlayer, nbNodes, map);
+
 	Pixel** graph = malloc(WIDTH * sizeof(Pixel*));
 	for (int i=0; i< WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
-	generateGraph(&graph, nbNodes, map);
-	printf("graph generated\n");
-	displayMap();
 
+
+	generateGraph(&graph, nbNodes, map);
+
+	generateBorders(&graph);
+	displayMap(graph);
 }
 
 // Assigne les SCell aux joueurs
@@ -41,14 +45,13 @@ void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	}
 }
 
-void displayMap(){
+void displayMap(Pixel** graph){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
 	SDL_Texture *texture;
 	SDL_Event event;
 	int end = 0;
-
 
 	SDL_Init(SDL_INIT_VIDEO);              // Initialise SDL2
 
@@ -70,18 +73,42 @@ void displayMap(){
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-	SDL_Point points[100];
-	for (int i=0; i<99;i++) {
-		points[i].x = WIDTH;
-		points[i].y = i;
-
+	for (unsigned int x=0; x<WIDTH; x++){
+		for (unsigned int y=0; y<HEIGHT; y++){
+			switch (graph[x][y].owner){ // On définit les couleurs des joueurs
+				case 0:
+					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
+					break;
+				case 1:
+					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // blanc
+					break;
+				case 2:
+					SDL_SetRenderDrawColor(renderer, 20, 134, 107, 255); // cyan
+					break;
+				case 3:
+					SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255); // rouge
+					break;
+				case 4:
+					SDL_SetRenderDrawColor(renderer, 0, 66, 100, 255); // bleu
+					break;
+				case 5:
+					SDL_SetRenderDrawColor(renderer, 229, 91, 176, 255); // rose
+					break;
+				case 6:
+					SDL_SetRenderDrawColor(renderer, 255, 60, 4, 255); // orange
+					break;
+				case 7:
+					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
+					break;
+				case 8: // Bordure
+					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
+					break;
+			}
+			SDL_RenderDrawPoint(renderer, x, y);
+		}
 	}
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // On définit la couleur
-		SDL_RenderDrawPoints(renderer, points, 100);
-		SDL_RenderPresent(renderer);
 
-
-
+	SDL_RenderPresent(renderer);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -90,7 +117,6 @@ void displayMap(){
 		}
 
 	}
-
 
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
@@ -106,11 +132,10 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 	Centre *cellsList = malloc(sizeof(Centre)*(map->nbCells));
 	unsigned int x;
 	unsigned int y;
-	int same = 0;
+	int same;
 	for (int i=0; i<nbNodes; i++){
-		same = 0;
-
 		do {
+			same = 0;
 			x = randomBounds(0, WIDTH);
 			y = randomBounds(0, HEIGHT);
 
@@ -122,8 +147,10 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 			}
 		} while (same==1);
 
-
-
+		cellsList[i].x = x;
+		cellsList[i].y = y;
+		cellsList[i].owner = map->cells[i].owner;
+		cellsList[i].id = map->cells[i].id;
 	}
 
 	 // On trouve les distances minimales
@@ -137,8 +164,8 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 			minIndex = 0;
 
 			for (int i=1; i<nbNodes; i++) {
-				dist = sqrt(pow((cellsList[i].x - x), 2) + pow((cellsList[i].y - y), 2)); // Distance euclidienne
-				if (dist < minDist) {
+				dist = sqrt(pow((cellsList[i].x - (double)x), 2) + pow((cellsList[i].y - (double)y), 2)); // Distance euclidienne
+				if (dist <= minDist) {
 					minIndex = i;
 					minDist = dist;
 				}
@@ -148,3 +175,13 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 		}
 	}
 }
+
+// Change les pixels
+void generateBorders(Pixel*** graph){
+	for (unsigned int x=0; x<WIDTH-1; x++){
+		for (unsigned int y=0; y<HEIGHT-1; y++){
+			if ((*graph)[x][y].id != (*graph)[x+1][y].id || (*graph)[x][y].id != (*graph)[x][y+1].id){
+				(*graph)[x][y].owner = 8;
+			}
+		}}
+	}

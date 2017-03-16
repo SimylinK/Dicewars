@@ -20,8 +20,9 @@ typedef struct Pixel{
 
 	void initMap(unsigned int nbPlayer);
 	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
-	void displayMap();
+	void displayMap(Pixel** graph);
 	void generateGraph(Pixel*** graph, int nbNodes, SMap *map);
+	void generateBorders(Pixel*** graph);
 
 
 
