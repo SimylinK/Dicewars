@@ -201,9 +201,8 @@ void assignNeighbor(int id1, int id2, SMap *map){
 	int voisin = 0;
 	int i = 0;
 	while (!trouve && i<map->cells[id1].nbNeighbors){
-		if (map->cells->neighbors[i]
-
-
+		if (map->cells->neighbors[i]);
+		i++;
 	}
 	for (int i=0; i<map->cells[id1].nbNeighbors; i++){
 
