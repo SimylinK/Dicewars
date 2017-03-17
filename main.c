@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dlfcn.h>
 #include "interface.h"
 
 int main (int argc, char *argv[]){
@@ -22,6 +23,44 @@ int main (int argc, char *argv[]){
       printf("Le joueur %d doit choisir son nom\n", i+1);
       scanf("%s", names[i]);
     }
+
+    typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
+    typedef void (*pfPlayTurn)(const SMap*, STurn*);
+    typedef void (*pfEndGame)(unsigned int);
+
+    typedef struct  {
+      pfInitGame InitGame;
+      pfPlayTurn PlayTurn;
+      pfEndGame EndGame;
+    } SInterface;
+
+    //Joueur 1 toujours IA
+    void *ia;
+
+    pfInitGame InitGame;
+    //pfPlayTurn PlayTurn;
+    //pfEndGame EndGame;
+
+    if ((ia=dlopen("./malib.so",RTLD_LAZY))==NULL) {
+      // Erreur de chargement de la librairie
+      printf("La librairie n'a pas pu être chargée\n");
+      return(0);
+    }
+    printf("Librairie chargée\n");
+
+    if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
+      // Erreur lors du chragement de la fonction
+      printf("Une erreur s'est produite lors de la lecture de la librairie\n");
+      return(0);
+    }
+    printf("InitGame chargé\n");
+
+    SInterface ia1 = {.InitGame = InitGame};
+
+    //Utilisation de la fonction
+    SPlayerInfo info = {.name = "stratGroupe5", .members = {"Monvoisin Mathilde\0", "Le Priol Yoann\0", "Maraval Nathan\0", "Pagano Lucas\0"}};
+    ia1.InitGame(0, nbPlayer, &info);
+    printf("%s\n", info.name);
 
     int player = 0;
     //Boucle de jeu
