@@ -39,3 +39,7 @@ int PlayTurn(const SMap *map, STurn *turn) {
   }
   return 0;
 }
+
+void EndGame(unsigned int idWinner){
+	printf("END\n");
+}
