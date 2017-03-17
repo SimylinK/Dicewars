@@ -2,11 +2,10 @@ CC=gcc -std=c99
 EXECUTABLE=dicewars
 
 CFLAGS=-Wall
-LCFLAGS=$(shell sdl2-config --cflags)
-LLIBS=$(shell sdl2-config --libs)
+LLIBS=$(shell sdl2-config --cflags --libs)
 
 $(EXECUTABLE): main.o interface.o util.o map.o
-	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o $(LCFLAGS) $(LLIBS) -lm
+	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o $(LLIBS) -lm
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o
