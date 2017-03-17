@@ -22,7 +22,8 @@ typedef struct Pixel{
 	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void displayMap(Pixel** graph);
 	void generateGraph(Pixel*** graph, int nbNodes, SMap *map);
-	void generateBorders(Pixel*** graph);
+	void generateBorders(Pixel*** graph, SMap *map);
+	void assignNeighbor(int id1, int id2, SMap *map);
 
 
 

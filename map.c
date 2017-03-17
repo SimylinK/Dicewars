@@ -4,6 +4,7 @@
 #include <math.h>
 #include "map.h"
 #include "util.h"
+#include "interface.h"
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 
@@ -21,7 +22,7 @@ void initMap(unsigned int nbPlayer){
 
 	generateGraph(&graph, nbNodes, map);
 
-	generateBorders(&graph);
+	generateBorders(&graph, map);
 	displayMap(graph);
 }
 
@@ -160,11 +161,13 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
 			// On trouve le SCell le plus près dans la liste de SCells
-			minDist = sqrt(pow((cellsList[0].x - (double)x), 2) + pow((cellsList[0].y - (double)y), 2));
+			// minDist = sqrt(pow((cellsList[0].x - (double)x), 2) + pow((cellsList[0].y - (double)y), 2));// Distance euclidienne
+			minDist = abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
 			minIndex = 0;
 
 			for (int i=1; i<nbNodes; i++) {
-				dist = sqrt(pow((cellsList[i].x - (double)x), 2) + pow((cellsList[i].y - (double)y), 2)); // Distance euclidienne
+				// dist = sqrt(pow((cellsList[i].x - (double)x), 2) + pow((cellsList[i].y - (double)y), 2)); // Distance euclidienne
+				dist = abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
 				if (dist <= minDist) {
 					minIndex = i;
 					minDist = dist;
@@ -177,11 +180,34 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 }
 
 // Change les pixels
-void generateBorders(Pixel*** graph){
-	for (unsigned int x=0; x<WIDTH-1; x++){
-		for (unsigned int y=0; y<HEIGHT-1; y++){
-			if ((*graph)[x][y].id != (*graph)[x+1][y].id || (*graph)[x][y].id != (*graph)[x][y+1].id){
+void generateBorders(Pixel*** graph, SMap *map) {
+	for (unsigned int x = 0; x < WIDTH - 1; x++) {
+		for (unsigned int y = 0; y < HEIGHT - 1; y++) {
+			if ((*graph)[x][y].id != (*graph)[x + 1][y].id)
+			{
+				assignNeighbor((*graph)[x][y].id, (*graph)[x + 1][y].id, map);
+				(*graph)[x][y].owner = 8;
+
+			} else if  ((*graph)[x][y].id != (*graph)[x][y + 1].id) {
+				assignNeighbor((*graph)[x][y].id, (*graph)[x][y + 1].id, map);
 				(*graph)[x][y].owner = 8;
 			}
-		}}
+		}
 	}
+}
+
+void assignNeighbor(int id1, int id2, SMap *map){
+	int trouve = 0;
+	int voisin = 0;
+	int i = 0;
+	while (!trouve && i<map->cells[id1].nbNeighbors){
+		if (map->cells->neighbors[i]
+
+
+	}
+	for (int i=0; i<map->cells[id1].nbNeighbors; i++){
+
+	}
+
+
+}
