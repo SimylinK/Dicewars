@@ -10,29 +10,34 @@
 
 void initMap(unsigned int nbPlayer){
 
-	SMap *map = malloc(sizeof(SMap));
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30, 60);
+	unsigned int nbNodes = randomBounds(30,60);
+
+	// Initialisation de la map
+	SMap *map = malloc(sizeof(SMap));
+	map->nbCells = nbNodes;
+	map->cells = malloc(sizeof(SCell)*nbNodes);
+	for (int i=0; i<nbNodes; i++){
+		// On s'assure de mettre tous les pointeurs à 0 au début
+		map->cells[i].neighbors = calloc(nbNodes, sizeof(SCell *) * nbNodes);
+	}
+	map->stack = malloc(sizeof(unsigned int)*nbPlayer);
 
 	assignSCell(nbPlayer, nbNodes, map);
 
 	Pixel** graph = malloc(WIDTH * sizeof(Pixel*));
 	for (int i=0; i< WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
 
-
+	// On génère le graphe de pixels
 	generateGraph(&graph, nbNodes, map);
-
+	// On fait les changements pour les bordures et on assigne les voisins
 	generateBorders(&graph, map);
+	// Boucle d'affichage principale
 	displayMap(graph);
 }
 
 // Assigne les SCell aux joueurs
 void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
-
-	// Initialisation de la map
-	map->nbCells = nbNodes;
-	map->cells = malloc(sizeof(SCell)*nbNodes);
-	map->stack = malloc(sizeof(unsigned int)*nbPlayer);
 
 	// Attribue aux SCell leurs ID, l'ID du joueur qui la possède et le nombre de dés
 	int idPlayer = 0;
@@ -50,7 +55,6 @@ void displayMap(Pixel** graph){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
-	SDL_Texture *texture;
 	SDL_Event event;
 	int end = 0;
 
@@ -66,50 +70,11 @@ void displayMap(Pixel** graph){
 			SDL_WINDOW_SHOWN                  // flags - see below
 	);
 
-	// Initialise le renderer et la texture
+	// Initialise le renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1024, 768);
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // On définit la couleur
-	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
-
-	for (unsigned int x=0; x<WIDTH; x++){
-		for (unsigned int y=0; y<HEIGHT; y++){
-			switch (graph[x][y].owner){ // On définit les couleurs des joueurs
-				case 0:
-					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
-					break;
-				case 1:
-					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // blanc
-					break;
-				case 2:
-					SDL_SetRenderDrawColor(renderer, 20, 134, 107, 255); // cyan
-					break;
-				case 3:
-					SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255); // rouge
-					break;
-				case 4:
-					SDL_SetRenderDrawColor(renderer, 0, 66, 100, 255); // bleu
-					break;
-				case 5:
-					SDL_SetRenderDrawColor(renderer, 229, 91, 176, 255); // rose
-					break;
-				case 6:
-					SDL_SetRenderDrawColor(renderer, 255, 60, 4, 255); // orange
-					break;
-				case 7:
-					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
-					break;
-				case 8: // Bordure
-					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
-					break;
-			}
-			SDL_RenderDrawPoint(renderer, x, y);
-		}
-	}
-
-	SDL_RenderPresent(renderer);
+	// On dessine une première fois la map
+	drawMap(graph, window, renderer);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -119,7 +84,6 @@ void displayMap(Pixel** graph){
 
 	}
 
-	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -178,35 +142,77 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 		}
 	}
 }
-
-// Change les pixels
+// Met à 8 l'id des pixels de bordure pour la coloration en noir
 void generateBorders(Pixel*** graph, SMap *map) {
 	for (unsigned int x = 0; x < WIDTH - 1; x++) {
 		for (unsigned int y = 0; y < HEIGHT - 1; y++) {
+			// Quand on trouve un changement d'id
 			if ((*graph)[x][y].id != (*graph)[x + 1][y].id)
 			{
+				// On assigne les voisins dans les deux sens
 				assignNeighbor((*graph)[x][y].id, (*graph)[x + 1][y].id, map);
+				assignNeighbor((*graph)[x + 1][y].id, (*graph)[x][y].id, map);
+
+				// On met l'id à 8
 				(*graph)[x][y].owner = 8;
 
 			} else if  ((*graph)[x][y].id != (*graph)[x][y + 1].id) {
+				// On assigne les voisins dans les deux sens
 				assignNeighbor((*graph)[x][y].id, (*graph)[x][y + 1].id, map);
+				assignNeighbor((*graph)[x][y + 1].id, (*graph)[x][y].id, map);
+
 				(*graph)[x][y].owner = 8;
 			}
 		}
 	}
 }
 
-void assignNeighbor(int id1, int id2, SMap *map){
-	int trouve = 0;
-	int voisin = 0;
-	int i = 0;
-	while (!trouve && i<map->cells[id1].nbNeighbors){
-		if (map->cells->neighbors[i]);
-		i++;
+void assignNeighbor(int id1, int id2, SMap *map) {
+	// On assigne seulement si id2 n'est pas déjà dans les voisins de id1
+	if (map->cells[id1].neighbors[id2] != &(map->cells[id2])) {
+		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
+		map->cells[id1].nbNeighbors++;
 	}
-	for (int i=0; i<map->cells[id1].nbNeighbors; i++){
+}
 
+void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer){
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // On définit la couleur
+	SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
+
+	for (unsigned int x=0; x<WIDTH; x++){
+		for (unsigned int y=0; y<HEIGHT; y++){
+			switch (graph[x][y].owner){ // On définit les couleurs des joueurs
+				case 0:
+					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
+					break;
+				case 1:
+					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // blanc
+					break;
+				case 2:
+					SDL_SetRenderDrawColor(renderer, 20, 134, 107, 255); // cyan
+					break;
+				case 3:
+					SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255); // rouge
+					break;
+				case 4:
+					SDL_SetRenderDrawColor(renderer, 0, 66, 100, 255); // bleu
+					break;
+				case 5:
+					SDL_SetRenderDrawColor(renderer, 229, 91, 176, 255); // rose
+					break;
+				case 6:
+					SDL_SetRenderDrawColor(renderer, 255, 60, 4, 255); // orange
+					break;
+				case 7:
+					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
+					break;
+				case 8: // Bordure
+					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
+					break;
+			}
+			SDL_RenderDrawPoint(renderer, x, y);
+		}
 	}
-
-
+	SDL_RenderPresent(renderer);
 }

@@ -24,6 +24,8 @@ typedef struct Pixel{
 	void generateGraph(Pixel*** graph, int nbNodes, SMap *map);
 	void generateBorders(Pixel*** graph, SMap *map);
 	void assignNeighbor(int id1, int id2, SMap *map);
+	void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer);
+
 
 
 
