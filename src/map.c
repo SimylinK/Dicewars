@@ -29,11 +29,11 @@ void initMap(unsigned int nbPlayer) {
 	for (int i = 0; i < WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
 
 	// On génère le graphe de pixels
-	generateGraph(&graph, nbNodes, map);
+	Centre *test = generateGraph(&graph, nbNodes, map);
 	// On fait les changements pour les bordures et on assigne les voisins
 	generateBorders(&graph, map);
 	// Boucle d'affichage principale
-	displayMap(graph);
+	displayMap(graph, test);
 
 	//Destruction des ressources
 	for (int i = 0; i < WIDTH; i++) free(graph[i]);
@@ -114,7 +114,7 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 }
 
 
-void displayMap(Pixel** graph){
+void displayMap(Pixel** graph, Centre *cellsList){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
@@ -137,7 +137,7 @@ void displayMap(Pixel** graph){
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// On dessine une première fois la map
-	drawMap(graph, window, renderer);
+	drawMap(graph, window, renderer, cellsList);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -154,7 +154,7 @@ void displayMap(Pixel** graph){
 
 
 // Popule un tableau avec des Centre, destiné à l'affichage
-void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
+Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 
 	// On attribue à chaque SCell une place aléatoire dans ce tableau
 	Centre *cellsList = malloc(sizeof(Centre)*(map->nbCells));
@@ -202,6 +202,7 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 			(*graph)[x][y].id = cellsList[minIndex].id;
 		}
 	}
+	return cellsList;
 }
 // Met à 8 l'id des pixels de bordure pour la coloration en noir
 void generateBorders(Pixel*** graph, SMap *map) {
@@ -236,7 +237,7 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 	}
 }
 
-void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer){
+void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);

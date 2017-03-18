@@ -21,11 +21,11 @@ typedef struct Pixel{
 	void initMap(unsigned int nbPlayer);
 	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
-	void displayMap(Pixel** graph);
-	void generateGraph(Pixel*** graph, int nbNodes, SMap *map);
+	void displayMap(Pixel** graph, Centre *cellsList);
+	Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map);
 	void generateBorders(Pixel*** graph, SMap *map);
 	void assignNeighbor(int id1, int id2, SMap *map);
-	void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer);
+	void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList);
 
 
 
