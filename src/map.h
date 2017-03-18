@@ -27,7 +27,9 @@ typedef struct Pixel{
 	void assignNeighbor(int id1, int id2, SMap *map);
 	void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList);
 
-
-
+//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap
+//x et y étant le centre de l'image, width et height sa hauteur et sa largeur souhaitées
+//name doit être l'adresse où se trouve l'image
+void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int height);
 
 #endif //DICEWARS_MAP_H
