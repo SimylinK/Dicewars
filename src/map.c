@@ -8,25 +8,25 @@
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 
-void initMap(unsigned int nbPlayer){
+void initMap(unsigned int nbPlayer) {
 
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30,60);
+	unsigned int nbNodes = 11;
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
 	map->nbCells = nbNodes;
-	map->cells = malloc(sizeof(SCell)*nbNodes);
-	for (int i=0; i<nbNodes; i++){
+	map->cells = malloc(sizeof(SCell) * nbNodes);
+	for (int i = 0; i < nbNodes; i++) {
 		// On s'assure de mettre tous les pointeurs à 0 au début
 		map->cells[i].neighbors = calloc(nbNodes, sizeof(SCell *) * nbNodes);
 	}
-	map->stack = malloc(sizeof(unsigned int)*nbPlayer);
+	map->stack = malloc(sizeof(unsigned int) * nbPlayer);
 
 	assignSCell(nbPlayer, nbNodes, map);
 
-	Pixel** graph = malloc(WIDTH * sizeof(Pixel*));
-	for (int i=0; i< WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
+	Pixel **graph = malloc(WIDTH * sizeof(Pixel *));
+	for (int i = 0; i < WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
 
 	// On génère le graphe de pixels
 	generateGraph(&graph, nbNodes, map);
@@ -34,6 +34,10 @@ void initMap(unsigned int nbPlayer){
 	generateBorders(&graph, map);
 	// Boucle d'affichage principale
 	displayMap(graph);
+
+	//Destruction des ressources
+	for (int i = 0; i < WIDTH; i++) free(graph[i]);
+	free(graph);
 }
 
 // Assigne les SCell aux joueurs
@@ -49,7 +53,72 @@ void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 		idPlayer++;
 		if (idPlayer == nbPlayer) idPlayer = 0;
 	}
+	giveDices(nbPlayer, nbNodes, map);
 }
+
+// Idée : on AJOUTE (+=)	 par un random des dés à chaque cellule, et si la somme au final n'est pas à 0, on rerentre dans la boucle
+void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
+
+	// Nombre de SCell minimum par joueur
+	int nbCellsMin = nbNodes/nbPlayer;
+	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
+	int nbCellsLeft = nbNodes%nbPlayer;
+
+	// Nombre de SCell exact par joueur
+	int nbCellPerPlayer[nbPlayer];
+	for (int i=0; i<nbPlayer; i++){
+		if (nbCellsLeft != 0){
+			nbCellPerPlayer[i] = nbCellsMin +1;
+			nbCellsLeft--;
+		} else
+			nbCellPerPlayer[i] = nbCellsMin;
+	}
+
+	// On considère que le nombre de dés par SCell est environ de 3
+	unsigned int dicesToGive[nbPlayer];
+	for (int i=0; i<nbPlayer; i++) {
+		dicesToGive[i] = nbNodes * 3 / nbPlayer;
+	}
+
+	int somme;
+	unsigned int dicesGiven = 0;
+	int idPlayer;
+	do {
+		somme = 1; // La somme a été atteinte
+
+
+		idPlayer = 0;
+		for (int i = 0; i < nbNodes; i++) {
+
+			if (dicesToGive[idPlayer] >=  nbCellPerPlayer[idPlayer])
+				dicesGiven = randomBounds(1, floor(dicesToGive[idPlayer]/nbCellPerPlayer[idPlayer]))%(9-map->cells[i].nbDices); // On ne donne pas plus qu'on peut et on excède pas 8 dés par case
+			else if (dicesToGive[idPlayer] + map->cells[i].nbDices > 8)
+				dicesGiven = 1;
+			else
+				dicesGiven = dicesToGive[idPlayer];
+
+			map->cells[i].nbDices += dicesGiven;
+			dicesToGive[idPlayer] -= dicesGiven;
+
+			idPlayer++;
+			if (idPlayer == nbPlayer) idPlayer = 0;
+			if (i== nbNodes -1) ;
+
+		}
+		// On vérifie que les sommes sont toutes à 0, sinon on recommence
+		for (int j = 0; j<nbPlayer; j++) {
+			if (dicesToGive[j] != 0) {
+				somme = 0; // La somme n'a pas été atteinte
+			}
+		}
+	} while (!somme);
+
+	for (int i=0; i <nbNodes; i++) printf ("La cellule %i a %i dés\n", i, map->cells[i].nbDices);
+
+
+
+}
+
 
 void displayMap(Pixel** graph){
 
@@ -90,7 +159,7 @@ void displayMap(Pixel** graph){
 }
 
 
-// Popule un tableau avec les SCell
+// Popule un tableau avec des Centre, destiné à l'affichage
 void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 
 	// On attribue à chaque SCell une place aléatoire dans ce tableau
@@ -118,19 +187,17 @@ void generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 		cellsList[i].id = map->cells[i].id;
 	}
 
-	 // On trouve les distances minimales
+	 // On trouve les distances minimales pour chaque pixel
 	double minDist;
 	int minIndex;
 	double dist;
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
 			// On trouve le SCell le plus près dans la liste de SCells
-			// minDist = sqrt(pow((cellsList[0].x - (double)x), 2) + pow((cellsList[0].y - (double)y), 2));// Distance euclidienne
 			minDist = abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
 			minIndex = 0;
 
 			for (int i=1; i<nbNodes; i++) {
-				// dist = sqrt(pow((cellsList[i].x - (double)x), 2) + pow((cellsList[i].y - (double)y), 2)); // Distance euclidienne
 				dist = abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
 				if (dist <= minDist) {
 					minIndex = i;
@@ -176,7 +243,7 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 }
 
 void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer){
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // On définit la couleur
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
