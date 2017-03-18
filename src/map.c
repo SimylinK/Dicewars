@@ -239,6 +239,7 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_GetWindowSize(window, &w_width, &w_height);
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
 	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
+	SDL_RenderPresent(renderer);
 
 	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
