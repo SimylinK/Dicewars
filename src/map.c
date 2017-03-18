@@ -29,11 +29,11 @@ void initMap(unsigned int nbPlayer) {
 	for (int i = 0; i < WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
 
 	// On génère le graphe de pixels
-	Centre *test = generateGraph(&graph, nbNodes, map);
+	Centre *cellsList = generateGraph(&graph, nbNodes, map);
 	// On fait les changements pour les bordures et on assigne les voisins
 	generateBorders(&graph, map);
 	// Boucle d'affichage principale
-	displayMap(graph, test);
+	displayMap(graph, cellsList, nbNodes);
 
 	//Destruction des ressources
 	for (int i = 0; i < WIDTH; i++) free(graph[i]);
@@ -114,7 +114,7 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 }
 
 
-void displayMap(Pixel** graph, Centre *cellsList){
+void displayMap(Pixel** graph, Centre* cellsList, int nbNodes){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
@@ -137,7 +137,7 @@ void displayMap(Pixel** graph, Centre *cellsList){
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// On dessine une première fois la map
-	drawMap(graph, window, renderer, cellsList);
+	drawMap(graph, window, renderer, cellsList, nbNodes);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -237,10 +237,13 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 	}
 }
 
-void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList){
+void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
+
+
+
 
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
@@ -277,9 +280,9 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *
 		}
 	}
 
-	/* à appeler ici pour chaque image souhaitée
-	insert_picture("./1.bmp", window, 0, 0, 150, 150);
-	*/
+	for (int i=0; i<nbNodes; i++){
+		insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+	}
 
 	SDL_RenderPresent(renderer);
 }
