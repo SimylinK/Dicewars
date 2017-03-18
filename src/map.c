@@ -214,5 +214,32 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer){
 			SDL_RenderDrawPoint(renderer, x, y);
 		}
 	}
+
+	/* à appeler ici pour chaque image souhaitée
+	insert_picture("./1.bmp", window, 0, 0, 150, 150);
+	*/
+
 	SDL_RenderPresent(renderer);
+}
+
+void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int height)
+{
+	SDL_Renderer* renderer = SDL_GetRenderer(window);
+	SDL_Surface* surface = NULL;
+	SDL_Texture* texture;
+
+	int w_width = 0, w_height = 0; //largeur et hauteur de la fenêtre
+
+	surface = SDL_LoadBMP(name);
+
+	texture = SDL_CreateTextureFromSurface(renderer,surface); // Préparation du sprite
+	surface->w = width; surface->h = height;//on adapte la taille de la surface aux dimensions demandées en paramètres
+
+
+	SDL_GetWindowSize(window, &w_width, &w_height);
+	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
+	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
+
+	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
+	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
 }
