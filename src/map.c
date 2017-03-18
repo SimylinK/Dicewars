@@ -11,7 +11,7 @@
 void initMap(unsigned int nbPlayer) {
 
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = 11;
+	unsigned int nbNodes = randomBounds(30,60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
@@ -86,7 +86,6 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	do {
 		somme = 1; // La somme a été atteinte
 
-
 		idPlayer = 0;
 		for (int i = 0; i < nbNodes; i++) {
 
@@ -112,11 +111,6 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 			}
 		}
 	} while (!somme);
-
-	for (int i=0; i <nbNodes; i++) printf ("La cellule %i a %i dés\n", i, map->cells[i].nbDices);
-
-
-
 }
 
 
