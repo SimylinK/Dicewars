@@ -17,19 +17,14 @@ typedef struct Centre{
 	int owner;	// Id du joueur qui la possède
 	}Centre;
 
-typedef struct Pixel{
-	int id;	// Id de la cellule
-	int owner;	// Id du joueur qui la possède
-} Pixel;
-
 	void initMap(unsigned int nbPlayer);
 	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
-	void displayMap(Pixel** graph, Centre* cellsList, int nbNodes, SMap *map);
-	Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map);
-	void generateBorders(Pixel*** graph, SMap *map);
+	void displayMap(Centre* cellsList, int nbNodes, SMap *map);
+	Centre* generateList(int nbNodes, SMap *map);
+	void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);
 	void assignNeighbor(int id1, int id2, SMap *map);
-	void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
+	void drawMap(SDL_Window *window, SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
 
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap
 	//x et y étant le centre de l'image, width et height sa hauteur et sa largeur souhaitées

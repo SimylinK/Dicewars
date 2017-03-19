@@ -2,25 +2,12 @@
 #include <stdio.h>
 #include "util.h"
 #include <math.h>
+#include "map.h"
 
-// Retourne un unsigned int entre 0 et max
-// 0 <= max <= RAND_MAX
+// Retourne un unsigned int entre 0 et max compris
 unsigned int goodRandom(unsigned int max) {
 
-	unsigned int num_bins = max + 1;
-	unsigned int num_rand = (unsigned int) RAND_MAX + 1;
-	unsigned int bin_size = num_rand / num_bins;
-	unsigned int defect   = num_rand % num_bins;
-
-	unsigned int result;
-	do {
-		result = (unsigned int)rand();
-	}
-
-	while (num_rand - defect <= (unsigned long)result);
-
-	// Division tronquée intentionnelle
-	return result/bin_size;
+	return rand()%(max+1);
 }
 
 // Retourne un unsigned int entre min et max, min<=max
@@ -30,23 +17,40 @@ unsigned int randomBounds(unsigned int min, unsigned int max){
 
 // Retourne un unsigned int entre min et max, avec une distance d'au moins dist à tous les elements du tableau
 // Si x est à un, on teste sur x, sinon sur y
-unsigned int distRandomBounds(unsigned int dist, unsigned int min, unsigned int max, Centre *cellsList, unsigned int taille, unsigned int x){
+unsigned int distRandomBounds(unsigned int dist, unsigned int min, unsigned int max, Centre *cellsList, unsigned int size, unsigned int x){
 	int farEnough; //Les cells sont assez loin
 	unsigned int rand = 0;
-	do{
+	do {
 		farEnough = 1;
 		rand = randomBounds(min, max);
-		for (int i=0; i<taille; i++){
-			if (x == 1){
-				if (abs(cellsList[i].x-rand)<dist){
-					farEnough = 0;
-				}
-			} else
-				if (abs(cellsList[i].y-rand)<dist){
-					farEnough = 0;
-				}
+		// On teste sur x ou y
+		if (x == 1) {
+			for (int i=0; i<size && farEnough; i++) {
+				if (abs(cellsList[i].x - rand) < dist) farEnough = 0;
+			}
+		} else{
+			for (int i = 0; i<size && farEnough; i++) {
+				if (abs(cellsList[i].y - rand) < dist) farEnough = 0;
+			}
 		}
 	} while(!farEnough);
 
 	return rand;
+}
+
+// Retourne la cellule la plus proche
+Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned int y){
+
+	unsigned int minDist = abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
+	unsigned int minIndex = 0;
+	unsigned int dist;
+
+	for (int i=1; i<size; i++) {
+		dist = abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
+		if (dist <= minDist) {
+			minIndex = i;
+			minDist = dist;
+		}
+	}
+	return cellsList[minIndex];
 }

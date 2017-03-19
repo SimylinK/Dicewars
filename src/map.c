@@ -8,7 +8,7 @@
 void initMap(unsigned int nbPlayer) {
 
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30,60);
+	unsigned int nbNodes = randomBounds(30 , 60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
@@ -20,27 +20,22 @@ void initMap(unsigned int nbPlayer) {
 	}
 	map->stack = malloc(sizeof(unsigned int) * nbPlayer);
 
+	// On assigne les SCell aux joueurs
 	assignSCell(nbPlayer, nbNodes, map);
 
-	Pixel **graph = malloc(WIDTH * sizeof(Pixel *));
-	for (int i = 0; i < WIDTH; i++) graph[i] = malloc(HEIGHT * sizeof(Pixel));
+	// On génère la liste des SCell
+	Centre *cellsList = generateList(nbNodes, map);
 
-	// On génère le graphe de pixels
-	Centre *cellsList = generateGraph(&graph, nbNodes, map);
-	// On fait les changements pour les bordures et on assigne les voisins
-	generateBorders(&graph, map);
 	// Boucle d'affichage principale
-	displayMap(graph, cellsList, nbNodes, map);
+	displayMap(cellsList, nbNodes, map);
 
 	//Destruction des ressources
-	for (int i = 0; i < WIDTH; i++) free(graph[i]);
-	free(graph);
 }
 
 // Assigne les SCell aux joueurs
 void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
-	// Attribue aux SCell leurs ID, l'ID du joueur qui la possède et le nombre de dés
+	// Attribue aux SCell leurs ID, l'ID du joueur qui la possède
 	int idPlayer = 0;
 	for (int i = 0; i < nbNodes; i++) {
 		map->cells[i].id = i;
@@ -50,10 +45,11 @@ void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 		idPlayer++;
 		if (idPlayer == nbPlayer) idPlayer = 0;
 	}
+	// On donne les dés
 	giveDices(nbPlayer, nbNodes, map);
 }
 
-// Idée : on AJOUTE (+=)	 par un random des dés à chaque cellule, et si la somme au final n'est pas à 0, on rerentre dans la boucle
+// Idée : on AJOUTE (+=) par un random des dés à chaque cellule, et si la somme au final n'est pas à 0, on rerentre dans la boucle
 void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 	// Nombre de SCell minimum par joueur
@@ -85,7 +81,6 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 		idPlayer = 0;
 		for (int i = 0; i < nbNodes; i++) {
-
 			if (dicesToGive[idPlayer] >=  nbCellPerPlayer[idPlayer])
 				dicesGiven = randomBounds(1, floor(dicesToGive[idPlayer]/nbCellPerPlayer[idPlayer]))%(9-map->cells[i].nbDices); // On ne donne pas plus qu'on peut et on excède pas 8 dés par case
 			else if (dicesToGive[idPlayer] + map->cells[i].nbDices > 8)
@@ -111,7 +106,7 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 }
 
 
-void displayMap(Pixel** graph, Centre* cellsList, int nbNodes, SMap *map){
+void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
@@ -134,7 +129,10 @@ void displayMap(Pixel** graph, Centre* cellsList, int nbNodes, SMap *map){
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// On dessine une première fois la map
-	drawMap(graph, window, renderer, cellsList, nbNodes);
+	drawMap(window, renderer, cellsList, nbNodes);
+
+	// On dessine les bordures et on attribue les voisins
+	drawBorders(map, window, renderer, cellsList, nbNodes);
 
     // On affiche le nombre de dés sur chaque cellule
     displayDices(map, cellsList, window, nbNodes);
@@ -153,19 +151,19 @@ void displayMap(Pixel** graph, Centre* cellsList, int nbNodes, SMap *map){
 }
 
 
-// Popule un tableau avec des Centre, destiné à l'affichage
-Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map){
+// Popule un tableau avec des Centre aléatoirement répartis sur l'image
+Centre* generateList(int nbNodes, SMap *map){
 
 	// On attribue à chaque SCell une place aléatoire dans ce tableau
 	Centre *cellsList = malloc(sizeof(Centre)*(map->nbCells));
 	unsigned int x;
 	unsigned int y;
 	int same;
-	for (int i=0; i<nbNodes; i++){
+	for (unsigned int i=0; i<nbNodes; i++){
 		do {
 			same = 0;
-			x = distRandomBounds(minDistBetweenCells, minDistBetweenCells, WIDTH-minDistBetweenCells, cellsList, i+1, 1); // On force à être éloigné des bords
-			y = distRandomBounds(minDistBetweenCells, minDistBetweenCells, HEIGHT-minDistBetweenCells, cellsList, i+1, 0);
+			x = distRandomBounds(minDistBetweenCells, minDistBetweenCells, WIDTH-minDistBetweenCells, cellsList, i, 1); // On force à être éloigné des bords
+			y = distRandomBounds(minDistBetweenCells, minDistBetweenCells, HEIGHT-minDistBetweenCells, cellsList, i, 0);
 
 			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
 			for (int j = 0; j<i; j++){
@@ -173,60 +171,51 @@ Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 					same = 1;
 				}
 			}
-		} while (same==1);
+		} while (same);
 
 		cellsList[i].x = x;
 		cellsList[i].y = y;
 		cellsList[i].owner = map->cells[i].owner;
 		cellsList[i].id = map->cells[i].id;
 	}
-
-	 // On trouve les distances minimales pour chaque pixel
-	double minDist;
-	int minIndex;
-	double dist;
-	for (unsigned int x=0; x<WIDTH; x++){
-		for (unsigned int y=0; y<HEIGHT; y++){
-			// On trouve le SCell le plus près dans la liste de SCells
-			minDist = abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
-			minIndex = 0;
-
-			for (int i=1; i<nbNodes; i++) {
-				dist = abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
-				if (dist <= minDist) {
-					minIndex = i;
-					minDist = dist;
-				}
-			}
-			(*graph)[x][y].owner = cellsList[minIndex].owner; // On associe au pixel le même owner et id de SCell
-			(*graph)[x][y].id = cellsList[minIndex].id;
-		}
-	}
 	return cellsList;
 }
-// Met à 8 l'id des pixels de bordure pour la coloration en noir
-void generateBorders(Pixel*** graph, SMap *map) {
+// Colore les pixels de bordure en noir
+void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
+
+	Centre closer;
+	Centre rightNeighborCloser;
+	Centre downNeighborCloser;
 	for (unsigned int x = 0; x < WIDTH - 1; x++) {
 		for (unsigned int y = 0; y < HEIGHT - 1; y++) {
 			// Quand on trouve un changement d'id
-			if ((*graph)[x][y].id != (*graph)[x + 1][y].id)
+			closer = getCloser(cellsList, nbNodes, x, y);
+			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
+			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
+			if (closer.id != rightNeighborCloser.id)
 			{
 				// On assigne les voisins dans les deux sens
-				assignNeighbor((*graph)[x][y].id, (*graph)[x + 1][y].id, map);
-				assignNeighbor((*graph)[x + 1][y].id, (*graph)[x][y].id, map);
+				assignNeighbor(closer.id, rightNeighborCloser.id, map);
+				assignNeighbor(rightNeighborCloser.id, closer.id, map);
 
-				// On met l'id à 8
-				(*graph)[x][y].owner = 8;
+				// On dessine en noir
+				SDL_RenderDrawPoint(renderer, x, y);
 
-			} else if  ((*graph)[x][y].id != (*graph)[x][y + 1].id) {
+
+			} else if  (closer.id != downNeighborCloser.id) {
 				// On assigne les voisins dans les deux sens
-				assignNeighbor((*graph)[x][y].id, (*graph)[x][y + 1].id, map);
-				assignNeighbor((*graph)[x][y + 1].id, (*graph)[x][y].id, map);
+				assignNeighbor(closer.id, downNeighborCloser.id, map);
+				assignNeighbor(downNeighborCloser.id, closer.id, map);
 
-				(*graph)[x][y].owner = 8;
+				// On dessine en noir
+				SDL_RenderDrawPoint(renderer, x, y);
+
 			}
 		}
 	}
+	SDL_RenderPresent(renderer);
 }
 
 void assignNeighbor(int id1, int id2, SMap *map) {
@@ -237,14 +226,15 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 	}
 }
 
-void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawMap(SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
-
+	Centre closer; // Le centre le plus près
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
-			switch (graph[x][y].owner){ // On définit les couleurs des joueurs
+			closer=getCloser(cellsList, nbNodes, x, y);
+			switch (closer.owner){ // On définit les couleurs des joueurs
 				case 0:
 					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
 					break;
@@ -268,9 +258,6 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *
 					break;
 				case 7:
 					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
-					break;
-				case 8: // Bordure
-					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
 					break;
 			}
 			SDL_RenderDrawPoint(renderer, x, y);
