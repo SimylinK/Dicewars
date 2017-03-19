@@ -1,13 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include <math.h>
 #include "map.h"
 #include "util.h"
-#include "interface.h"
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
-
 void initMap(unsigned int nbPlayer) {
 
 	// Nombre de SCell sur la map
@@ -77,7 +74,7 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	// On considère que le nombre de dés par SCell est environ de 3
 	unsigned int dicesToGive[nbPlayer];
 	for (int i=0; i<nbPlayer; i++) {
-		dicesToGive[i] = nbNodes * 3 / nbPlayer;
+		dicesToGive[i] = (nbNodes * nbDicesPerCell)/ nbPlayer;
 	}
 
 	int somme;
@@ -167,8 +164,8 @@ Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 	for (int i=0; i<nbNodes; i++){
 		do {
 			same = 0;
-			x = randomBounds(0, WIDTH);
-			y = randomBounds(0, HEIGHT);
+			x = distRandomBounds(minDistBetweenCells, 0, WIDTH, cellsList, i+1, 1);
+			y = distRandomBounds(minDistBetweenCells, 0, HEIGHT, cellsList, i+1, 0);
 
 			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
 			for (int j = 0; j<i; j++){
@@ -282,12 +279,6 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *
 			SDL_RenderDrawPoint(renderer, x, y);
 		}
 	}
-
-	for (int i=0; i<nbNodes; i++){
-        //displayDicesOfCell(i, cellsList, window);
-		//insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
-	}
-
 	SDL_RenderPresent(renderer);
 }
 
@@ -318,21 +309,21 @@ void displayDices(SMap *map, Centre *cellsList, SDL_Window *window, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
         if (map->cells[i].nbDices == 1) {
-            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 2) {
-            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 3) {
-            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 4) {
-            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 5) {
-            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 6) {
-            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 7) {
-            insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 8) {
-            insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         }
     }
 }

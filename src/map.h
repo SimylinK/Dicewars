@@ -1,8 +1,12 @@
 #ifndef DICEWARS_MAP_H
 #define DICEWARS_MAP_H
 	#include "interface.h"
+	#include <SDL2/SDL.h>
+
 	#define WIDTH 1024
 	#define HEIGHT 768
+	#define nbDicesPerCell 3
+	#define minDistBetweenCells WIDTH/1000 // distance en pixels
 
 // Structure qui représente une cellule
 typedef struct Centre{
