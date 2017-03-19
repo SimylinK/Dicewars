@@ -33,7 +33,7 @@ void initMap(unsigned int nbPlayer) {
 	// On fait les changements pour les bordures et on assigne les voisins
 	generateBorders(&graph, map);
 	// Boucle d'affichage principale
-	displayMap(graph, cellsList, nbNodes);
+	displayMap(graph, cellsList, nbNodes, map);
 
 	//Destruction des ressources
 	for (int i = 0; i < WIDTH; i++) free(graph[i]);
@@ -114,7 +114,7 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 }
 
 
-void displayMap(Pixel** graph, Centre* cellsList, int nbNodes){
+void displayMap(Pixel** graph, Centre* cellsList, int nbNodes, SMap *map){
 
 	SDL_Window *window;
 	SDL_Renderer* renderer;
@@ -138,6 +138,9 @@ void displayMap(Pixel** graph, Centre* cellsList, int nbNodes){
 
 	// On dessine une première fois la map
 	drawMap(graph, window, renderer, cellsList, nbNodes);
+
+    // On affiche le nombre de dés sur chaque cellule
+    displayDices(map, cellsList, window, nbNodes);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -281,7 +284,8 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *
 	}
 
 	for (int i=0; i<nbNodes; i++){
-		insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        //displayDicesOfCell(i, cellsList, window);
+		//insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
 	}
 
 	SDL_RenderPresent(renderer);
@@ -308,4 +312,27 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 
 	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
+}
+
+void displayDices(SMap *map, Centre *cellsList, SDL_Window *window, int nbNodes)
+{
+    for (int i=0; i<nbNodes; i++) {
+        if (map->cells[i].nbDices == 1) {
+            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 2) {
+            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 3) {
+            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 4) {
+            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 5) {
+            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 6) {
+            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 7) {
+            insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        } else if (map->cells[i].nbDices == 8) {
+            insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+        }
+    }
 }
