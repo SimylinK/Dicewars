@@ -164,8 +164,8 @@ Centre* generateGraph(Pixel*** graph, int nbNodes, SMap *map){
 	for (int i=0; i<nbNodes; i++){
 		do {
 			same = 0;
-			x = distRandomBounds(minDistBetweenCells, 0, WIDTH, cellsList, i+1, 1);
-			y = distRandomBounds(minDistBetweenCells, 0, HEIGHT, cellsList, i+1, 0);
+			x = distRandomBounds(minDistBetweenCells, minDistBetweenCells, WIDTH-minDistBetweenCells, cellsList, i+1, 1); // On force à être éloigné des bords
+			y = distRandomBounds(minDistBetweenCells, minDistBetweenCells, HEIGHT-minDistBetweenCells, cellsList, i+1, 0);
 
 			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
 			for (int j = 0; j<i; j++){
@@ -242,9 +242,6 @@ void drawMap(Pixel **graph, SDL_Window *window, SDL_Renderer* renderer, Centre *
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-
-
-
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
 			switch (graph[x][y].owner){ // On définit les couleurs des joueurs
@@ -309,21 +306,21 @@ void displayDices(SMap *map, Centre *cellsList, SDL_Window *window, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
         if (map->cells[i].nbDices == 1) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 2) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 3) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 4) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 5) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 6) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 7) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         } else if (map->cells[i].nbDices == 8) {
-            insertPicture("C:/Users/USER/Desktop/Home/dicewars/sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         }
     }
 }

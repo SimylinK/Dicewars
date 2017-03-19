@@ -6,7 +6,7 @@
 	#define WIDTH 1024
 	#define HEIGHT 768
 	#define nbDicesPerCell 3
-	#define minDistBetweenCells WIDTH/1000 // distance en pixels
+	#define minDistBetweenCells 8 // distance en pixels
 
 // Structure qui représente une cellule
 typedef struct Centre{

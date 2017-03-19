@@ -40,12 +40,10 @@ unsigned int distRandomBounds(unsigned int dist, unsigned int min, unsigned int 
 			if (x == 1){
 				if (abs(cellsList[i].x-rand)<dist){
 					farEnough = 0;
-					printf("Je réattribue\n");
 				}
 			} else
 				if (abs(cellsList[i].y-rand)<dist){
 					farEnough = 0;
-					printf("Je réattribue\n");
 				}
 		}
 	} while(!farEnough);
