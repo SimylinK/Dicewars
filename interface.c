@@ -19,11 +19,6 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
     contexte.nbPlayer = nbPlayer;
 
     strcpy(info->name, "Le chien fou");
-
-		strcpy(info->members[0], "Monvoisin Mathilde");
-		strcpy(info->members[1], "Le Priol Yoann");
-		strcpy(info->members[2], "Maraval Nathan");
-		strcpy(info->members[3], "Pagano Lucas");
 }
 
 //Attaque si il a plus de cases que l'adversaire
