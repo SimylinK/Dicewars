@@ -87,9 +87,8 @@ int main (int argc, char *argv[]){
         interfaces[i] = &ia1;
 
         //Initialisation de l'IA au passage
-        SPlayerInfo info = {.name = "stratGroupe5", .members = {"Monvoisin Mathilde\0", "Le Priol Yoann\0", "Maraval Nathan\0", "Pagano Lucas\0"}};
+        SPlayerInfo info = {};
         interfaces[i]->InitGame(0, nbPlayer, &info);
-        printf("%s\n", info.name);
       }
 
     }
