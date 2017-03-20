@@ -15,3 +15,7 @@ Règles implicites :
 Pour compiler une bibliothèque dynamique :
   gcc -std=c99 -fPIC -c  [...].c
   gcc -shared -o [nom lib].so [...].o
+
+Exemple d'éxecution :
+  ./test 1 2 ./lib.so
+  (1 partie, 2 joueurs, l'ia utilise la bibliothèque lib.so)
