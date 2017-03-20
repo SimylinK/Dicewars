@@ -38,37 +38,47 @@ int main (int argc, char *argv[]){
 
     SInterface *interfaces[nbPlayer];
 
+
     // 1 joueur normal, le reste en IA
     for (int i=0; i<nbPlayer; i++){
       //le joueur normal
-      if (i == 0){
+      if (i == 0 || argc < 4){ // (argc > 4) indique qu'il n'y a pas de bibliothèques en argument
         interfaces[i] = NULL;
       } else {
+
+        //Choix de la bibliothèque dynamique pour l'IA
+        int indexArgv = 3;
+        if (argc > 4) { //Cas avec 2 bibliothèques en argument
+          //Choix d'une bibiothèque de façon aléatoire
+          int zeroOrOne = ((double) rand() / (RAND_MAX)) + 1;
+          indexArgv += zeroOrOne;
+        }
+
         void *ia;
 
         pfInitGame InitGame;
         pfPlayTurn PlayTurn;
         pfEndGame EndGame;
 
-        if ((ia=dlopen("./malib.so",RTLD_LAZY))==NULL) {
+        if ((ia=dlopen(argv[indexArgv],RTLD_LAZY))==NULL) {
           // Erreur de chargement de la librairie
-          printf("La librairie n'a pas pu être chargée\n");
+          printf("La librairie %s n'a pas pu être chargée\n", argv[indexArgv]);
           return(0);
         }
 
         if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
           // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de InitGame\n");
+          printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[indexArgv]);
           return(0);
         }
         if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
           // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de PlayTurn\n");
+          printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[indexArgv]);
           return(0);
         }
         if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
           // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de EndGame\n");
+          printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[indexArgv]);
           return(0);
         }
 
