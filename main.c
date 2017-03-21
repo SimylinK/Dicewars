@@ -4,6 +4,78 @@
 #include <dlfcn.h>
 #include "interface.h"
 
+
+// Initialisation des joueurs
+typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
+typedef void (*pfPlayTurn)(const SMap*, STurn*);
+typedef void (*pfEndGame)(unsigned int);
+
+typedef struct  {
+  pfInitGame InitGame;
+  pfPlayTurn PlayTurn;
+  pfEndGame EndGame;
+} SInterface;
+
+//initialise interfaces
+//renvoie 1 si ça c'est bien passé, 0 sinon
+int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
+
+  // 1 joueur normal, le reste en IA
+  for (int i=0; i<nbPlayer; i++){
+    //le joueur normal
+    if (i == 0 || argc < 4){ // (argc > 4) indique qu'il n'y a pas de bibliothèques en argument
+      interfaces[i] = NULL;
+    } else {
+
+      //Choix de la bibliothèque dynamique pour l'IA
+      int indexArgv = 3;
+      if (argc > 4) { //Cas avec 2 bibliothèques en argument
+        //Choix d'une bibiothèque de façon aléatoire
+        int zeroOrOne = ((double) rand() / (RAND_MAX)) + 1;
+        indexArgv += zeroOrOne;
+      }
+
+      void *ia;
+      pfInitGame InitGame;
+      pfPlayTurn PlayTurn;
+      pfEndGame EndGame;
+
+      if ((ia=dlopen(argv[indexArgv],RTLD_LAZY))==NULL) {
+        // Erreur de chargement de la librairie
+        printf("La librairie %s n'a pas pu être chargée\n", argv[indexArgv]);
+        return(0);
+      }
+
+      if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[indexArgv]);
+        return(0);
+      }
+      if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[indexArgv]);
+        return(0);
+      }
+      if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[indexArgv]);
+        return(0);
+      }
+
+      SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
+
+      interfaces[i] = &ia1;
+
+      //Initialisation de l'IA au passage
+      SPlayerInfo info;
+      interfaces[i]->InitGame(0, nbPlayer, &info);
+    }
+  }
+
+  return 1;
+}
+
+
 int main (int argc, char *argv[]){
   //Pas assez d'arguments
   if (argc < 2) {
@@ -24,76 +96,9 @@ int main (int argc, char *argv[]){
       scanf("%s", names[i]);
     }
 
-    // Initialisation des joueurs
-
-    typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
-    typedef void (*pfPlayTurn)(const SMap*, STurn*);
-    typedef void (*pfEndGame)(unsigned int);
-
-    typedef struct  {
-      pfInitGame InitGame;
-      pfPlayTurn PlayTurn;
-      pfEndGame EndGame;
-    } SInterface;
-
-    SInterface *interfaces[nbPlayer];
-
-
-    // 1 joueur normal, le reste en IA
-    for (int i=0; i<nbPlayer; i++){
-      //le joueur normal
-      if (i == 0 || argc < 4){ // (argc > 4) indique qu'il n'y a pas de bibliothèques en argument
-        interfaces[i] = NULL;
-      } else {
-
-        //Choix de la bibliothèque dynamique pour l'IA
-        int indexArgv = 3;
-        if (argc > 4) { //Cas avec 2 bibliothèques en argument
-          //Choix d'une bibiothèque de façon aléatoire
-          int zeroOrOne = ((double) rand() / (RAND_MAX)) + 1;
-          indexArgv += zeroOrOne;
-        }
-
-        void *ia;
-
-        pfInitGame InitGame;
-        pfPlayTurn PlayTurn;
-        pfEndGame EndGame;
-
-        if ((ia=dlopen(argv[indexArgv],RTLD_LAZY))==NULL) {
-          // Erreur de chargement de la librairie
-          printf("La librairie %s n'a pas pu être chargée\n", argv[indexArgv]);
-          return(0);
-        }
-
-        if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
-          // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[indexArgv]);
-          return(0);
-        }
-        if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
-          // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[indexArgv]);
-          return(0);
-        }
-        if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
-          // Erreur lors du chragement de la fonction
-          printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[indexArgv]);
-          return(0);
-        }
-
-        SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
-
-        interfaces[i] = &ia1;
-
-        //Initialisation de l'IA au passage
-        SPlayerInfo info;
-        interfaces[i]->InitGame(0, nbPlayer, &info);
-      }
-
-    }
-
-
+    // Initialisation des joueurs via interfaces
+    SInterface **interfaces = (SInterface**)malloc(nbPlayer);
+    initPlayers(nbPlayer, interfaces, argc, argv);
 
     int player = 0;
     //Boucle de jeu
