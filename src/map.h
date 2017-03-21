@@ -7,9 +7,9 @@
 	void mainMap(MapContext *mapContext);
 	void displayMap(Centre* cellsList, int nbNodes, SMap *map);
 	Centre* generateList(int nbNodes, SMap *map);
-	void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);
+	void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);
 	void assignNeighbor(int id1, int id2, SMap *map);
-	void drawPixels(SDL_Window *window, SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
+	void drawPixels(SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
 	void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
 
 

@@ -175,10 +175,10 @@ void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cell
 
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
-
 	// On dessine les bordures
 	drawBorders(map, renderer, cellsList, nbNodes);
-
 	// On affiche les dés
 	displayDices(map, window, cellsList, nbNodes);
+
+	SDL_RenderPresent(renderer);
 }
