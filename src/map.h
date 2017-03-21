@@ -1,25 +1,10 @@
 #ifndef DICEWARS_MAP_H
 #define DICEWARS_MAP_H
 	#include "interface.h"
+	#include "init.h"
 	#include <SDL2/SDL.h>
 
-	#define WIDTH 1024
-	#define HEIGHT 768
-	#define nbDicesPerCell 3
-	#define minDistBetweenCells 10 // distance en pixels
-
-// Structure qui représente une cellule
-typedef struct Centre{
-
-	unsigned int x;
-	unsigned int y;
-	int id;	// Id de la cellule
-	int owner;	// Id du joueur qui la possède
-	}Centre;
-
-	void initMap(unsigned int nbPlayer);
-	void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
-	void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
+	void mainMap(MapContext *mapContext);
 	void displayMap(Centre* cellsList, int nbNodes, SMap *map);
 	Centre* generateList(int nbNodes, SMap *map);
 	void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);

@@ -1,7 +1,5 @@
 #include <stdlib.h>
-#include "interface.h"
 #include <time.h>
-#include <SDL2/SDL.h>
 #include "map.h"
 
 int main (int argc, char *argv[]){
@@ -9,7 +7,9 @@ int main (int argc, char *argv[]){
     unsigned int nbGame = (unsigned int)atoi(argv[1]);
     unsigned int nbPlayer = (unsigned int)atoi(argv[2]);
 
-	initMap(nbPlayer);
+	MapContext *mapContext = malloc(sizeof(MapContext));
+	initMap(mapContext, nbPlayer);
+	mainMap(mapContext);
 
     return 0;
 
