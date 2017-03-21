@@ -1,4 +1,5 @@
 #include "map.h"
+#include "util.h"
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 void mainMap(MapContext *mapContext) {
@@ -49,7 +50,7 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 
 
 // Colore les pixels de bordure en noir
-void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
 
@@ -87,7 +88,7 @@ void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *
 
 
 
-void drawPixels(SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	Centre closer; // Le centre le plus près
 	for (unsigned int x=0; x<WIDTH; x++){
@@ -173,10 +174,10 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
 void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 
 	// On dessine les pixels
-	drawPixels(window, renderer, cellsList, nbNodes);
+	drawPixels(renderer, cellsList, nbNodes);
 
 	// On dessine les bordures
-	drawBorders(map, window, renderer, cellsList, nbNodes);
+	drawBorders(map, renderer, cellsList, nbNodes);
 
 	// On affiche les dés
 	displayDices(map, window, cellsList, nbNodes);
