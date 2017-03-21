@@ -8,3 +8,6 @@ __pycache__/
 
 #Clion
 cmake-build-debug
+
+#object files
+*.o
