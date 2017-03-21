@@ -3,7 +3,7 @@
 
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30 , 60);
+	unsigned int nbNodes = randomBounds(30, 60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
@@ -48,60 +48,73 @@ void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 }
 
 
-// Idée : on AJOUTE (+=) par un random des dés à chaque cellule, et si la somme au final n'est pas à 0, on rerentre dans la boucle
+// Donne les dés sur chaque cellule de map
 void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 	// Nombre de SCell minimum par joueur
-	int nbCellsMin = nbNodes/nbPlayer;
+	unsigned int nbCellsMin = nbNodes / nbPlayer;
 	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
-	int nbCellsLeft = nbNodes%nbPlayer;
+	unsigned int nbCellsLeft = nbNodes % nbPlayer;
 
 	// Nombre de SCell exact par joueur
-	int nbCellPerPlayer[nbPlayer];
-	for (int i=0; i<nbPlayer; i++){
-		if (nbCellsLeft != 0){
-			nbCellPerPlayer[i] = nbCellsMin +1;
+	unsigned int nbCellPerPlayer[nbPlayer];
+	for (int i = 0; i < nbPlayer; i++) {
+		if (nbCellsLeft != 0) {
+			nbCellPerPlayer[i] = nbCellsMin + 1;
 			nbCellsLeft--;
 		} else
 			nbCellPerPlayer[i] = nbCellsMin;
 	}
 
-	// On considère que le nombre de dés par SCell est environ de 3
-	unsigned int dicesToGive[nbPlayer];
-	for (int i=0; i<nbPlayer; i++) {
-		dicesToGive[i] = (nbNodes * nbDicesPerCell)/ nbPlayer;
+	// Tableau des cellules des joueurs
+	SCell ***playerCells = malloc(sizeof(SCell**)*nbPlayer);
+	for (int i = 0; i < nbPlayer; i++) {
+		// On alloue le nombre de cellules nécéssaires
+		playerCells[i] = malloc(sizeof(SCell*) * nbCellPerPlayer[i]);
 	}
 
-	int somme;
-	unsigned int dicesGiven = 0;
-	int idPlayer;
-	do {
-		somme = 1; // La somme a été atteinte
+	int *indices = calloc(nbPlayer, sizeof(int));
+	// On donne à chaque joueur ses cellules
+	for (int i = 0; i<nbNodes; i++) {
+			playerCells[map->cells[i].owner][indices[map->cells[i].owner]] = &(map->cells[i]);
+			indices[map->cells[i].owner] += 1;
+	}
+	free(indices);
 
-		idPlayer = 0;
-		for (int i = 0; i < nbNodes; i++) {
-			if (dicesToGive[idPlayer] >=  nbCellPerPlayer[idPlayer])
-				dicesGiven = randomBounds(1, floor(dicesToGive[idPlayer]/nbCellPerPlayer[idPlayer]))%(9-map->cells[i].nbDices); // On ne donne pas plus qu'on peut et on excède pas 8 dés par case
-			else if (dicesToGive[idPlayer] + map->cells[i].nbDices > 8)
-				dicesGiven = 1;
-			else
-				dicesGiven = dicesToGive[idPlayer];
+	// On remet les indices à 0
+	indices = calloc(nbPlayer, sizeof(int));
 
-			map->cells[i].nbDices += dicesGiven;
-			dicesToGive[idPlayer] -= dicesGiven;
-
-			idPlayer++;
-			if (idPlayer == nbPlayer) idPlayer = 0;
-			if (i== nbNodes -1) ;
-
+	// Pour chaque joueur, on donne un dé à chacune de ses SCell
+	for (int i = 0; i < nbPlayer; i++) {
+		for (int j=0; j < nbCellPerPlayer[i]; j++) {
+			playerCells[map->cells[i].owner][indices[map->cells[i].owner]]->nbDices = 1;
+			indices[map->cells[i].owner] += 1;
 		}
-		// On vérifie que les sommes sont toutes à 0, sinon on recommence
-		for (int j = 0; j<nbPlayer; j++) {
-			if (dicesToGive[j] != 0) {
-				somme = 0; // La somme n'a pas été atteinte
-			}
+	}
+
+	// On considère que le nombre de dés par SCell est environ de 3
+	unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
+
+	// Le nombre restant de dés à donner par joueur
+	unsigned int dicesLeft[nbPlayer];
+	for (int i=0; i<nbPlayer; i++){
+		dicesLeft[i] = dicesToGive - nbCellPerPlayer[i]; // On a déjà donné un dé sur chaque cellule
+	}
+	// On fait un random sur toutes les SCell à chaque tour de boucle
+	unsigned int chosenSCell;
+	for (int i = 0; i < nbPlayer; i++) {
+		for (int j=0; j <dicesLeft[i]; j++) {
+			chosenSCell = goodRandom(nbCellPerPlayer[i] - 1); // L'indice de la cellule, entre 0 et nbCell du joueur -1.
+			playerCells[i][chosenSCell]->nbDices += 1;
 		}
-	} while (!somme);
+	}
+
+	//Libération des ressources
+	for (int i = 0; i < nbPlayer; i++) {
+		free(playerCells[i]);
+	}
+	free(playerCells);
+	free(indices);
 }
 
 // Popule un tableau avec des Centre aléatoirement répartis sur l'image
