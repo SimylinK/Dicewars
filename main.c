@@ -98,7 +98,9 @@ int main (int argc, char *argv[]){
 
     // Initialisation des joueurs via interfaces
     SInterface **interfaces = (SInterface**)malloc(nbPlayer);
-    initPlayers(nbPlayer, interfaces, argc, argv);
+    if (initPlayers(nbPlayer, interfaces, argc, argv) == 0) {
+      return 0;
+    }
 
     int player = 0;
     //Boucle de jeu
@@ -140,6 +142,6 @@ int main (int argc, char *argv[]){
 
     }
 
-    return 0;
+    return 1;
   }
 }
