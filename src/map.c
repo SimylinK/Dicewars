@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <zconf.h>
 #include "map.h"
 #include "util.h"
 
@@ -128,14 +129,9 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 	// Initialise le renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
-	// On dessine une première fois la map
-	drawMap(window, renderer, cellsList, nbNodes);
-
-	// On dessine les bordures et on attribue les voisins
-	drawBorders(map, window, renderer, cellsList, nbNodes);
-
-    // On affiche le nombre de dés sur chaque cellule
-    displayDices(map, cellsList, window, nbNodes);
+	drawMap(map, window, renderer, cellsList, nbNodes);
+	sleep(2);
+	drawMap(map, window, renderer, cellsList, nbNodes);
 
 	while(!end){
 		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
@@ -180,6 +176,7 @@ Centre* generateList(int nbNodes, SMap *map){
 	}
 	return cellsList;
 }
+
 // Colore les pixels de bordure en noir
 void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 
@@ -215,7 +212,6 @@ void drawBorders(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *
 			}
 		}
 	}
-	SDL_RenderPresent(renderer);
 }
 
 void assignNeighbor(int id1, int id2, SMap *map) {
@@ -226,10 +222,8 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 	}
 }
 
-void drawMap(SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawPixels(SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
-	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
 	Centre closer; // Le centre le plus près
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
@@ -263,7 +257,6 @@ void drawMap(SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int 
 			SDL_RenderDrawPoint(renderer, x, y);
 		}
 	}
-	SDL_RenderPresent(renderer);
 }
 
 void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int height)
@@ -289,7 +282,7 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
 }
 
-void displayDices(SMap *map, Centre *cellsList, SDL_Window *window, int nbNodes)
+void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
         if (map->cells[i].nbDices == 1) {
@@ -310,4 +303,16 @@ void displayDices(SMap *map, Centre *cellsList, SDL_Window *window, int nbNodes)
             insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
         }
     }
+}
+
+void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+
+	// On dessine les pixels
+	drawPixels(window, renderer, cellsList, nbNodes);
+
+	// On dessine les bordures
+	drawBorders(map, window, renderer, cellsList, nbNodes);
+
+	// On affiche les dés
+	displayDices(map, window, cellsList, nbNodes);
 }
