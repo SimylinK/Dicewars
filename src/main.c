@@ -1,7 +1,5 @@
 #include <stdlib.h>
-#include "interface.h"
 #include <time.h>
-#include <SDL2/SDL.h>
 #include "map.h"
 #include <stdio.h>
 #include <string.h>
@@ -91,7 +89,9 @@ int main (int argc, char *argv[]){
       //unsigned int nbGame = (unsigned int)atoi(argv[1]);
       unsigned int nbPlayer = (unsigned int)atoi(argv[2]);
 
-      initMap(nbPlayer);
+      MapContext *mapContext = malloc(sizeof(MapContext));
+    	initMap(mapContext, nbPlayer);
+    	mainMap(mapContext);
 
       //Initialisation du nom des joueurs
       char names[nbPlayer][30];
@@ -140,9 +140,10 @@ int main (int argc, char *argv[]){
           printf("Tour de l'IA\n");
           //ici faire interfaces[player]->PlayTurn(...)
 
-          //Quand l'ia termine son tour ou cup incorrect
+          //Quand l'ia termine son tour ou coup incorrect
           player = (player+1) % nbPlayer;
         }
+
 
       }
 

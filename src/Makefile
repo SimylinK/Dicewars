@@ -4,8 +4,8 @@ EXECUTABLE=dicewars
 CFLAGS=-Wall
 LLIBS=$(shell sdl2-config --cflags --libs)
 
-$(EXECUTABLE): main.o interface.o util.o map.o
-	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o $(LLIBS) -lm -ldl
+$(EXECUTABLE): main.o interface.o util.o map.o init.o
+	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o init.o $(LLIBS) -lm -ldl
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o
@@ -18,6 +18,10 @@ util.o: util.c util.h
 
 map.o: map.c map.h
 	$(CC) $(CFLAGS) -c map.c -o map.o -lm
+
+init.o: init.c init.h
+	$(CC) $(CFLAGS) -c init.c -o init.o -lm
+
 
 clean:
 	rm *.o $(EXECUTABLE)
