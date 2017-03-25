@@ -4,8 +4,8 @@
 	#include "init.h"
 	#include <SDL2/SDL.h>
 
-	void mainMap(MapContext *mapContext);
-	void displayMap(Centre* cellsList, int nbNodes, SMap *map);
+	void mainMap(MapContext *mapContext, SDL_Window *window, SDL_Renderer* renderer);
+	void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer);
 	Centre* generateList(int nbNodes, SMap *map);
 	void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);
 	void assignNeighbor(int id1, int id2, SMap *map);

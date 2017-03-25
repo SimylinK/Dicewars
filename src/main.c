@@ -91,7 +91,10 @@ int main (int argc, char *argv[]){
 
       MapContext *mapContext = malloc(sizeof(MapContext));
     	initMap(mapContext, nbPlayer);
-    	mainMap(mapContext);
+
+      SDL_Window *window = NULL;
+    	SDL_Renderer* renderer = NULL;
+    	mainMap(mapContext, window, renderer);
 
       //Initialisation du nom des joueurs
       char names[nbPlayer][30];

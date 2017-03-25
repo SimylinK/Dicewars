@@ -2,19 +2,17 @@
 #include "util.h"
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
-void mainMap(MapContext *mapContext) {
+void mainMap(MapContext *mapContext, SDL_Window *window, SDL_Renderer* renderer) {
 
 	// Boucle d'affichage principale
-	displayMap(mapContext->cellsList, mapContext->nbNodes, mapContext->map);
+	displayMap(mapContext->cellsList, mapContext->nbNodes, mapContext->map, window, renderer);
 
 	//Destruction des ressources
 }
 
 
-void displayMap(Centre* cellsList, int nbNodes, SMap *map){
+void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer){
 
-	SDL_Window *window;
-	SDL_Renderer* renderer;
 	SDL_Event event;
 	int end = 0;
 
@@ -42,10 +40,14 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 		}
 
 	}
+}
 
+void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+
+	//TODO : des free ?
 }
 
 
