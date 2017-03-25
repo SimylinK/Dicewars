@@ -10,7 +10,6 @@ void mainMap(MapContext *mapContext) {
 	//Destruction des ressources
 }
 
-
 void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 
 	SDL_Window *window;
@@ -57,6 +56,7 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 	Centre closer;
 	Centre rightNeighborCloser;
 	Centre downNeighborCloser;
+
 	for (unsigned int x = 0; x < WIDTH - 1; x++) {
 		for (unsigned int y = 0; y < HEIGHT - 1; y++) {
 			// Quand on trouve un changement d'id
@@ -65,29 +65,17 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
 			if (closer.id != rightNeighborCloser.id)
 			{
-				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, rightNeighborCloser.id, map);
-				assignNeighbor(rightNeighborCloser.id, closer.id, map);
-
-				// On dessine en noir
-				SDL_RenderDrawPoint(renderer, x, y);
-
+				SDL_RenderDrawPoint(renderer, x, y); // On dessine en noir
 
 			} else if  (closer.id != downNeighborCloser.id) {
-				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, downNeighborCloser.id, map);
-				assignNeighbor(downNeighborCloser.id, closer.id, map);
-
-				// On dessine en noir
-				SDL_RenderDrawPoint(renderer, x, y);
-
+				SDL_RenderDrawPoint(renderer, x, y); 	// On dessine en noir
 			}
 		}
 	}
 }
 
 
-
+// Utiliser SDL_RenderPresent après cette fonction
 void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	Centre closer; // Le centre le plus près
@@ -125,6 +113,7 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	}
 }
 
+// Utiliser SDL_RenderPresent après cette fonction
 void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int height)
 {
 	SDL_Renderer* renderer = SDL_GetRenderer(window);
@@ -142,12 +131,12 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_GetWindowSize(window, &w_width, &w_height);
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
 	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
-	SDL_RenderPresent(renderer);
 
 	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
 }
 
+// Utiliser SDL_RenderPresent après cette fonction
 void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
