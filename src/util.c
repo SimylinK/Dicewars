@@ -66,7 +66,7 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 		switch(event.type){
 			case SDL_MOUSEBUTTONDOWN:
 				if (SDL_BUTTON_LEFT){
-					id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).id;
+					id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
 					noEvent = 0;
 				}
 				break;

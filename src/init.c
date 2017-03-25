@@ -141,8 +141,7 @@ Centre* generateList(int nbNodes, SMap *map){
 
 		cellsList[i].x = x;
 		cellsList[i].y = y;
-		cellsList[i].owner = map->cells[i].owner;
-		cellsList[i].id = map->cells[i].id;
+		cellsList[i].cell = &(map->cells[i]);
 	}
 	return cellsList;
 }
@@ -160,16 +159,16 @@ void neighbors(Centre *cellsList, SMap* map, unsigned int nbNodes){
 			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
 			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
 
-			if (closer.id != rightNeighborCloser.id)
+			if (closer.cell->id != rightNeighborCloser.cell->id)
 			{
 				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, rightNeighborCloser.id, map);
-				assignNeighbor(rightNeighborCloser.id, closer.id, map);
+				assignNeighbor(closer.cell->id, rightNeighborCloser.cell->id, map);
+				assignNeighbor(rightNeighborCloser.cell->id, closer.cell->id, map);
 
-			} else if  (closer.id != downNeighborCloser.id) {
+			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
 				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, downNeighborCloser.id, map);
-				assignNeighbor(downNeighborCloser.id, closer.id, map);
+				assignNeighbor(closer.cell->id, downNeighborCloser.cell->id, map);
+				assignNeighbor(downNeighborCloser.cell->id, closer.cell->id, map);
 
 			}
 		}

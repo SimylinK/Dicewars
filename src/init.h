@@ -8,12 +8,12 @@
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 
+// Une SCell avec des coordonnées
 	typedef struct Centre{
 
-		unsigned int x;
-		unsigned int y;
-		int id;	// Id de la cellule
-		int owner;	// Id du joueur qui la possède
+		SCell *cell;
+		int x;
+		int y;
 	}Centre;
 
 	typedef struct MapContext{

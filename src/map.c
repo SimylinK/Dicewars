@@ -55,21 +55,12 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 			closer = getCloser(cellsList, nbNodes, x, y);
 			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
 			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
-			if (closer.id != rightNeighborCloser.id)
+			if (closer.cell->id != rightNeighborCloser.cell->id)
 			{
-				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, rightNeighborCloser.id, map);
-				assignNeighbor(rightNeighborCloser.id, closer.id, map);
-
 				// On dessine en noir
 				SDL_RenderDrawPoint(renderer, x, y);
 
-
-			} else if  (closer.id != downNeighborCloser.id) {
-				// On assigne les voisins dans les deux sens
-				assignNeighbor(closer.id, downNeighborCloser.id, map);
-				assignNeighbor(downNeighborCloser.id, closer.id, map);
-
+			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
 				// On dessine en noir
 				SDL_RenderDrawPoint(renderer, x, y);
 
@@ -86,7 +77,7 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
 			closer=getCloser(cellsList, nbNodes, x, y);
-			switch (closer.owner){ // On définit les couleurs des joueurs
+			switch (closer.cell->owner){ // On définit les couleurs des joueurs
 				case 0:
 					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
 					break;
