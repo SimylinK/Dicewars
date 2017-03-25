@@ -13,9 +13,6 @@ void mainMap(MapContext *mapContext, SDL_Window *window, SDL_Renderer* renderer)
 
 void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer){
 
-	SDL_Event event;
-	int end = 0;
-
 	SDL_Init(SDL_INIT_VIDEO);              // Initialise SDL2
 
 	// Crée une fenêtre SDL:
@@ -33,13 +30,6 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, S
 
 	drawMap(map, window, renderer, cellsList, nbNodes);
 
-	while(!end){
-		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
-			if (event.type == SDL_QUIT)
-				end = 1;
-		}
-
-	}
 }
 
 void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {

@@ -1,7 +1,7 @@
 CC=gcc -std=c99
 EXECUTABLE=dicewars
 
-CFLAGS=-Wall
+CFLAGS=-Wall -g 
 LLIBS=$(shell sdl2-config --cflags --libs)
 
 $(EXECUTABLE): main.o interface.o util.o map.o init.o
