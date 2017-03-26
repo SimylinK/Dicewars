@@ -4,13 +4,14 @@
 	#include "init.h"
 	#include <SDL2/SDL.h>
 
-	void mainMap(MapContext *mapContext, SDL_Window *window, SDL_Renderer* renderer);
+	void mainMap(MapContext *mapContext);
 	void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer);
 	Centre* generateList(int nbNodes, SMap *map);
 	void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNodes);
 	void assignNeighbor(int id1, int id2, SMap *map);
 	void drawPixels(SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
-	void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre* cellsList, int nbNodes);
+	void drawMap(SMap *map, Centre* cellsList, int nbNodes);
+	void destroyMap(SDL_Window *window, SDL_Renderer* renderer);
 
 
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap

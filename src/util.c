@@ -62,7 +62,7 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 	int noEvent = 1;
 
 	while (noEvent){
-		SDL_PollEvent(&event);
+		SDL_WaitEvent(&event);
 		switch(event.type){
 			case SDL_MOUSEBUTTONDOWN:
 				if (SDL_BUTTON_LEFT){

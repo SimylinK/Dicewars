@@ -1,21 +1,13 @@
 #include "map.h"
 #include "util.h"
 
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
-void mainMap(MapContext *mapContext, SDL_Window *window, SDL_Renderer* renderer) {
+void mainMap(MapContext *mapContext) {
 
-	// Boucle d'affichage principale
-	displayMap(mapContext->cellsList, mapContext->nbNodes, mapContext->map, window, renderer);
+	SDL_Init(SDL_INIT_VIDEO);
 
-	//Destruction des ressources
-}
-
-
-void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer){
-
-	SDL_Init(SDL_INIT_VIDEO);              // Initialise SDL2
-
-	// Crée une fenêtre SDL:
 	window = SDL_CreateWindow(
 			"Dicewars",                  // window title
 			SDL_WINDOWPOS_UNDEFINED,           // initial x position
@@ -25,12 +17,15 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, S
 			SDL_WINDOW_SHOWN                  // flags - see below
 	);
 
-	// Initialise le renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
-	drawMap(map, window, renderer, cellsList, nbNodes);
+	// Boucle d'affichage principale
+	drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
 
+	//Destruction des ressources
 }
+
+
 
 void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
@@ -63,7 +58,6 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
 				// On dessine en noir
 				SDL_RenderDrawPoint(renderer, x, y);
-
 			}
 		}
 	}
@@ -108,6 +102,7 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	}
 }
 
+// Utiliser SDL_RenderPresent après cette fonction
 void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int height)
 {
 	SDL_Renderer* renderer = SDL_GetRenderer(window);
@@ -125,7 +120,6 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_GetWindowSize(window, &w_width, &w_height);
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
 	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
-	SDL_RenderPresent(renderer);
 
 	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
@@ -154,7 +148,7 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
     }
 }
 
-void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawMap(SMap *map, Centre *cellsList, int nbNodes){
 
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
@@ -164,4 +158,6 @@ void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cell
 	displayDices(map, window, cellsList, nbNodes);
 
 	SDL_RenderPresent(renderer);
+	SDL_RenderClear(renderer);
+
 }

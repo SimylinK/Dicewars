@@ -2,72 +2,10 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
-#include <dlfcn.h>
+
 #include "util.h"
 #include "map.h"
-
-// Initialisation des joueurs
-typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
-typedef void (*pfPlayTurn)(const SMap*, STurn*);
-typedef void (*pfEndGame)(unsigned int);
-
-typedef struct  {
-  pfInitGame InitGame;
-  pfPlayTurn PlayTurn;
-  pfEndGame EndGame;
-} SInterface;
-
-//initialise interfaces
-//renvoie 1 si ça c'est bien passé, 0 sinon
-int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
-
-  // Le nombre d'humains
-  int nbHumans = nbPlayer - argc + 3;
-
-  for (int i=0; i<nbPlayer; i++){
-    //Les joueurs normaux
-    if (i < nbHumans){
-      interfaces[i] = NULL;
-    } else {
-      void *ia;
-      pfInitGame InitGame;
-      pfPlayTurn PlayTurn;
-      pfEndGame EndGame;
-
-      if ((ia=dlopen(argv[i+2],RTLD_LAZY))==NULL) {
-        // Erreur de chargement de la librairie
-        printf("La librairie %s n'a pas pu être chargée\n", argv[i+2]);
-        return(0);
-      }
-
-      if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[i+2]);
-        return(0);
-      }
-      if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[i+2]);
-        return(0);
-      }
-      if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[i+2]);
-        return(0);
-      }
-
-      SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
-
-      interfaces[i] = &ia1;
-
-      //Initialisation de l'IA au passage
-      SPlayerInfo info;
-      interfaces[i]->InitGame(0, nbPlayer, &info);
-    }
-  }
-
-  return 1;
-}
+#include "init.h"
 
 int main (int argc, char *argv[]){
     //Pas assez d'arguments
@@ -86,14 +24,13 @@ int main (int argc, char *argv[]){
       MapContext *mapContext = malloc(sizeof(MapContext));
     	initMap(mapContext, nbPlayer);
 
-      SDL_Window *window = NULL;
-    	SDL_Renderer* renderer = NULL;
-    	mainMap(mapContext, window, renderer);
+
+    	mainMap(mapContext);
 
       // Initialisation des joueurs via interfaces
-      SInterface **interfaces = (SInterface**)malloc(nbPlayer);
-      if (initPlayers(nbPlayer, interfaces, argc, argv) == 0) {
-        return 0;
+      SInterface **interfaces = (SInterface**)malloc(nbPlayer*sizeof(SInterface*));
+      if (initPlayers(nbPlayer, interfaces, argc, argv) == 1) {
+        return 1;
       }
 
       int player = 0;
@@ -101,6 +38,7 @@ int main (int argc, char *argv[]){
       //Boucle de jeu
       while(!end){
         //Tour d'un joueur humain
+
         if(interfaces[player] == NULL){
           //Récupération du choix du joueur
           int cellFrom;
@@ -119,9 +57,17 @@ int main (int argc, char *argv[]){
             int cellTo;
             printf("id de la cellule d'arrivée : \n");
             cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+            if (cellTo == -2){
+              end = 1;
+            }else{
 
-            //TODO : Là pour jouer le coup sur l'interface ?
-            printf("Coup joué : %d vers %d\n", cellFrom, cellTo);
+              //TODO : Là pour jouer le coup sur l'interface ?
+              printf("Coup joué : %d vers %d\n", cellFrom, cellTo);
+              // Faire appel à l'arbitre
+              // On redessine la map
+              drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
+
+            }
           }
         }
         //Tour d'une IA
