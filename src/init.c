@@ -1,5 +1,8 @@
+#include <stdlib.h>
+#include <dlfcn.h>
 #include "init.h"
 #include "util.h"
+
 
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
@@ -181,4 +184,57 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
 		map->cells[id1].nbNeighbors++;
 	}
+}
+
+//initialise interfaces
+//renvoie 0 si ça c'est bien passé, 1 sinon
+int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
+
+  // Le nombre d'humains
+  int nbHumans = nbPlayer - argc + 3;
+
+  for (int i=0; i<nbPlayer; i++){
+    //Les joueurs normaux
+    if (i < nbHumans){
+      interfaces[i] = NULL;
+    } else {
+      void *ia;
+      pfInitGame InitGame;
+      pfPlayTurn PlayTurn;
+      pfEndGame EndGame;
+
+      if ((ia=dlopen(argv[i+2],RTLD_LAZY))==NULL) {
+        // Erreur de chargement de la librairie
+        printf("La librairie %s n'a pas pu être chargée\n", argv[i+2]);
+        return(1);
+      }
+
+      if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[i+2]);
+        return(1);
+      }
+      if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[i+2]);
+        return(1);
+      }
+      if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
+        // Erreur lors du chragement de la fonction
+        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[i+2]);
+        return(1);
+      }
+
+      SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
+
+      interfaces[i] = &ia1;
+
+      //Initialisation de l'IA au passage
+      SPlayerInfo info;
+      interfaces[i]->InitGame(0, nbPlayer, &info);
+
+    }
+  }
+
+  return 0;
 }
