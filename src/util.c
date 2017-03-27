@@ -54,3 +54,27 @@ Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned i
 	}
 	return cellsList[minIndex];
 }
+
+// Renvoie l'id de la cellule la plus proche sur le clic
+int getIdOnClick(int nbNodes, Centre *cellsList){
+	SDL_Event event;
+	int id;
+	int noEvent = 1;
+
+	while (noEvent){
+		SDL_WaitEvent(&event);
+		switch(event.type){
+			case SDL_MOUSEBUTTONDOWN:
+				if (SDL_BUTTON_LEFT){
+					id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
+					noEvent = 0;
+				}
+				break;
+			case SDL_QUIT:
+				id = -2;
+				noEvent = 0;
+				break;
+		}
+	}
+	return id;
+}

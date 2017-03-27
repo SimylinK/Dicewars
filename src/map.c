@@ -1,25 +1,13 @@
 #include "map.h"
 #include "util.h"
 
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 void mainMap(MapContext *mapContext) {
 
-	// Boucle d'affichage principale
-	displayMap(mapContext->cellsList, mapContext->nbNodes, mapContext->map);
+	SDL_Init(SDL_INIT_VIDEO);
 
-	//Destruction des ressources
-}
-
-void displayMap(Centre* cellsList, int nbNodes, SMap *map){
-
-	SDL_Window *window;
-	SDL_Renderer* renderer;
-	SDL_Event event;
-	int end = 0;
-
-	SDL_Init(SDL_INIT_VIDEO);              // Initialise SDL2
-
-	// Crée une fenêtre SDL:
 	window = SDL_CreateWindow(
 			"Dicewars",                  // window title
 			SDL_WINDOWPOS_UNDEFINED,           // initial x position
@@ -29,22 +17,21 @@ void displayMap(Centre* cellsList, int nbNodes, SMap *map){
 			SDL_WINDOW_SHOWN                  // flags - see below
 	);
 
-	// Initialise le renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
-	drawMap(map, window, renderer, cellsList, nbNodes);
+	// Boucle d'affichage principale
+	drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
 
-	while(!end){
-		while(SDL_PollEvent(&event)) {// WaitEvent ou PollEvent ?
-			if (event.type == SDL_QUIT)
-				end = 1;
-		}
+	//Destruction des ressources
+}
 
-	}
 
+void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+
+	//TODO : des free ?
 }
 
 
@@ -63,12 +50,13 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 			closer = getCloser(cellsList, nbNodes, x, y);
 			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
 			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
-			if (closer.id != rightNeighborCloser.id)
+			if (closer.cell->id != rightNeighborCloser.cell->id)
 			{
-				SDL_RenderDrawPoint(renderer, x, y); // On dessine en noir
+				SDL_RenderDrawPoint(renderer, x, y);	// On dessine en noir
 
-			} else if  (closer.id != downNeighborCloser.id) {
-				SDL_RenderDrawPoint(renderer, x, y); 	// On dessine en noir
+			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
+
+				SDL_RenderDrawPoint(renderer, x, y); // On dessine en noir
 			}
 		}
 	}
@@ -82,7 +70,7 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	for (unsigned int x=0; x<WIDTH; x++){
 		for (unsigned int y=0; y<HEIGHT; y++){
 			closer=getCloser(cellsList, nbNodes, x, y);
-			switch (closer.owner){ // On définit les couleurs des joueurs
+			switch (closer.cell->owner){ // On définit les couleurs des joueurs
 				case 0:
 					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
 					break;
@@ -160,7 +148,7 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
     }
 }
 
-void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawMap(SMap *map, Centre *cellsList, int nbNodes){
 
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
@@ -170,4 +158,6 @@ void drawMap(SMap *map, SDL_Window *window, SDL_Renderer* renderer, Centre *cell
 	displayDices(map, window, cellsList, nbNodes);
 
 	SDL_RenderPresent(renderer);
+	SDL_RenderClear(renderer);
+
 }

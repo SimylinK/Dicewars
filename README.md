@@ -10,3 +10,12 @@ Règles implicites :
         Répartition aléatoire du nombre de dés par sommet d'une équipe (avec au min 1 dé par sommet)
         Pile de dés de 40 éléments maximum
         Pas de temps max à contrôler par tour (mais restez raisonnables !)
+
+
+Pour compiler une bibliothèque dynamique :
+  gcc -std=c99 -fPIC -c  [...].c
+  gcc -shared -o [nom lib].so [...].o
+
+Exemple d'éxecution :
+  ./test 1 2 ./lib.so
+  (1 partie, 2 joueurs, l'ia utilise la bibliothèque lib.so)
