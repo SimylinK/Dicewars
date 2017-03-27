@@ -14,7 +14,7 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	map->cells = malloc(sizeof(SCell) * nbNodes);
 	for (int i = 0; i < nbNodes; i++) {
 		// On s'assure de mettre tous les pointeurs à 0 au début
-		map->cells[i].neighbors = calloc(nbNodes, sizeof(SCell *) * nbNodes);
+		map->cells[i].neighbors = calloc(nbNodes, sizeof(SCell *));
 	}
 	map->stack = malloc(sizeof(unsigned int) * nbPlayer);
 
@@ -182,7 +182,9 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 	// On assigne seulement si id2 n'est pas déjà dans les voisins de id1
 	if (map->cells[id1].neighbors[id2] != &(map->cells[id2])) {
 		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
+		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
 		map->cells[id1].nbNeighbors++;
+		map->cells[id2].nbNeighbors++;
 	}
 }
 

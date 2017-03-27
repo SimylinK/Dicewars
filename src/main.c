@@ -6,6 +6,7 @@
 #include "util.h"
 #include "map.h"
 #include "init.h"
+#include "arbiter.h"
 
 int main (int argc, char *argv[]){
     //Pas assez d'arguments
@@ -33,52 +34,10 @@ int main (int argc, char *argv[]){
         return 1;
       }
 
-      int player = 0;
-      int end = 0;
-      //Boucle de jeu
-      while(!end){
-        //Tour d'un joueur humain
+      //appel de gameLoop
+        gameLoop(mapContext, interfaces, nbPlayer);
 
-        if(interfaces[player] == NULL){
-          //Récupération du choix du joueur
-          int cellFrom;
-          printf("id de la cellule de départ : \n");
-          cellFrom = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
 
-          printf("%i\n", cellFrom);
-
-          if (cellFrom == -2){
-            end = 1;
-          } else if (cellFrom == -1){
-            //passage au joueur suivant
-            player = (player+1) % nbPlayer;
-          } else {
-
-            int cellTo;
-            printf("id de la cellule d'arrivée : \n");
-            cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-            if (cellTo == -2){
-              end = 1;
-            }else{
-
-              //TODO : Là pour jouer le coup sur l'interface ?
-              printf("Coup joué : %d vers %d\n", cellFrom, cellTo);
-              // Faire appel à l'arbitre
-              // On redessine la map
-              drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
-
-            }
-          }
-        }
-        //Tour d'une IA
-        else {
-          printf("Tour de l'IA\n");
-          //ici faire interfaces[player]->PlayTurn(...)
-
-          //Quand l'ia termine son tour ou coup incorrect
-          player = (player+1) % nbPlayer;
-        }
-      }
       return 0;
     }
 }

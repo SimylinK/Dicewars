@@ -31,7 +31,7 @@
 
 	// Initialisation des joueurs
 	typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
-	typedef void (*pfPlayTurn)(const SMap*, STurn*);
+	typedef int (*pfPlayTurn)(const SMap*, STurn*);
 	typedef void (*pfEndGame)(unsigned int);
 
 	typedef struct  {
