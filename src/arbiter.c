@@ -19,7 +19,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
 
             int cellFrom = -3;
             printf("C'est au joueur %d de jouer\n", player);
-            printf("id de la cellule de départ : \n");
             cellFrom = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
 
             //on vérifie que le joueur a cliqué sur la bonne case
@@ -36,7 +35,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                 } else {
 
                     int cellTo;
-                    printf("id de la cellule d'arrivée : \n");
                     cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
                     if (cellTo == -2) {
                         end = 1;
@@ -45,7 +43,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                         turn->cellFrom = cellFrom;
                         turn->cellTo = cellTo;
                         idWinner = runTurn(turn, mapContext);
-                        printf("Coup joué : %d vers %d\n", cellFrom, cellTo);
 
                         // On redessine la map
                         drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
@@ -64,7 +61,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             while(interfaces[player]->PlayTurn(mapContext->map, turn)){
 
                 idWinner = runTurn(turn, mapContext);
-                printf("idWinner : %d", idWinner);
             }
             //Quand l'ia termine son tour ou coup incorrect
             player = (player + 1) % nbPlayer;
@@ -132,7 +128,6 @@ int isNeighbor(SCell *cell1, SCell *cell2, MapContext *mapContext){
     for (int i = 0 ;  i < mapContext->nbNodes ; i ++){
         if (cell1->neighbors[i] == cell2){
             //on a trouvé cell2 dans la liste des voisins de cell1
-            printf("on a trouvé cell2 dans la liste des voisins de cell1\n");
             neighbor = 1;
         }
     }
