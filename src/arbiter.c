@@ -95,8 +95,15 @@ int runTurn(STurn *turn, MapContext *mapContext) {
 
 //renvoie l'id de la cellule gagnant le lancé de dé
 int whoWins(SCell cellFrom, SCell cellTo){
-    int dicesValueFrom = randomBounds(1,6)*cellFrom.nbDices;
-    int dicesValueTo = randomBounds(1,6)*cellTo.nbDices;
+    int dicesValueFrom = 0;
+    for (int i=0; i<cellFrom.nbDices; i++) {
+      dicesValueFrom += randomBounds(1,6);
+    }
+
+    int dicesValueTo = 0;
+    for (int i=0; i<cellTo.nbDices; i++) {
+      dicesValueTo += randomBounds(1,6);
+    }
 
     if(dicesValueFrom > dicesValueTo) {
         return cellFrom.id;
