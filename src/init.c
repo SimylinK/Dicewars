@@ -194,7 +194,9 @@ int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
 
   // Le nombre d'humains
   int nbHumans = nbPlayer - argc + 3;
+	printf("nbHumans : %d\n", nbHumans);
 
+	int indexArgcLibs = 0;
   for (int i=0; i<nbPlayer; i++){
     //Les joueurs normaux
     if (i < nbHumans){
@@ -205,27 +207,29 @@ int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
       pfPlayTurn PlayTurn;
       pfEndGame EndGame;
 
-      if ((ia=dlopen(argv[i+2],RTLD_LAZY))==NULL) {
+			printf("Ouverture de : %s\n", argv[3+indexArgcLibs]);
+      if ((ia=dlopen(argv[3+indexArgcLibs],RTLD_LAZY))==NULL) {
         // Erreur de chargement de la librairie
-        printf("La librairie %s n'a pas pu être chargée\n", argv[i+2]);
+        printf("La librairie %s n'a pas pu être chargée\n", argv[3+indexArgcLibs]);
         return(1);
       }
 
       if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
         // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[i+2]);
+        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[3+indexArgcLibs]);
         return(1);
       }
       if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
         // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[i+2]);
+        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[3+indexArgcLibs]);
         return(1);
       }
       if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
         // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[i+2]);
+        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[3+indexArgcLibs]);
         return(1);
       }
+      indexArgcLibs++;
 
       SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
 
