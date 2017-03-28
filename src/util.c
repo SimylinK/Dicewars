@@ -81,7 +81,7 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 						   && event.button.y<(BUTTONY + BUTTONH)
 						   && event.button.x>BUTTONX
 						   && event.button.x<(BUTTONX + BUTTONW)){
-							printf("TOUR SUIVANT \n");
+
 							id = -1;
 							noEvent = 0;
 						}

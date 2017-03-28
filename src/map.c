@@ -119,7 +119,7 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
 	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
 
-	SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
+    SDL_DestroyTexture(texture); // Libération de la mémoire associée à la texture
 	SDL_FreeSurface(surface); // Libération de la ressource occupée par le sprite
 }
 
@@ -155,8 +155,8 @@ void drawMap(SMap *map, Centre *cellsList, int nbNodes){
 	drawBorders(map, renderer, cellsList, nbNodes);
 	// On affiche les dés
 	displayDices(map, window, cellsList, nbNodes);
-    //On ajoute le boutton "tour suivant"
-    insertPicture("../sprites/tour_suivant.bmp", window, BUTTONX + BUTTONW/2, BUTTONY + BUTTONH/2, BUTTONW, BUTTONH);
+    //On ajoute le bouton "tour suivant"
+    insertPicture("../sprites/end_turn.bmp", window, BUTTONX + BUTTONW/2, BUTTONY + BUTTONH/2, BUTTONW, BUTTONH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);
