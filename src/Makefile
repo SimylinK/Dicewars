@@ -16,7 +16,7 @@ interface.o: interface.c interface.h
 util.o: util.c util.h
 	$(CC) $(CFLAGS) -c util.c -o util.o
 
-map.o: map.c map.h
+map.o: map.c map.h init.h
 	$(CC) $(CFLAGS) -c map.c -o map.o -lm
 
 init.o: init.c init.h

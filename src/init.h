@@ -4,8 +4,10 @@
 	#include "interface.h"
 
 	// Initialisation de la map
-	#define WIDTH 1024
-	#define HEIGHT 768
+	#define WIDTH 1024 //largeur de la map
+	#define HEIGHT 450 //hauteur de la map
+	#define WWIDTH 1024 //largeur de la fenetre
+	#define WHEIGHT 700 //hauteur de la fenetre
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 

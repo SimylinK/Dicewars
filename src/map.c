@@ -1,8 +1,10 @@
 #include "map.h"
 #include "util.h"
+#include "init.h"
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
+
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 void mainMap(MapContext *mapContext) {
 
@@ -12,8 +14,8 @@ void mainMap(MapContext *mapContext) {
 			"Dicewars",                  // window title
 			SDL_WINDOWPOS_UNDEFINED,           // initial x position
 			SDL_WINDOWPOS_UNDEFINED,           // initial y position
-			WIDTH,                               // width, in pixels
-			HEIGHT,                               // height, in pixels
+			WWIDTH,                               // width, in pixels
+            WHEIGHT,                               // height, in pixels
 			SDL_WINDOW_SHOWN                  // flags - see below
 	);
 
@@ -108,15 +110,12 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	SDL_Surface* surface = NULL;
 	SDL_Texture* texture;
 
-	int w_width = 0, w_height = 0; //largeur et hauteur de la fenêtre
-
 	surface = SDL_LoadBMP(name);
 
 	texture = SDL_CreateTextureFromSurface(renderer,surface); // Préparation du sprite
 	surface->w = width; surface->h = height;//on adapte la taille de la surface aux dimensions demandées en paramètres
 
 
-	SDL_GetWindowSize(window, &w_width, &w_height);
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
 	SDL_RenderCopy(renderer,texture,NULL,&dest); // Copie du sprite grâce au SDL_Renderer
 
