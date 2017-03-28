@@ -77,15 +77,17 @@ int runTurn(STurn *turn, MapContext *mapContext) {
 
         //on lance les dés pour savoir qui est le gagnant
         idWinner = whoWins(mapContext->map->cells[turn->cellFrom], mapContext->map->cells[turn->cellTo]);
+        int attackWin = 1;
 
         if (idWinner == turn->cellFrom) {
             idLoser = turn->cellTo;
         } else {
             idLoser = turn->cellFrom;
+            attackWin = 0;
         }
 
         //on actualise le nombre de dés sur chaque cellule
-        updateDices(&(mapContext->map->cells[idWinner]), &(mapContext->map->cells[idLoser]));
+        updateDices(&(mapContext->map->cells[idWinner]), &(mapContext->map->cells[idLoser]), attackWin);
     }
 
     return idWinner;
@@ -103,10 +105,18 @@ int whoWins(SCell cellFrom, SCell cellTo){
     }
 }
 
-void updateDices(SCell *cellWinner, SCell *cellLoser){
-    cellLoser->owner = cellWinner->owner;
-    cellLoser->nbDices = cellWinner->nbDices - 1;
-    cellWinner->nbDices = 1;
+// Met à jour le nombre de dés après une attaque
+// cellWinner : la cellule gagnante du jet de dés
+// cellLoser : la sellule perdante du jet de dés
+// attackWin : 1 si c'est la cellule attaquante qui a gagné, 0 si c'est la cellule défensive qui a gagné
+void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin){
+    if (attackWin) {
+      cellLoser->owner = cellWinner->owner;
+      cellLoser->nbDices = cellWinner->nbDices - 1;
+      cellWinner->nbDices = 1;
+    } else {
+      cellLoser->nbDices = 1;
+    }
 }
 
 //renvoie 1 si le coup est autorisé, 0 sinon
