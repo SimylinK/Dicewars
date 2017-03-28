@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "util.h"
+#include "init.h"
 #include <math.h>
 #include "map.h"
 
@@ -66,8 +67,26 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 		switch(event.type){
 			case SDL_MOUSEBUTTONDOWN:
 				if (SDL_BUTTON_LEFT){
-					id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
-					noEvent = 0;
+
+					//si le clic se fait sur la zone de la map
+					if (event.button.y<HEIGHT
+						&& event.button.x<WIDTH){
+
+						id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
+						noEvent = 0;
+
+					} else {
+						//si le clic se fait sur le bouton tour suivant
+						if(event.button.y>BUTTONY
+						   && event.button.y<(BUTTONY + BUTTONH)
+						   && event.button.x>BUTTONX
+						   && event.button.x<(BUTTONX + BUTTONW)){
+							printf("TOUR SUIVANT \n");
+							id = -1;
+							noEvent = 0;
+						}
+						//sinon...
+					}
 				}
 				break;
 			case SDL_QUIT:

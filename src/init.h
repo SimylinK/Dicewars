@@ -4,12 +4,18 @@
 	#include "interface.h"
 
 	// Initialisation de la map
-	#define WIDTH 1024 //largeur de la map
+	#define WIDTH 800 //largeur de la map
 	#define HEIGHT 450 //hauteur de la map
-	#define WWIDTH 1024 //largeur de la fenetre
-	#define WHEIGHT 700 //hauteur de la fenetre
+	#define WWIDTH 800 //largeur de la fenetre
+	#define WHEIGHT 600 //hauteur de la fenetre
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
+
+	#define BUTTONX 100
+	#define BUTTONY 500
+	#define BUTTONW 100
+	#define BUTTONH 40
+
 
 // Une SCell avec des coordonnées
 	typedef struct Centre{

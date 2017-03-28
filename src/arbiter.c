@@ -4,7 +4,6 @@
 #include "map.h"
 #include "util.h"
 
-
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int player = 0;
     int end = 0;
@@ -17,23 +16,23 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //Récupération du choix du joueur
             //Tour d'un joueur humain
 
-            int cellFrom = -3;
+            int click;
             printf("C'est au joueur %d de jouer\n", player);
-            cellFrom = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-
-            //on vérifie que le joueur a cliqué sur la bonne case
-            if (player != mapContext->map->cells[cellFrom].owner){
-                printf("Ce n'est pas à ce joueur de jouer");
+            click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+            printf("click : %d\n", click);
+            if (click == -2) {
+                end = 1;
+            } else if (click == -1) {
+                //passage au joueur suivant
+                printf("On change de joueur \"");
+                player = (player + 1) % nbPlayer;
             } else {
-                printf("%i\n", cellFrom);
 
-                if (cellFrom == -2) {
-                    end = 1;
-                } else if (cellFrom == -1) {
-                    //passage au joueur suivant
-                    player = (player + 1) % nbPlayer;
+                //on vérifie que le joueur a cliqué sur la bonne case
+                if (player != mapContext->map->cells[click].owner) {
+                    printf("Ce n'est pas à ce joueur de jouer");
                 } else {
-
+                    int cellFrom = click;
                     int cellTo;
                     cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
                     if (cellTo == -2) {
@@ -43,22 +42,19 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                         turn->cellFrom = cellFrom;
                         turn->cellTo = cellTo;
                         idWinner = runTurn(turn, mapContext);
-
-                        // On redessine la map
-                        drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
+                    }
+                  }
             }
+            // On redessine la map
+            drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
 
-
-
-                }
-            }
         }
             //Tour d'une IA
         else {
             printf("Tour de l'IA\n");
 
             //tant que l'IA veut rejouer
-            while(interfaces[player]->PlayTurn(mapContext->map, turn)){
+            while (interfaces[player]->PlayTurn(mapContext->map, turn)) {
 
                 idWinner = runTurn(turn, mapContext);
             }

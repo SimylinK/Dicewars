@@ -155,6 +155,8 @@ void drawMap(SMap *map, Centre *cellsList, int nbNodes){
 	drawBorders(map, renderer, cellsList, nbNodes);
 	// On affiche les dés
 	displayDices(map, window, cellsList, nbNodes);
+    //On ajoute le boutton "tour suivant"
+    insertPicture("../sprites/tour_suivant.bmp", window, BUTTONX + BUTTONW/2, BUTTONY + BUTTONH/2, BUTTONW, BUTTONH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);
