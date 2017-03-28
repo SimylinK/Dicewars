@@ -19,7 +19,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             int click;
             printf("C'est au joueur %d de jouer\n", player);
             click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-            printf("click : %d\n", click);
+            
             if (click == -2) {
                 end = 1;
             } else if (click == -1) {
