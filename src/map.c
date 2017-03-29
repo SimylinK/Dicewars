@@ -128,24 +128,23 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
-        if (map->cells[i].nbDices == 1) {
+        switch (map->cells[i].nbDices) {
+            case 1:
             insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 2) {
+            case 2:
             insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 3) {
+            case 3:
             insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 4) {
+            case 4:
             insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 5) {
+            case 5:
             insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 6) {
+            case 6:
             insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 7) {
+            case 7:
             insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else if (map->cells[i].nbDices == 8) {
+            case 8:
             insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
-        } else {
-            insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         }
     }
 }
