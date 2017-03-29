@@ -16,20 +16,21 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //Tour d'un joueur humain
 
             int click;
-            printf("C'est au joueur %d de jouer\n", player);
+            printf("C'est au joueur %d de jouer : ", player+1);
+            printColourOfPlayer(player);
             click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
             
             if (click == -2) {
                 end = 1;
             } else if (click == -1) {
                 //passage au joueur suivant
-                printf("On change de joueur \"");
+                printf("On change de joueur \n");
                 player = (player + 1) % nbPlayer;
             } else {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
                 if (player != mapContext->map->cells[click].owner) {
-                    printf("Ce n'est pas à ce joueur de jouer");
+                    printf("Ce n'est pas à ce joueur de jouer\n");
                 } else {
                     int cellFrom = click;
                     int cellTo;
@@ -51,6 +52,10 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //Tour d'une IA
         else {
             printf("Tour de l'IA\n");
+/*            SMap *mapCopy;
+
+            //on copie la map
+            mapCopy = createMapCopy(mapContext->map);*/
 
             //tant que l'IA veut rejouer
             while (interfaces[player]->PlayTurn(mapContext->map, turn)) {
@@ -146,3 +151,20 @@ int isNeighbor(SCell *cell1, SCell *cell2, MapContext *mapContext){
     //on n'a pas trouvé cell2 dans la liste des voisins de cell1
     return neighbor;
 }
+
+/*
+
+SMap* createMapCopy(SMap *mapToCopy){
+    SMap *map = malloc(sizeof(SMap));
+
+    map->nbCells = mapToCopy->nbCells;
+    map->cells = malloc(sizeof(SCell) * mapToCopy->nbCells);
+
+    for (int i = 0; i < nbNodes; i++) {
+        // On s'assure de mettre tous les pointeurs à 0 au début
+        map->cells[i].neighbors = mapToCopy->cells[i].neighbors;
+    }
+    map->stack = mapToCopy->stack;
+
+    return map;
+}*/
