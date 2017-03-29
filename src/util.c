@@ -39,12 +39,12 @@ unsigned int distRandomBounds(unsigned int dist, unsigned int min, unsigned int 
 // Retourne la cellule la plus proche
 Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned int y){
 
-	unsigned int minDist = abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
-	unsigned int minIndex = 0;
+	unsigned int minDist = (unsigned int)abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
+	int minIndex = 0;
 	unsigned int dist;
 
 	for (int i=1; i<size; i++) {
-		dist = abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
+		dist = (unsigned int)abs(cellsList[i].x - x) + abs(cellsList[i].y - y); // Distance de manatthan
 		if (dist <= minDist) {
 			minIndex = i;
 			minDist = dist;
@@ -93,4 +93,16 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 		}
 	}
 	return id;
+}
+
+//renvoie 1 si les cellules passées en paramètre sont voisines, 0 sinon
+int isNeighbor(SCell *cell1, SCell *cell2){
+	int neighbor = 0;
+	for (int i=0 ;  i<cell1->nbNeighbors ; i++){
+		if (cell1->neighbors[i] == cell2){
+			//on a trouvé cell2 dans la liste des voisins de cell1
+			neighbor = 1;
+		}
+	}
+	return neighbor;
 }

@@ -14,8 +14,7 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	map->nbCells = nbNodes;
 	map->cells = malloc(sizeof(SCell) * nbNodes);
 	for (int i = 0; i < nbNodes; i++) {
-		// On s'assure de mettre tous les pointeurs à 0 au début
-		map->cells[i].neighbors = calloc(nbNodes, sizeof(SCell *));
+		map->cells[i].neighbors = malloc(nbNodes * sizeof(SCell *));
 	}
 	map->stack = malloc(sizeof(unsigned int) * nbPlayer);
 
@@ -27,6 +26,7 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 
 	//On assigne les voisins
 	neighbors(cellsList, map, nbNodes);
+
 
 	mapContext->map = map;
 	mapContext->cellsList = cellsList;
@@ -43,6 +43,7 @@ void assignSCell(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 		map->cells[i].id = i;
 		map->cells[i].owner = idPlayer;
 		map->cells[i].nbDices = 0;
+		map->cells[i].nbNeighbors = 0;
 
 		idPlayer++;
 		if (idPlayer == nbPlayer) idPlayer = 0;
@@ -132,8 +133,8 @@ Centre* generateList(int nbNodes, SMap *map){
 	for (unsigned int i=0; i<nbNodes; i++){
 		do {
 			same = 0;
-			x = distRandomBounds(minDistBetweenCells, minDistBetweenCells, WIDTH-minDistBetweenCells, cellsList, i, 1); // On force à être éloigné des bords
-			y = distRandomBounds(minDistBetweenCells, minDistBetweenCells, HEIGHT-minDistBetweenCells, cellsList, i, 0);
+			x = randomBounds(minDistBetweenCells, WIDTH-minDistBetweenCells); // On force à être éloigné des bords
+			y = randomBounds(minDistBetweenCells, HEIGHT-minDistBetweenCells);
 
 			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
 			for (int j = 0; j<i; j++){
@@ -163,30 +164,37 @@ void neighbors(Centre *cellsList, SMap* map, unsigned int nbNodes){
 			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
 			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
 
-			if (closer.cell->id != rightNeighborCloser.cell->id)
-			{
+			if (closer.cell->id != rightNeighborCloser.cell->id) {
 				// On assigne les voisins dans les deux sens
 				assignNeighbor(closer.cell->id, rightNeighborCloser.cell->id, map);
-				assignNeighbor(rightNeighborCloser.cell->id, closer.cell->id, map);
+			}
 
-			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
+			if  (closer.cell->id != downNeighborCloser.cell->id) {
 				// On assigne les voisins dans les deux sens
 				assignNeighbor(closer.cell->id, downNeighborCloser.cell->id, map);
-				assignNeighbor(downNeighborCloser.cell->id, closer.cell->id, map);
-
 			}
 		}
+	}
+
+	// On remet les tableaux à la bonne taille
+	for (int i=0; i<nbNodes; i++){
+		map->cells[i].neighbors = realloc(map->cells[i].neighbors, (map->cells[i].nbNeighbors)*sizeof(SCell*));
 	}
 }
 
 void assignNeighbor(int id1, int id2, SMap *map) {
 	// On assigne seulement si id2 n'est pas déjà dans les voisins de id1
-	if (map->cells[id1].neighbors[id2] != &(map->cells[id2])) {
-		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
-		map->cells[id1].neighbors[id2] = &(map->cells[id2]);
+	if (!isNeighbor(&map->cells[id1], &map->cells[id2])){
+		map->cells[id1].neighbors[map->cells[id1].nbNeighbors] = &(map->cells[id2]);
 		map->cells[id1].nbNeighbors++;
+	}
+
+	// Dans l'autre sens
+	if (!isNeighbor(&map->cells[id2], &map->cells[id1])){
+		map->cells[id2].neighbors[map->cells[id2].nbNeighbors] = &(map->cells[id1]);
 		map->cells[id2].nbNeighbors++;
 	}
+
 }
 
 //initialise interfaces
