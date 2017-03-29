@@ -66,7 +66,9 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 				if (SDL_BUTTON_LEFT){
 
 					//si le clic se fait sur la zone de la map
-					if (event.button.y<HEIGHT
+					if (event.button.y>BORDERTOP
+                        && event.button.y<HEIGHT
+                        && event.button.x>BORDERLANDR
 						&& event.button.x<WIDTH){
 
 						id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
@@ -74,10 +76,10 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 
 					} else {
 						//si le clic se fait sur le bouton tour suivant
-						if(event.button.y>BUTTONY
-						   && event.button.y<(BUTTONY + BUTTONH)
-						   && event.button.x>BUTTONX
-						   && event.button.x<(BUTTONX + BUTTONW)){
+						if(event.button.y>(BUTTONY - BUTTONH/2)
+						   && event.button.y<(BUTTONY + BUTTONH/2)
+						   && event.button.x>(BUTTONX - BUTTONW/2)
+						   && event.button.x<(BUTTONX + BUTTONW/2)){
 
 							id = -1;
 							noEvent = 0;

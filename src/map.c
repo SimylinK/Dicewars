@@ -67,7 +67,8 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 
 // Utiliser SDL_RenderPresent après cette fonction
 void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
+	SDL_SetRenderDrawColor(renderer, 205, 181, 205, 255); // Couleur du background
+    SDL_RenderClear(renderer);
 	Centre closer; // Le centre le plus près
 	for (unsigned int x=BORDERLANDR; x<WIDTH; x++){
 		for (unsigned int y=BORDERTOP; y<HEIGHT; y++){
@@ -143,6 +144,8 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
             insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 8) {
             insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+        } else {
+            insertPicture("../sprites/cross.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         }
     }
 }
