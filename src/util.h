@@ -8,6 +8,8 @@
 	Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned int y);
 	int getIdOnClick(int nbNodes, Centre *cellsList);
 	int isNeighbor(SCell *cell1, SCell *cell2);
+	void printColourOfPlayer(int id);
+
 
 
 

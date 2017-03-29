@@ -7,16 +7,22 @@
 	#define WWIDTH 800 //largeur de la fenetre
 	#define WHEIGHT 600 //hauteur de la fenetre
 
-    #define WIDTH WWIDTH //largeur de la map
-    #define HEIGHT 450 //hauteur de la map
+    #define BORDERLANDR 50 //bord sur les cotés gauche et droite de la map
+    #define BORDERTOP 50 //bord sur le coté haut de la map
+
+    #define WIDTH WWIDTH-BORDERLANDR //largeur de la map
+    #define HEIGHT WHEIGHT-100 //hauteur de la map
 
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 
-	#define BUTTONX 100
-	#define BUTTONY 500
+	#define BUTTONX 80+BUTTONW //coordonnée x du centre du bouton
+	#define BUTTONY WHEIGHT-50 //coordonnée y du centre du bouton
 	#define BUTTONW 100
 	#define BUTTONH 40
+
+    #define DICESWIDTH 15 //largeur de la fenetre
+    #define DICESHEIGHT 15 //hauteur de la fenetre
 
 
 // Une SCell avec des coordonnées

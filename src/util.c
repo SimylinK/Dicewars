@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
 
@@ -105,4 +106,32 @@ int isNeighbor(SCell *cell1, SCell *cell2){
 		}
 	}
 	return neighbor;
+}
+void printColourOfPlayer(int id){
+    switch (id){ // On définit les couleurs des joueurs
+        case 0:
+            printf("jaune\n");
+            break;
+        case 1:
+            printf("blanc\n");
+            break;
+        case 2:
+            printf("cyan\n");
+            break;
+        case 3:
+            printf("rouge\n");
+            break;
+        case 4:
+            printf("bleu\n");
+            break;
+        case 5:
+            printf("rose\n");
+            break;
+        case 6:
+            printf("orange\n");
+            break;
+        case 7:
+            printf("vert\n");
+            break;
+    }
 }

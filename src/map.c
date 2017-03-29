@@ -46,8 +46,8 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 	Centre rightNeighborCloser;
 	Centre downNeighborCloser;
 
-	for (unsigned int x = 0; x < WIDTH - 1; x++) {
-		for (unsigned int y = 0; y < HEIGHT - 1; y++) {
+	for (unsigned int x = BORDERLANDR; x < WIDTH - 1; x++) {
+		for (unsigned int y = BORDERTOP; y < HEIGHT - 1; y++) {
 			// Quand on trouve un changement d'id
 			closer = getCloser(cellsList, nbNodes, x, y);
 			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
@@ -69,8 +69,8 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Couleur du background
 	Centre closer; // Le centre le plus près
-	for (unsigned int x=0; x<WIDTH; x++){
-		for (unsigned int y=0; y<HEIGHT; y++){
+	for (unsigned int x=BORDERLANDR; x<WIDTH; x++){
+		for (unsigned int y=BORDERTOP; y<HEIGHT; y++){
 			closer=getCloser(cellsList, nbNodes, x, y);
 			switch (closer.cell->owner){ // On définit les couleurs des joueurs
 				case 0:
@@ -128,21 +128,21 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
 {
     for (int i=0; i<nbNodes; i++) {
         if (map->cells[i].nbDices == 1) {
-            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 2) {
-            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 3) {
-            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 4) {
-            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 5) {
-            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 6) {
-            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 7) {
-            insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         } else if (map->cells[i].nbDices == 8) {
-            insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, 15, 15);
+            insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
         }
     }
 }
@@ -156,7 +156,7 @@ void drawMap(SMap *map, Centre *cellsList, int nbNodes){
 	// On affiche les dés
 	displayDices(map, window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
-    insertPicture("../sprites/end_turn.bmp", window, BUTTONX + BUTTONW/2, BUTTONY + BUTTONH/2, BUTTONW, BUTTONH);
+    insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);
