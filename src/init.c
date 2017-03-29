@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <dlfcn.h>
+#include <stdio.h>
 #include "init.h"
 #include "util.h"
 

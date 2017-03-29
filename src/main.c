@@ -1,12 +1,8 @@
-#include <stdlib.h>
+    #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include <string.h>
-
 #include "util.h"
-#include "map.h"
-#include "init.h"
-#include "arbiter.h"
+
 
 int main (int argc, char *argv[]){
     //Pas assez d'arguments

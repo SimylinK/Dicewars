@@ -1,9 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "util.h"
-#include "init.h"
-#include <math.h>
-#include "map.h"
+
 
 // Retourne un unsigned int entre 0 et max compris
 unsigned int goodRandom(unsigned int max) {

@@ -1,8 +1,7 @@
+#include <malloc.h>
+#include <stdio.h>
 #include "arbiter.h"
-#include "init.h"
-#include "interface.h"
-#include "map.h"
-#include "util.h"
+
 
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int player = 0;
