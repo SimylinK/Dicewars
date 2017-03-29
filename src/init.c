@@ -132,8 +132,10 @@ Centre* generateList(int nbNodes, SMap *map){
 	for (unsigned int i=0; i<nbNodes; i++){
 		do {
 			same = 0;
-			x = distRandomBounds(minDistBetweenCells, minDistBetweenCells, WIDTH-minDistBetweenCells, cellsList, i, 1); // On force à être éloigné des bords
-			y = distRandomBounds(minDistBetweenCells, minDistBetweenCells, HEIGHT-minDistBetweenCells, cellsList, i, 0);
+
+			x = randomBounds(BORDERLANDR+DICESWIDTH+minDistBetweenCells, WIDTH-BORDERLANDR-minDistBetweenCells); // On force à être éloigné des bords
+			y = randomBounds(BORDERTOP+DICESWIDTH+minDistBetweenCells, HEIGHT-BORDERTOP-minDistBetweenCells);
+
 
 			// On vérifie que ces coordonnées n'ont pas déjà été tirées par une autre SCell
 			for (int j = 0; j<i; j++){
