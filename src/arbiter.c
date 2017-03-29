@@ -132,39 +132,9 @@ int checkMove(STurn *turn, MapContext *mapContext){
     if(mapContext->map->cells[turn->cellFrom].nbDices <= 1){
         printf("Erreur : une cellule ne peut pas attaquer si elle n'a qu'un dé\n");
         autorized = 0;
-    }else if (!isNeighbor(&(mapContext->map->cells[turn->cellFrom]), &(mapContext->map->cells[turn->cellTo]), mapContext)) {
+    }else if (!isNeighbor(&(mapContext->map->cells[turn->cellFrom]), &(mapContext->map->cells[turn->cellTo]))) {
         printf("Erreur : une cellule ne peut pas attaquer une cellule qui n'est pas voisine\n");
         autorized =  0;
     }
     return autorized;
 }
-
-//renvoie 1 si les cellules passées en paramètre sont voisines, 0 sinon
-int isNeighbor(SCell *cell1, SCell *cell2, MapContext *mapContext){
-    int neighbor = 0;
-    for (int i = 0 ;  i < mapContext->nbNodes ; i ++){
-        if (cell1->neighbors[i] == cell2){
-            //on a trouvé cell2 dans la liste des voisins de cell1
-            neighbor = 1;
-        }
-    }
-    //on n'a pas trouvé cell2 dans la liste des voisins de cell1
-    return neighbor;
-}
-
-/*
-
-SMap* createMapCopy(SMap *mapToCopy){
-    SMap *map = malloc(sizeof(SMap));
-
-    map->nbCells = mapToCopy->nbCells;
-    map->cells = malloc(sizeof(SCell) * mapToCopy->nbCells);
-
-    for (int i = 0; i < nbNodes; i++) {
-        // On s'assure de mettre tous les pointeurs à 0 au début
-        map->cells[i].neighbors = mapToCopy->cells[i].neighbors;
-    }
-    map->stack = mapToCopy->stack;
-
-    return map;
-}*/
