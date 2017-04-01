@@ -36,7 +36,7 @@
 	typedef struct MapContext{
 			SMap *map;
 			Centre* cellsList;
-			int nbNodes;
+			unsigned int nbNodes;
 		} MapContext;
 
 	MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer);

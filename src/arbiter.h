@@ -8,7 +8,7 @@
 
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer);
 
-int runTurn(STurn *turn, MapContext *mapContext);
+void runTurn(STurn *turn, MapContext *mapContext);
 int whoWins(SCell cellFrom, SCell cellTo);
 void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
 int checkMove(STurn *turn, MapContext *mapContext);

@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "map.h"
 #include "util.h"
-#include "init.h"
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -22,7 +22,7 @@ void mainMap(MapContext *mapContext) {
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// Boucle d'affichage principale
-	drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
+	drawMap(mapContext->cellsList, mapContext->nbNodes);
 
 	//Destruction des ressources
 }
@@ -38,7 +38,7 @@ void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
 
 
 // Colore les pixels de bordure en noir
-void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawBorders(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes){
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
 
@@ -66,7 +66,7 @@ void drawBorders(SMap *map, SDL_Renderer* renderer, Centre *cellsList, int nbNod
 
 
 // Utiliser SDL_RenderPresent après cette fonction
-void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
+void drawPixels(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes){
 	SDL_SetRenderDrawColor(renderer, 205, 181, 205, 255); // Couleur du background
     SDL_RenderClear(renderer);
 	Centre closer; // Le centre le plus près
@@ -98,6 +98,8 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, int nbNodes){
 				case 7:
 					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
 					break;
+				default:
+					printf("Cellule sans owner\n");
 			}
 			SDL_RenderDrawPoint(renderer, x, y);
 		}
@@ -125,10 +127,10 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 }
 
 // Utiliser SDL_RenderPresent après cette fonction
-void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes)
+void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
 {
     for (int i=0; i<nbNodes; i++) {
-        switch (map->cells[i].nbDices) {
+        switch (cellsList[i].cell->nbDices) {
             case 1:
             insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
@@ -153,18 +155,21 @@ void displayDices(SMap *map,  SDL_Window *window, Centre *cellsList, int nbNodes
             case 8:
                 insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
+			default:
+				printf("Cellule sans de\n");
+				break;
         }
     }
 }
 
-void drawMap(SMap *map, Centre *cellsList, int nbNodes){
+void drawMap(Centre *cellsList, unsigned int nbNodes){
 
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
 	// On dessine les bordures
-	drawBorders(map, renderer, cellsList, nbNodes);
+	drawBorders(renderer, cellsList, nbNodes);
 	// On affiche les dés
-	displayDices(map, window, cellsList, nbNodes);
+	displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
     insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
 

@@ -8,7 +8,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int end = 0;
     //Boucle de jeu
     while (!end) {
-        int idWinner = -1;
         STurn *turn = malloc(sizeof(STurn));
 
         if (interfaces[player] == NULL) {
@@ -30,23 +29,27 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
                 if (player != mapContext->map->cells[click].owner) {
-                    printf("Ce n'est pas à ce joueur de jouer\n");
+                    printf("Ce n'est pas a ce joueur de jouer\n");
                 } else {
                     int cellFrom = click;
                     int cellTo;
                     cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
                     if (cellTo == -2) {
                         end = 1;
-                    } else {
+                    } else if (cellTo == -1) {
+                        //passage au joueur suivant
+                        printf("On change de joueur \n");
+                        player = (player + 1) % nbPlayer;
+                    } else{
 
-                        turn->cellFrom = cellFrom;
-                        turn->cellTo = cellTo;
-                        idWinner = runTurn(turn, mapContext);
+                        turn->cellFrom = (unsigned int)cellFrom;
+                        turn->cellTo = (unsigned int)cellTo;
+                        runTurn(turn, mapContext);
                     }
                   }
             }
             // On redessine la map
-            drawMap(mapContext->map, mapContext->cellsList, mapContext->nbNodes);
+            drawMap(mapContext->cellsList, mapContext->nbNodes);
 
         }
             //Tour d'une IA
@@ -60,7 +63,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //tant que l'IA veut rejouer
             while (interfaces[player]->PlayTurn(mapContext->map, turn)) {
 
-                idWinner = runTurn(turn, mapContext);
+                runTurn(turn, mapContext);
             }
             //Quand l'ia termine son tour ou coup incorrect
             player = (player + 1) % nbPlayer;
@@ -68,9 +71,9 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     }
 }
 
-int runTurn(STurn *turn, MapContext *mapContext) {
-    int idWinner = -1;
-    int idLoser = -1;
+void runTurn(STurn *turn, MapContext *mapContext) {
+    int idWinner;
+    int idLoser;
 
     //si le coup est autorisé
     if (checkMove(turn, mapContext)) {
@@ -89,8 +92,6 @@ int runTurn(STurn *turn, MapContext *mapContext) {
         //on actualise le nombre de dés sur chaque cellule
         updateDices(&(mapContext->map->cells[idWinner]), &(mapContext->map->cells[idLoser]), attackWin);
     }
-
-    return idWinner;
 }
 
 //renvoie l'id de la cellule gagnant le lancé de dé
@@ -130,7 +131,7 @@ void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin){
 int checkMove(STurn *turn, MapContext *mapContext){
     int autorized = 1;
     if(mapContext->map->cells[turn->cellFrom].nbDices <= 1){
-        printf("Erreur : une cellule ne peut pas attaquer si elle n'a qu'un dé\n");
+        printf("Erreur : une cellule ne peut pas attaquer si elle n'a qu'un de\n");
         autorized = 0;
     }else if (!isNeighbor(&(mapContext->map->cells[turn->cellFrom]), &(mapContext->map->cells[turn->cellTo]))) {
         printf("Erreur : une cellule ne peut pas attaquer une cellule qui n'est pas voisine\n");

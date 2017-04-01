@@ -34,8 +34,8 @@ int PlayTurn(const SMap *map, STurn *turn) {
         if (map->cells[i].neighbors[j]->owner != contexte.id //la case attaqué n'appartient pas a l'IA
           && map->cells[i].nbDices > map->cells[i].neighbors[j]->nbDices){  //la case de l'IA a plus de dé que l'autre case
           //Attaque
-          turn->cellFrom = map->cells[i].id;
-          turn->cellTo = map->cells[i].neighbors[j]->id;
+          turn->cellFrom = (unsigned int)map->cells[i].id;
+          turn->cellTo = (unsigned int)map->cells[i].neighbors[j]->id;
           return 1;
         }
       }

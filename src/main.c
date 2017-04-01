@@ -32,10 +32,8 @@ int main(int argc, char *argv[]) {
 
         //appel de gameLoop
         gameLoop(mapContext, interfaces, nbPlayer);
-
-
-        return 0;
     }
+    return 0;
 }
 
 //Test commit Yoann

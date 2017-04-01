@@ -55,9 +55,9 @@ Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned i
 }
 
 // Renvoie l'id de la cellule la plus proche sur le clic
-int getIdOnClick(int nbNodes, Centre *cellsList){
+unsigned int getIdOnClick(unsigned int nbNodes, Centre *cellsList){
 	SDL_Event event;
-	int id;
+	int id = -1;
 	int noEvent = 1;
 
 	while (noEvent){
@@ -72,15 +72,15 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
                         && event.button.x>BORDERLANDR
 						&& event.button.x<WIDTH){
 
-						id = getCloser(cellsList, nbNodes, event.button.x, event.button.y).cell->id;
+						id = getCloser(cellsList, nbNodes, (unsigned int)event.button.x, (unsigned int)event.button.y).cell->id;
 						noEvent = 0;
 
 					} else {
 						//si le clic se fait sur le bouton tour suivant
-						if(event.button.y>(BUTTONY - BUTTONH/2)
-						   && event.button.y<(BUTTONY + BUTTONH/2)
-						   && event.button.x>(BUTTONX - BUTTONW/2)
-						   && event.button.x<(BUTTONX + BUTTONW/2)){
+						if((event.button.y>(BUTTONY - BUTTONH/2))
+							&& (event.button.y<(BUTTONY + BUTTONH/2))
+								&& (event.button.x>(BUTTONX - BUTTONW/2))
+									&& (event.button.x<(BUTTONX + BUTTONW/2))){
 
 							id = -1;
 							noEvent = 0;
@@ -93,9 +93,12 @@ int getIdOnClick(int nbNodes, Centre *cellsList){
 				id = -2;
 				noEvent = 0;
 				break;
+			default:
+				noEvent = 1;
+				break;
 		}
 	}
-	return id;
+	return (unsigned int)id;
 }
 
 //renvoie 1 si les cellules passées en paramètre sont voisines, 0 sinon
@@ -135,5 +138,8 @@ void printColourOfPlayer(int id){
         case 7:
             printf("vert\n");
             break;
+		default:
+			printf("Pas de couleur\n");
+			break;
     }
 }
