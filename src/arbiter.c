@@ -1,6 +1,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include "arbiter.h"
+#include "interface.h"
 
 
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
@@ -129,13 +130,17 @@ void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin){
 
 //renvoie 1 si le coup est autorisé, 0 sinon
 int checkMove(STurn *turn, MapContext *mapContext){
-    int autorized = 1;
+    int authorized = 1;
     if(mapContext->map->cells[turn->cellFrom].nbDices <= 1){
         printf("Erreur : une cellule ne peut pas attaquer si elle n'a qu'un de\n");
-        autorized = 0;
+        authorized = 0;
     }else if (!isNeighbor(&(mapContext->map->cells[turn->cellFrom]), &(mapContext->map->cells[turn->cellTo]))) {
         printf("Erreur : une cellule ne peut pas attaquer une cellule qui n'est pas voisine\n");
-        autorized =  0;
+        authorized =  0;
+    } else if (mapContext->map->cells[turn->cellFrom].owner == mapContext->map->cells[turn->cellTo].owner){
+        authorized = 0;
+        printf("Erreur : on ne peut pas s'attaquer soi-meme\n");
+
     }
-    return autorized;
+    return authorized;
 }
