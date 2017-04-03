@@ -61,6 +61,9 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
 	unsigned int nbCellsLeft = nbNodes % nbPlayer;
 
+    // On considère que le nombre de dés par SCell est environ de 3
+    unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
+
 	// Nombre de SCell exact par joueur
 	unsigned int nbCellPerPlayer[nbPlayer];
 	for (int i = 0; i < nbPlayer; i++) {
@@ -80,25 +83,24 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 	int *indices = calloc(nbPlayer, sizeof(int));
 	// On donne à chaque joueur ses cellules
+    int owner;
 	for (int i = 0; i<nbNodes; i++) {
-			playerCells[map->cells[i].owner][indices[map->cells[i].owner]] = &(map->cells[i]);
-			indices[map->cells[i].owner] += 1;
+            owner = map->cells[i].owner;
+			playerCells[owner][indices[owner]] = &(map->cells[i]);
+			indices[owner] += 1;
 	}
-	free(indices);
 
 	// On remet les indices à 0
-	indices = calloc(nbPlayer, sizeof(int));
+	for (int i=0; i<nbPlayer; i++){
+        indices[i] = 0;
+    }
 
 	// Pour chaque joueur, on donne un dé à chacune de ses SCell
 	for (int i = 0; i < nbPlayer; i++) {
 		for (int j=0; j < nbCellPerPlayer[i]; j++) {
-			playerCells[map->cells[i].owner][indices[map->cells[i].owner]]->nbDices = 1;
-			indices[map->cells[i].owner] += 1;
+			playerCells[i][j]->nbDices = 1;
 		}
 	}
-
-	// On considère que le nombre de dés par SCell est environ de 3
-	unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
 
 	// Le nombre restant de dés à donner par joueur
 	unsigned int dicesLeft[nbPlayer];
