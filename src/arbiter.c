@@ -1,12 +1,19 @@
 #include <malloc.h>
 #include <stdio.h>
 #include "arbiter.h"
-#include "interface.h"
 
 
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int player = 0;
     int end = 0;
+
+    // La matrice d'adjacence
+    int **neighborsMatrix = malloc(sizeof(int*)*mapContext->nbNodes);
+    for (int i=0;i<mapContext->nbNodes;i++){
+        neighborsMatrix[i] = malloc(sizeof(int)*mapContext->nbNodes);
+    }
+    generateMatrix(mapContext, &neighborsMatrix);
+
     //Boucle de jeu
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
@@ -24,7 +31,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                 end = 1;
             } else if (click == -1) {
                 //passage au joueur suivant
-                printf("On change de joueur \n");
+                printf("On change de joueur\n");
                 player = (player + 1) % nbPlayer;
             } else {
 
@@ -39,7 +46,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                         end = 1;
                     } else if (cellTo == -1) {
                         //passage au joueur suivant
-                        printf("On change de joueur \n");
+                        printf("On change de joueur\n");
                         player = (player + 1) % nbPlayer;
                     } else{
 
@@ -56,10 +63,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //Tour d'une IA
         else {
             printf("Tour de l'IA\n");
-/*            SMap *mapCopy;
-
-            //on copie la map
-            mapCopy = createMapCopy(mapContext->map);*/
 
             //tant que l'IA veut rejouer
             while (interfaces[player]->PlayTurn(mapContext->map, turn)) {

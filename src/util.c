@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
+#include "interface.h"
 
 
 // Retourne un unsigned int entre 0 et max compris
@@ -142,4 +143,20 @@ void printColourOfPlayer(int id){
 			printf("Pas de couleur\n");
 			break;
     }
+}
+
+// Génère une matrice d'adjacence
+// Pour la lire, aller pour i de 0 à nbNodes, pour j de i+1 à nbNodes : elle est symétrique à diagonale nulle
+void generateMatrix(MapContext* mapContext, int*** matrix){
+
+	for (int i=0; i<mapContext->nbNodes; i++){
+		for (int j=0; j<mapContext->nbNodes; j++){
+			// Si les cellules sont voisines
+			if(isNeighbor(&mapContext->map->cells[i], &mapContext->map->cells[j])){
+				(*matrix)[i][j] = 1;
+			} else{
+				(*matrix)[i][j] = 0;
+			}
+		}
+	}
 }
