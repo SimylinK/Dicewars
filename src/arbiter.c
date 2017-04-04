@@ -74,7 +74,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
             printf("Tour de l'IA\n");
 
             //tant que l'IA veut rejouer
-            while (interfaces[players[playerTurn].interface].PlayTurn(mapContext->map, turn)) {
+            while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
 
                 runTurn(turn, mapContext);
                 drawMap(mapContext->cellsList, mapContext->nbNodes);
