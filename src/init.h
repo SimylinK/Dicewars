@@ -57,8 +57,8 @@
 	} SInterface;
 
 	typedef struct {
-		unsigned int id; // l'id du joueur (de 0 a 7)
-		int interface; // le numéron de l'interface a utiliser (-1 si joueur humain)
+		int id; // l'id du joueur (de 0 a 7)
+		int interface; // le numéro de l'interface a utiliser (-1 si joueur humain)
 		SPlayerInfo playerInfo;
 	} SPlayer;
 

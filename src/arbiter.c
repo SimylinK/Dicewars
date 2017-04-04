@@ -2,8 +2,17 @@
 #include <stdio.h>
 #include "arbiter.h"
 
-
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
+    // Initialisation des IA
+    for (int i=0; i<nbPlayer; i++) {
+      if (players[i].interface != -1){
+        SPlayerInfo info;
+        interfaces[players[i].interface].InitGame(i, nbPlayer, &info);
+        players[i].playerInfo = info;
+      }
+    }
+
+
     int playerTurn = 0;
     int end = 0;
 

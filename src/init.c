@@ -251,14 +251,9 @@ int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc
       interfaces[indexInterfaces].PlayTurn = PlayTurn;
       interfaces[indexInterfaces].EndGame = EndGame;
 
-      //Initialisation de l'IA au passage
-      SPlayerInfo info;
-      interfaces[indexInterfaces].InitGame(i, nbPlayer, &info);
-
       //Initialisation du joueur représentant l'IA
       players[i].id = i;
       players[i].interface = indexInterfaces;
-      players[i].playerInfo = info;
 
       indexInterfaces++;
     }
