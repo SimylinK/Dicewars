@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
         // Le nombre d'humains
         int nbHumans = nbPlayer - argc + 3;
         //Malloc sur les 2 tableaux
-        SPlayer *players = malloc(sizeof(SPlayer)*nbHumans);
+        SPlayer *players = malloc(sizeof(SPlayer)*nbPlayer);
         SInterface *interfaces = malloc(sizeof(SInterface)*(nbPlayer - nbHumans));
         if (initPlayers(nbPlayer, players, interfaces, argc, argv) == 1) {
             return 1;
