@@ -253,7 +253,7 @@ int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc
 
       //Initialisation de l'IA au passage
       SPlayerInfo info;
-      interfaces[indexInterfaces].InitGame(0, nbPlayer, &info);
+      interfaces[indexInterfaces].InitGame(i, nbPlayer, &info);
 
       //Initialisation du joueur représentant l'IA
       players[i].id = i;
