@@ -11,6 +11,8 @@ typedef struct Islet{
 typedef struct PlayerIslets{
 	Islet *islet;
 	int nbIslets;
+    SCell *allMyCells;
+    int nbOfCells;
 }PlayerIslets;
 
 unsigned int goodRandom(unsigned int max);
@@ -20,12 +22,13 @@ unsigned int goodRandom(unsigned int max);
 	unsigned int getIdOnClick(unsigned int nbNodes, Centre *cellsList);
 	int isNeighbor(SCell *cell1, SCell *cell2);
 	void printColourOfPlayer(int id);
-	void generateMatrix(MapContext* mapContext, int*** matrix);
-	int calcReinforcements(int **matrix, MapContext *mapContext, int nbPlayer, int idPlayer);
-	void createIslets (PlayerIslets *player,int** matrix, MapContext *mapContext, int idPlayer, int nbPlayer);
-	int maxConnex(PlayerIslets *player);
-	int getIndex(PlayerIslets *player, int id, MapContext* mapContext);
 
+	int calcReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer);
+	int maxConnex(PlayerIslets *player);
+    int cellInIslet(PlayerIslets *player, int id);
+    void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer);
+    void assembleIslets(PlayerIslets *player, int idPlayer);
+    void DFS(PlayerIslets *player, SCell cell, int idPlayer);
 
 
 

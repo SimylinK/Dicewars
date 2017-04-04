@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
-#include "interface.h"
 
 
 // Retourne un unsigned int entre 0 et max compris
@@ -145,34 +144,9 @@ void printColourOfPlayer(int id){
     }
 }
 
-// Génère une matrice d'adjacence
-// Pour la lire, aller pour i de 0 à nbNodes, pour j de i+1 à nbNodes : elle est symétrique à diagonale nulle
-void generateMatrix(MapContext* mapContext, int*** matrix){
-
-	for (int i=0; i<mapContext->nbNodes; i++){
-		for (int j=0; j<mapContext->nbNodes; j++){
-			// Si les cellules sont voisines
-			if(isNeighbor(&mapContext->map->cells[i], &mapContext->map->cells[j])){
-				(*matrix)[i][j] = 1;
-			} else{
-				(*matrix)[i][j] = 0;
-			}
-		}
-	}
-
-	for (int i=0; i<mapContext->nbNodes; i++){
-		for (int k=0; k<i; k++) printf(" ");
-		for (int j=i+1; j<mapContext->nbNodes; j++) {
-			printf("%i", (*matrix)[i][j]);
-		}
-		printf("\n");
-	}
-
-}
-
 // Fonction qui renvoie le nombre de renforts d'un joueur ayant l'id : idPlayer
 // On fait le max du nombre de SCell de ses composantes connexes
-int calcReinforcements(int **matrix, MapContext *mapContext, int nbPlayer, int idPlayer){
+int calcReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer){
 
 	// On fait les mallocs des structures nécessaires
 	PlayerIslets *player = malloc(sizeof(PlayerIslets));
@@ -191,58 +165,57 @@ int calcReinforcements(int **matrix, MapContext *mapContext, int nbPlayer, int i
 	}
 
 	player->islet = malloc(sizeof(Islet)*maxIslets);
+	player->allMyCells = malloc(sizeof(SCell)*maxIslets);
 	player->nbIslets = 0;
+	player->nbOfCells = 0;
+
 	for (int i=0; i<maxIslets; i++){
 		player->islet[i].cells = malloc(sizeof(SCell)*maxIslets);
+		player->islet[i].nbCells = 0;
 	}
 
-	createIslets(player, matrix, mapContext, idPlayer, nbPlayer);
-	int reinforcements = maxConnex(player);
+    getAllCells(player, mapContext, idPlayer);
 
+    assembleIslets(player, idPlayer);
+
+	int reinforcements = maxConnex(player);
 	// faire les free
 
 	return reinforcements;
 }
 
-void createIslets(PlayerIslets *player,int** matrix, MapContext *mapContext, int idPlayer, int nbPlayer) {
+void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer){
+    int index = 0;
+    for (int i=0; i<mapContext->nbNodes; i++){
+        if (mapContext->map->cells[i].owner == idPlayer){
+            player->allMyCells[index] = mapContext->map->cells[i];
+			player->nbOfCells+=1;
+			index++;
+        }
+    }
+}
 
-	int isletIndex; // L'index de l'ilôt de la ligne courante
-	for (int i = 0; i < mapContext->nbNodes; i++) { // On ne se met que sur les lignes avec idPlayer
-		if (mapContext->map->cells[i].owner == idPlayer) { // Si on est sur une ligne qui a l'owner idPlayer
-			isletIndex = getIndex(player, i, mapContext); // L'index de l'ilôt de la ligne actuelle, ajoute le i si nécessaire
-			for (int j = i + 1; j < mapContext->nbNodes; j++) {
-				if (matrix[i][j] &&
-				    mapContext->map->cells[j].owner == idPlayer) {// Les cellules sont voisines et ont le même owner
-
-					player->islet[isletIndex].cells[player->islet[isletIndex].nbCells] = mapContext->map->cells[j];
-					player->islet[isletIndex].nbCells += 1;
-				}
-			}
+void assembleIslets(PlayerIslets *player, int idPlayer){
+	for (int i=0; i<player->nbOfCells; i++){
+		if (!cellInIslet(player, player->allMyCells[i].id)){ // Si la cellule n'a pas été visitée
+			player->nbIslets++; // On a donc une composante connexe en plus
+			DFS(player, player->allMyCells[i], idPlayer); // DFS sur elle
 		}
 	}
 }
 
-int getIndex(PlayerIslets *player, int id, MapContext* mapContext){
-	int found = 0;
-	int index;
-	for (int i = 0; i < player->nbIslets && !found; i++){
-		for (int j=0; j<player->islet[i].nbCells && !found; j++) {
-			if (player->islet[i].cells[j].id == id){
-				found = 1;
-				index = i;
-			}
+void DFS(PlayerIslets *player, SCell cell, int idPlayer){
+	// On ajoute la cellule a une composante connexe
+	int index = player->nbIslets-1;
+	player->islet[index].cells[player->islet[index].nbCells] =  cell;
+	player->islet[index].nbCells ++;
+
+
+	for (int i=0; i<cell.nbNeighbors; i++){
+		if (cell.neighbors[i]->owner == idPlayer && !cellInIslet(player, cell.neighbors[i]->id)) { // Si la cellule a le bon owner et n'a pas été visitée
+			DFS(player, *(cell.neighbors[i]), idPlayer);
 		}
 	}
-	// Si on ne trouve pas l'id, on ajoute un ilôt où on met la cellule
-	if (!found){
-		index =	player->nbIslets;
-		player->islet[index].cells[0] = mapContext->map->cells[id];
-
-		player->islet[index].nbCells = 1;
-		player->nbIslets++;
-	}
-
-	return index;
 }
 
 int maxConnex(PlayerIslets *player){
@@ -253,4 +226,16 @@ int maxConnex(PlayerIslets *player){
 		}
 	}
 	return max;
+}
+
+int cellInIslet(PlayerIslets *player, int id){
+    int found = 0;
+	for (int i=0; i<player->nbIslets && !found; i++){
+		for (int j=0; j<player->islet[i].nbCells; j++){
+			if (player->islet[i].cells[j].id == id) {
+				found = 1;
+			}
+		}
+    }
+    return found;
 }

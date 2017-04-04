@@ -6,12 +6,6 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int player = 0;
     int end = 0;
 
-    // La matrice d'adjacence
-    int **neighborsMatrix = malloc(sizeof(int*)*mapContext->nbNodes);
-    for (int i=0;i<mapContext->nbNodes;i++){
-        neighborsMatrix[i] = malloc(sizeof(int)*mapContext->nbNodes);
-    }
-    generateMatrix(mapContext, &neighborsMatrix);
 
     //Boucle de jeu
     while (!end) {
@@ -31,7 +25,8 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             } else if (click == -1) {
                 //passage au joueur suivant
                 printf("On change de joueur\n");
-	            printf("Les renforcements sont %i\n", calcReinforcements(neighborsMatrix, mapContext, nbPlayer, player));
+	            int reinforcements =  calcReinforcements(mapContext, nbPlayer, player);
+                // TODO : distribuer les renforcements
 	            player = (player + 1) % nbPlayer;
             } else {
 
