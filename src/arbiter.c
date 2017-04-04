@@ -77,11 +77,12 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
             while (interfaces[players[playerTurn].interface].PlayTurn(mapContext->map, turn)) {
 
                 runTurn(turn, mapContext);
-
+                drawMap(mapContext->cellsList, mapContext->nbNodes);
             }
             //Quand l'ia termine son tour ou coup incorrect
             playerTurn = (playerTurn + 1) % nbPlayer;
         }
+
     }
 }
 
