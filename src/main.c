@@ -15,20 +15,13 @@ int main(int argc, char *argv[]) {
         printf("Erreur !\nLa partie peut comporter de 2 à 8 joueurs\n");
     } else {
         srand((unsigned int) time(NULL));
-        //unsigned int nbGame = (unsigned int)atoi(argv[1]);
+        unsigned int nbGame = (unsigned int)atoi(argv[1]);
         unsigned int nbPlayer = (unsigned int) atoi(argv[2]);
-
-        MapContext *mapContext = malloc(sizeof(MapContext));
-        initMap(mapContext, nbPlayer);
-
-
-        mainMap(mapContext);
+        // Le nombre d'humains
+        //TODO : gérer variable nbHumans (elle est recalculé dans la fonction initPlayers)
+        int nbHumans = nbPlayer - argc + 3;
 
         // Initialisation des joueurs via interfaces
-
-        //TODO : gérer variable nbHumans (elle est recalculé dans la fonction initPlayers)
-        // Le nombre d'humains
-        int nbHumans = nbPlayer - argc + 3;
         //Malloc sur les 2 tableaux
         SPlayer *players = malloc(sizeof(SPlayer)*nbPlayer);
         SInterface *interfaces = malloc(sizeof(SInterface)*(nbPlayer - nbHumans));
@@ -36,8 +29,33 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        //appel de gameLoop
-        gameLoop(mapContext, players, interfaces, nbPlayer);
+        // nbGame parties vont être lancées
+        for (int i=0; i<nbGame; i++){
+
+          MapContext *mapContext = malloc(sizeof(MapContext));
+          initMap(mapContext, nbPlayer);
+
+          mainMap(mapContext);
+
+          // L'ordre des joueurs est aléatoire
+          SPlayer *playersRandom = malloc(sizeof(SPlayer)*nbPlayer);
+          int associate[nbPlayer];
+          for (int j=0; j<nbPlayer; j++){
+            associate[j]=0;
+          }
+
+          for (int j=0; j<nbPlayer; j++){
+            int rand = goodRandom(nbPlayer-1);
+            while (associate[rand]==1){
+              rand = (rand+1)%nbPlayer;
+            }
+            playersRandom[rand]=players[j];
+            associate[rand]=1;
+          }
+
+          //appel de gameLoop
+          gameLoop(mapContext, playersRandom, interfaces, nbPlayer);
+        }
     }
     return 0;
 }
