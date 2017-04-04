@@ -159,4 +159,98 @@ void generateMatrix(MapContext* mapContext, int*** matrix){
 			}
 		}
 	}
+
+	for (int i=0; i<mapContext->nbNodes; i++){
+		for (int k=0; k<i; k++) printf(" ");
+		for (int j=i+1; j<mapContext->nbNodes; j++) {
+			printf("%i", (*matrix)[i][j]);
+		}
+		printf("\n");
+	}
+
+}
+
+// Fonction qui renvoie le nombre de renforts d'un joueur ayant l'id : idPlayer
+// On fait le max du nombre de SCell de ses composantes connexes
+int calcReinforcements(int **matrix, MapContext *mapContext, int nbPlayer, int idPlayer){
+
+	// On fait les mallocs des structures nécessaires
+	PlayerIslets *player = malloc(sizeof(PlayerIslets));
+
+
+	int maxIslets; // Nombre max de cellules, et donc d'ilots, par joueur
+	// Nombre de SCell minimum par joueur
+	unsigned int nbCellsMin = mapContext->nbNodes / nbPlayer;
+	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
+	unsigned int nbCellsLeft = mapContext->nbNodes % nbPlayer;
+
+	if (nbCellsLeft){
+		maxIslets = nbCellsMin + 1;
+	} else {
+		maxIslets = nbCellsMin;
+	}
+
+	player->islet = malloc(sizeof(Islet)*maxIslets);
+	player->nbIslets = 0;
+	for (int i=0; i<maxIslets; i++){
+		player->islet[i].cells = malloc(sizeof(SCell)*maxIslets);
+	}
+
+	createIslets(player, matrix, mapContext, idPlayer, nbPlayer);
+	int reinforcements = maxConnex(player);
+
+	// faire les free
+
+	return reinforcements;
+}
+
+void createIslets(PlayerIslets *player,int** matrix, MapContext *mapContext, int idPlayer, int nbPlayer) {
+
+	int isletIndex; // L'index de l'ilôt de la ligne courante
+	for (int i = 0; i < mapContext->nbNodes; i++) { // On ne se met que sur les lignes avec idPlayer
+		if (mapContext->map->cells[i].owner == idPlayer) { // Si on est sur une ligne qui a l'owner idPlayer
+			isletIndex = getIndex(player, i, mapContext); // L'index de l'ilôt de la ligne actuelle, ajoute le i si nécessaire
+			for (int j = i + 1; j < mapContext->nbNodes; j++) {
+				if (matrix[i][j] &&
+				    mapContext->map->cells[j].owner == idPlayer) {// Les cellules sont voisines et ont le même owner
+
+					player->islet[isletIndex].cells[player->islet[isletIndex].nbCells] = mapContext->map->cells[j];
+					player->islet[isletIndex].nbCells += 1;
+				}
+			}
+		}
+	}
+}
+
+int getIndex(PlayerIslets *player, int id, MapContext* mapContext){
+	int found = 0;
+	int index;
+	for (int i = 0; i < player->nbIslets && !found; i++){
+		for (int j=0; j<player->islet[i].nbCells && !found; j++) {
+			if (player->islet[i].cells[j].id == id){
+				found = 1;
+				index = i;
+			}
+		}
+	}
+	// Si on ne trouve pas l'id, on ajoute un ilôt où on met la cellule
+	if (!found){
+		index =	player->nbIslets;
+		player->islet[index].cells[0] = mapContext->map->cells[id];
+
+		player->islet[index].nbCells = 1;
+		player->nbIslets++;
+	}
+
+	return index;
+}
+
+int maxConnex(PlayerIslets *player){
+	int max = 0;
+	for (int i = 0; i < player->nbIslets; i++){
+		if (player->islet[i].nbCells>max){
+			max = player->islet[i].nbCells;
+		}
+	}
+	return max;
 }

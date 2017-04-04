@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "arbiter.h"
 
-
 void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     int player = 0;
     int end = 0;
@@ -32,7 +31,8 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             } else if (click == -1) {
                 //passage au joueur suivant
                 printf("On change de joueur\n");
-                player = (player + 1) % nbPlayer;
+	            printf("Les renforcements sont %i\n", calcReinforcements(neighborsMatrix, mapContext, nbPlayer, player));
+	            player = (player + 1) % nbPlayer;
             } else {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
@@ -147,3 +147,4 @@ int checkMove(STurn *turn, MapContext *mapContext){
     }
     return authorized;
 }
+

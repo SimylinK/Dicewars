@@ -6,11 +6,13 @@
     #include "map.h"
     #include "util.h"
 
-void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer);
 
-void runTurn(STurn *turn, MapContext *mapContext);
-int whoWins(SCell cellFrom, SCell cellTo);
-void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
-int checkMove(STurn *turn, MapContext *mapContext);
+	void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer);
+
+	void runTurn(STurn *turn, MapContext *mapContext);
+	int whoWins(SCell cellFrom, SCell cellTo);
+	void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
+	int checkMove(STurn *turn, MapContext *mapContext);
+
 
 #endif //_ARBITER_H
