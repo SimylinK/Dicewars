@@ -202,17 +202,21 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 
 //initialise interfaces
 //renvoie 0 si ça c'est bien passé, 1 sinon
-int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
+int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]){
 
   // Le nombre d'humains
   int nbHumans = nbPlayer - argc + 3;
 	printf("nbHumans : %d\n", nbHumans);
 
 	int indexArgcLibs = 0;
+	int indexInterfaces = 0;
   for (int i=0; i<nbPlayer; i++){
-    //Les joueurs normaux
+    //Initialisation des joueurs humains
     if (i < nbHumans){
-      interfaces[i] = NULL;
+      players[i].id = i;
+      players[i].interface = -1;
+
+    //Initialisation des joueurs IA
     } else {
       void *ia;
       pfInitGame InitGame;
@@ -243,14 +247,20 @@ int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
       }
       indexArgcLibs++;
 
-      SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
-
-      interfaces[i] = &ia1;
+      interfaces[indexInterfaces].InitGame = InitGame;
+      interfaces[indexInterfaces].PlayTurn = PlayTurn;
+      interfaces[indexInterfaces].EndGame = EndGame;
 
       //Initialisation de l'IA au passage
       SPlayerInfo info;
-      interfaces[i]->InitGame(0, nbPlayer, &info);
+      interfaces[indexInterfaces].InitGame(0, nbPlayer, &info);
 
+      //Initialisation du joueur représentant l'IA
+      players[i].id = i;
+      players[i].interface = indexInterfaces;
+      players[i].playerInfo = info;
+
+      indexInterfaces++;
     }
   }
 

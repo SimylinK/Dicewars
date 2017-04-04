@@ -3,8 +3,8 @@
 #include "arbiter.h"
 
 
-void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
-    int player = 0;
+void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
+    int playerTurn = 0;
     int end = 0;
 
     // La matrice d'adjacence
@@ -18,25 +18,25 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
 
-        if (interfaces[player] == NULL) {
+        if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
             //Tour d'un joueur humain
 
             int click;
-            printf("C'est au joueur %d de jouer : ", player+1);
-            printColourOfPlayer(player);
+            printf("C'est au joueur %d de jouer : ", playerTurn+1);
+            printColourOfPlayer(playerTurn);
             click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-            
+
             if (click == -2) {
                 end = 1;
             } else if (click == -1) {
                 //passage au joueur suivant
                 printf("On change de joueur\n");
-                player = (player + 1) % nbPlayer;
+                playerTurn = (playerTurn + 1) % nbPlayer;
             } else {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
-                if (player != mapContext->map->cells[click].owner) {
+                if (playerTurn != mapContext->map->cells[click].owner) {
                     printf("Ce n'est pas a ce joueur de jouer\n");
                 } else {
                     int cellFrom = click;
@@ -47,7 +47,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                     } else if (cellTo == -1) {
                         //passage au joueur suivant
                         printf("On change de joueur\n");
-                        player = (player + 1) % nbPlayer;
+                        playerTurn = (playerTurn + 1) % nbPlayer;
                     } else{
 
                         turn->cellFrom = (unsigned int)cellFrom;
@@ -65,12 +65,13 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             printf("Tour de l'IA\n");
 
             //tant que l'IA veut rejouer
-            while (interfaces[player]->PlayTurn(mapContext->map, turn)) {
+            while (interfaces[players[playerTurn].interface].PlayTurn(mapContext->map, turn)) {
 
                 runTurn(turn, mapContext);
+
             }
             //Quand l'ia termine son tour ou coup incorrect
-            player = (player + 1) % nbPlayer;
+            playerTurn = (playerTurn + 1) % nbPlayer;
         }
     }
 }

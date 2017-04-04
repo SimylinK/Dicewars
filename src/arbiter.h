@@ -6,7 +6,7 @@
     #include "map.h"
     #include "util.h"
 
-void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer);
+void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer);
 
 void runTurn(STurn *turn, MapContext *mapContext);
 int whoWins(SCell cellFrom, SCell cellTo);

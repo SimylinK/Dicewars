@@ -25,13 +25,19 @@ int main(int argc, char *argv[]) {
         mainMap(mapContext);
 
         // Initialisation des joueurs via interfaces
-        SInterface **interfaces = (SInterface **) malloc(nbPlayer * sizeof(SInterface *));
-        if (initPlayers(nbPlayer, interfaces, argc, argv) == 1) {
+
+        //TODO : gérer variable nbHumans (elle est recalculé dans la fonction initPlayers)
+        // Le nombre d'humains
+        int nbHumans = nbPlayer - argc + 3;
+        //Malloc sur les 2 tableaux
+        SPlayer *players = malloc(sizeof(SPlayer)*nbHumans);
+        SInterface *interfaces = malloc(sizeof(SInterface)*(nbPlayer - nbHumans));
+        if (initPlayers(nbPlayer, players, interfaces, argc, argv) == 1) {
             return 1;
         }
 
         //appel de gameLoop
-        gameLoop(mapContext, interfaces, nbPlayer);
+        gameLoop(mapContext, players, interfaces, nbPlayer);
     }
     return 0;
 }

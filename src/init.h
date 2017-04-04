@@ -56,7 +56,13 @@
 		pfEndGame EndGame;
 	} SInterface;
 
-	int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]);
+	typedef struct {
+		unsigned int id; // l'id du joueur (de 0 a 7)
+		int interface; // le numéron de l'interface a utiliser (-1 si joueur humain)
+		SPlayerInfo playerInfo;
+	} SPlayer;
+
+	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
 
 
 
