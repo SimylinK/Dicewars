@@ -164,20 +164,18 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 
 
 	int reinforcements = calcReinforcements(player, mapContext , idPlayer);
-	printf("Les renforcements sont %i\n", reinforcements);
 
 	// On distribue les renforts
 	int idGiven;
 	int idCell;
-
+	int dicesStack = mapContext->map->stack[idPlayer];
 
 	for (int i = 0; i < reinforcements; i++) {
 
 		// On vérifie si les cellules ne sont pas toutes pleines et en même temps on enlève celles à 8 dés de allMyCells
 		// On doit le faire à chaque tour
 		if (cellsFull(player, mapContext)) {
-
-			mapContext->map->stack[idPlayer] += reinforcements;
+			mapContext->map->stack[idPlayer] += 1;
             if (mapContext->map->stack[idPlayer] > 40){ // On excède pas 40
                 mapContext->map->stack[idPlayer] = 40;
             }
@@ -188,17 +186,32 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 			// On donne un dé
 			idCell = player->allMyCells[idGiven].id;
 			mapContext->map->cells[idCell].nbDices++;
+
 		}
 	}
 
-	// On libère les ressources
-	for (int i=0; i<player->nbIslets; i++){
-		free(player->islet[i].cells);
-	}
+	// On donne les dés de la stack s'il reste des cellules à qui donner
+	for (int i = 0; i < dicesStack; i++) {
+		if (!(cellsFull(player, mapContext))){
+			// On fait un random sur toutes les cellules restantes
+			idGiven = goodRandom((unsigned int) player->nbOfCells-1); // Max est compris dans goodRandom
 
-	free(player->allMyCells);
-	free(player->islet);
-	free(player);
+			// On donne un dé
+			idCell = player->allMyCells[idGiven].id;
+			mapContext->map->cells[idCell].nbDices++;
+
+			mapContext->map->stack[idPlayer]--;
+	}
+}
+
+	// On libère les ressources
+//	for (int i=0; i<player->nbIslets; i++){
+//		free(player->islet[i].cells);
+//	}
+//
+//	free(player->allMyCells);
+//	free(player->islet);
+//	free(player);
 }
 
 
@@ -212,10 +225,7 @@ int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlaye
 
 	int reinforcements = maxConnex(player);
 
-	int stack = mapContext->map->stack[idPlayer];
-	mapContext->map->stack[idPlayer]-=stack;
-
-	return reinforcements + stack;
+	return reinforcements;
 }
 
 void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer){

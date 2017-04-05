@@ -18,8 +18,9 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
 
     //Boucle de jeu
+    STurn *turn = malloc(sizeof(STurn));
+
     while (!end) {
-        STurn *turn = malloc(sizeof(STurn));
 
         if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
@@ -81,6 +82,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 	        playerTurn = (playerTurn + 1) % nbPlayer;
         }
     }
+    free(turn);
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {
