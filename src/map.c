@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "map.h"
 #include "util.h"
+#include <time.h>
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -218,7 +220,7 @@ void drawScore(int joueur, int diceValue, int i){
 
 
 void drawMap(Centre *cellsList, unsigned int nbNodes){
-
+   
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
 	// On dessine les bordures
