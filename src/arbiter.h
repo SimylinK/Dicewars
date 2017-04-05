@@ -12,6 +12,6 @@
 	int whoWins(SCell cellFrom, SCell cellTo);
 	void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
 	int checkMove(STurn *turn, MapContext *mapContext);
-
+	void destroyMap(SMap *mapToDestroy);
 
 #endif //_ARBITER_H

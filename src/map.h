@@ -15,8 +15,7 @@
 	void drawScore(int joueur, int diceValue, int i);
     SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer);
     void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate);
-    void modifyMap(SMap *map);
-    void destroyMap(SMap *mapToDestroy);
+
 
 
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap

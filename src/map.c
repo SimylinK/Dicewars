@@ -30,15 +30,6 @@ void mainMap(MapContext *mapContext) {
 }
 
 
-void destroyMap(SMap *mapToDestroy) {
-    free(mapToDestroy->cells->neighbors);
-    free(mapToDestroy->cells);
-    free(mapToDestroy->stack);
-
-    free(mapToDestroy);
-}
-
-
 
 void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
@@ -220,7 +211,7 @@ void drawScore(int joueur, int diceValue, int i){
 
 
 void drawMap(Centre *cellsList, unsigned int nbNodes){
-   
+
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
 	// On dessine les bordures

@@ -20,7 +20,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     //Boucle de jeu
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
-        SMap *mapCopy;
 
         if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
@@ -57,6 +56,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     } else{
                         turn->cellFrom = (unsigned int)cellFrom;
                         turn->cellTo = (unsigned int)cellTo;
+
                         runTurn(turn, mapContext);
                     }
                   }
@@ -67,10 +67,11 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         }
             //Tour d'une IA
         else {
-            mapCopy = copyMap(mapContext, nbPlayer);
+            SMap *mapCopy;
 
             //tant que l'IA veut rejouer
             while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
+                mapCopy = copyMap(mapContext, nbPlayer);
 
                 updateMapContext(mapCopy, mapContext);
                 runTurn(turn, mapContext);
@@ -210,3 +211,15 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
     free(mapContextToUpdate->cellsList);
     mapContextToUpdate->cellsList = cellsList;
 }
+
+void destroyMap(SMap *mapToDestroy) {
+    for (int i = 0; i < mapToDestroy->nbCells; i++) {
+        free(mapToDestroy->cells[i].neighbors);
+    }
+
+    free(mapToDestroy->cells);
+    free(mapToDestroy->stack);
+
+    free(mapToDestroy);
+}
+
