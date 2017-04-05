@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
         printf("Erreur !\nIl faut passer au moins 2 arguments : le nombre de parties et le nombre de joueurs\n");
     }
         //Pas assez de joueurs
-    else if ((unsigned int) atoi(argv[2]) < 1 || (unsigned int) atoi(argv[2]) > 8) {
+    else if ((unsigned int) atoi(argv[2]) <= 1 || (unsigned int) atoi(argv[2]) > 8) {
         printf("Erreur !\nLa partie peut comporter de 2 à 8 joueurs\n");
     } else {
         srand((unsigned int) time(NULL));
