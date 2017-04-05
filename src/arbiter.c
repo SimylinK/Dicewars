@@ -25,8 +25,7 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             } else if (click == -1) {
                 //passage au joueur suivant
                 printf("On change de joueur\n");
-	            int reinforcements =  calcReinforcements(mapContext, nbPlayer, player);
-                // TODO : distribuer les renforcements
+	            giveReinforcements(mapContext, nbPlayer, player); // On donne les renforts
 	            player = (player + 1) % nbPlayer;
             } else {
 

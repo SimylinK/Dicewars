@@ -25,10 +25,16 @@ int main(int argc, char *argv[]) {
         mainMap(mapContext);
 
         // Initialisation des joueurs via interfaces
-        SInterface **interfaces = (SInterface **) malloc(nbPlayer * sizeof(SInterface *));
-        if (initPlayers(nbPlayer, interfaces, argc, argv) == 1) {
+        SInterface **interfaces = malloc(nbPlayer * sizeof(SInterface *));
+        for (int i=0; i<nbPlayer; i++){
+            interfaces[i] = malloc(sizeof(SInterface*));
+        }
+
+        if (initPlayers(nbPlayer, interfaces, argc, argv)) {
             return 1;
         }
+
+        STurn* turn;
 
         //appel de gameLoop
         gameLoop(mapContext, interfaces, nbPlayer);
@@ -36,4 +42,3 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-//Test commit Yoann

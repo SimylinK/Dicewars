@@ -23,12 +23,14 @@ unsigned int goodRandom(unsigned int max);
 	int isNeighbor(SCell *cell1, SCell *cell2);
 	void printColourOfPlayer(int id);
 
-	int calcReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer);
+	void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer);
+	int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlayer);
 	int maxConnex(PlayerIslets *player);
     int cellInIslet(PlayerIslets *player, int id);
     void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer);
     void assembleIslets(PlayerIslets *player, int idPlayer);
     void DFS(PlayerIslets *player, SCell cell, int idPlayer);
+    int cellsFull(PlayerIslets *player, MapContext *mapContext);
 
 
 

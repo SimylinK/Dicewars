@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "util.h"
+#include "interface.h"
 
 
 // Retourne un unsigned int entre 0 et max compris
@@ -144,13 +145,11 @@ void printColourOfPlayer(int id){
     }
 }
 
-// Fonction qui renvoie le nombre de renforts d'un joueur ayant l'id : idPlayer
-// On fait le max du nombre de SCell de ses composantes connexes
-int calcReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer){
+// Fonction qui donne ses renforts à un joueur
+void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 
-	// On fait les mallocs des structures nécessaires
+	// On initialise les structures nécessaires
 	PlayerIslets *player = malloc(sizeof(PlayerIslets));
-
 
 	int maxIslets; // Nombre max de cellules, et donc d'ilots, par joueur
 	// Nombre de SCell minimum par joueur
@@ -174,12 +173,55 @@ int calcReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer){
 		player->islet[i].nbCells = 0;
 	}
 
+
+	int reinforcements = calcReinforcements(player, mapContext , idPlayer);
+	printf("Les renforcements sont %i\n", reinforcements);
+
+	// On distribue les renforts
+	int idGiven;
+	int idCell;
+
+
+	for (int i = 0; i < reinforcements; i++) {
+
+		// On vérifie si les cellules ne sont pas toutes pleines et en même temps on enlève celles à 8 dés de allMyCells
+		// On doit le faire à chaque tour
+		if (cellsFull(player, mapContext)) {
+
+			mapContext->map->stack[idPlayer] += reinforcements;
+            if (mapContext->map->stack[idPlayer] > 40){ // On excède pas 40
+                mapContext->map->stack[idPlayer] = 40;
+            }
+		} else {
+			// On fait un random sur toutes les cellules restantes
+			idGiven = goodRandom((unsigned int) player->nbOfCells-1); // Max est compris dans goodRandom
+
+			// On donne un dé
+			idCell = player->allMyCells[idGiven].id;
+			mapContext->map->cells[idCell].nbDices++;
+		}
+	}
+
+	// On libère les ressources
+	for (int i=0; i<maxIslets; i++){
+		free(player->islet[i].cells);
+	}
+
+	free(player->allMyCells);
+	free(player->islet);
+	free(player);
+}
+
+
+// Fonction qui donne ses renforts d'un joueur ayant l'id : idPlayer
+// On fait le max du nombre de SCell de ses composantes connexes
+int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlayer){
+
     getAllCells(player, mapContext, idPlayer);
 
     assembleIslets(player, idPlayer);
 
 	int reinforcements = maxConnex(player);
-	// faire les free
 
 	return reinforcements;
 }
@@ -199,11 +241,12 @@ void assembleIslets(PlayerIslets *player, int idPlayer){
 	for (int i=0; i<player->nbOfCells; i++){
 		if (!cellInIslet(player, player->allMyCells[i].id)){ // Si la cellule n'a pas été visitée
 			player->nbIslets++; // On a donc une composante connexe en plus
-			DFS(player, player->allMyCells[i], idPlayer); // DFS sur elle
+			DFS(player, player->allMyCells[i], idPlayer);
 		}
 	}
 }
 
+// Parcours en profondeur
 void DFS(PlayerIslets *player, SCell cell, int idPlayer){
 	// On ajoute la cellule a une composante connexe
 	int index = player->nbIslets-1;
@@ -228,6 +271,7 @@ int maxConnex(PlayerIslets *player){
 	return max;
 }
 
+// Renvoie si la cellule est dans les ilôts du joueur
 int cellInIslet(PlayerIslets *player, int id){
     int found = 0;
 	for (int i=0; i<player->nbIslets && !found; i++){
@@ -238,4 +282,28 @@ int cellInIslet(PlayerIslets *player, int id){
 		}
     }
     return found;
+}
+
+// On check si tout est full, et on enlève les cellules qui ont 8 dés
+int cellsFull(PlayerIslets *player, MapContext *mapContext){
+	int full = 1;
+	SCell *goodTab = malloc(sizeof(SCell)*player->nbOfCells);
+	int index = 0;
+
+	for (int i=0; i<player->nbOfCells; i++){
+		if(mapContext->map->cells[player->allMyCells[i].id].nbDices != 8){
+			full = 0;
+			goodTab[index] = player->allMyCells[i];
+			index++;
+		}
+	}
+	
+	// On réalloue le tableau à la bonne taille
+	goodTab = realloc(goodTab, sizeof(SCell)*index);
+	// On remplace le tableau
+	player->allMyCells = goodTab;
+	// On change le nombre de cellules
+	player->nbOfCells = index;
+
+	return full;
 }
