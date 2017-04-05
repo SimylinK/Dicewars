@@ -1,8 +1,11 @@
 #include <malloc.h>
 #include <stdio.h>
 #include "arbiter.h"
+#include "output.h"
 
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
+    endGame(0);
+
     // Initialisation des IA
     for (int i=0; i<nbPlayer; i++) {
       if (players[i].interface != -1){

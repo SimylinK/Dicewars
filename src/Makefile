@@ -1,11 +1,11 @@
 CC=gcc -std=c99
 EXECUTABLE=dicewars
 
-CFLAGS=-Wall -g 
+CFLAGS=-Wall -g
 LLIBS=$(shell sdl2-config --cflags --libs)
 
-$(EXECUTABLE): main.o interface.o util.o map.o init.o arbiter.o
-	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o init.o arbiter.o $(LLIBS) -lm -ldl
+$(EXECUTABLE): main.o interface.o util.o map.o init.o arbiter.o output.o
+	$(CC) -o $(EXECUTABLE)  main.o interface.o util.o map.o init.o arbiter.o output.o $(LLIBS) -lm -ldl
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o
@@ -24,6 +24,9 @@ init.o: init.c init.h
 
 arbiter.o: arbiter.c arbiter.h
 	$(CC) $(CFLAGS) -c arbiter.c -o arbiter.o -lm
+
+output.o: output.c output.h
+	$(CC) $(CFLAGS) -c output.c -o output.o -lm
 
 clean:
 	rm *.o $(EXECUTABLE)
