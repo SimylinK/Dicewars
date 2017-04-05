@@ -111,7 +111,7 @@ void drawPixels(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes)
 				default:
 					printf("Cellule sans owner\n");
 			}
-			SDL_RenderDrawPoint(renderer, x, y);
+				SDL_RenderDrawPoint(renderer, x, y);
 		}
 	}
 }
