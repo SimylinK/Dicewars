@@ -96,14 +96,20 @@ void runTurn(STurn *turn, MapContext *mapContext) {
 
 //renvoie l'id de la cellule gagnant le lancé de dé
 int whoWins(SCell cellFrom, SCell cellTo){
+    int thisDiceValueFrom = 0;
     int dicesValueFrom = 0;
     for (int i=0; i<cellFrom.nbDices; i++) {
-      dicesValueFrom += randomBounds(1,6);
+      thisDiceValueFrom = randomBounds(1,6); // AJOUT
+      drawScore(0, thisDiceValueFrom, i); // AJOUT
+      dicesValueFrom += thisDiceValueFrom; // AJOUT
     }
 
+    int thisDiceValueTo = 0;
     int dicesValueTo = 0;
     for (int i=0; i<cellTo.nbDices; i++) {
-      dicesValueTo += randomBounds(1,6);
+      thisDiceValueTo = randomBounds(1,6); // AJOUT
+      drawScore(1, thisDiceValueTo, i); // AJOUT
+      dicesValueTo += thisDiceValueTo; // AJOUT
     }
 
     if(dicesValueFrom > dicesValueTo) {

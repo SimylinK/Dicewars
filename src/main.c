@@ -34,6 +34,4 @@ int main(int argc, char *argv[]) {
         gameLoop(mapContext, interfaces, nbPlayer);
     }
     return 0;
-}
-
-//Test commit Yoann
+}S

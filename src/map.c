@@ -162,6 +162,39 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
     }
 }
 
+
+void drawScore(int joueur, int diceValue, int i){ // AJOUT
+
+	if (joueur == 0) {
+		switch (diceValue) {
+			case 1:
+            		insertPicture("../sprites/1.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+
+case 2:
+            		insertPicture("../sprites/2.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+
+case 3:
+            		insertPicture("../sprites/3.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+
+case 4:
+            		insertPicture("../sprites/4.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+
+case 5:
+            		insertPicture("../sprites/5.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+
+case 6:
+            		insertPicture("../sprites/6.bmp", window, BUTTONX+10+5*i, BUTTONY, DICESWIDTH, DICESHEIGHT);
+               		break;
+	
+}
+}
+}
+
 void drawMap(Centre *cellsList, unsigned int nbNodes){
 
 	// On dessine les pixels
