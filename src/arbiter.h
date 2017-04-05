@@ -12,6 +12,7 @@
 	int whoWins(SCell cellFrom, SCell cellTo);
 	void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
 	int checkMove(STurn *turn, MapContext *mapContext);
-
+  void getNbPlayersCells(int *nbPlayersCells, int nbOlayer, SCell *cells, int nbCells);
+  int gameIsOver(int *nbPlayersCells, int nbPlayer);
 
 #endif //_ARBITER_H
