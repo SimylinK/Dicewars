@@ -21,8 +21,9 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
 
     //Boucle de jeu
+    STurn *turn = malloc(sizeof(STurn));
+
     while (!end) {
-        STurn *turn = malloc(sizeof(STurn));
 
         if(nbPlayersCells[playerTurn] == 0){
           // Cas d'un joueur éliminé
@@ -92,6 +93,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         getNbPlayersCells(nbPlayersCells, nbPlayer, mapContext->map->cells, mapContext->map->nbCells);
         if (gameIsOver(nbPlayersCells, nbPlayer)) end = 1;
     }
+    free(turn);
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {
