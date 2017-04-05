@@ -11,3 +11,5 @@ cmake-build-debug
 
 #object files
 *.o
+
+dicewars

@@ -47,8 +47,8 @@
 
 	// Initialisation des joueurs
 	typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
-	typedef int (*pfPlayTurn)(const SMap*, STurn*);
-	typedef void (*pfEndGame)(unsigned int);
+	typedef int (*pfPlayTurn)(unsigned int, const SMap*, STurn*);
+	typedef void (*pfEndGame)(unsigned int, unsigned int);
 
 	typedef struct  {
 		pfInitGame InitGame;
@@ -56,7 +56,13 @@
 		pfEndGame EndGame;
 	} SInterface;
 
-	int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]);
+	typedef struct {
+		int id; // l'id du joueur (de 0 a 7)
+		int interface; // le numéro de l'interface a utiliser (-1 si joueur humain)
+		SPlayerInfo playerInfo;
+	} SPlayer;
+
+	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
 
 
 

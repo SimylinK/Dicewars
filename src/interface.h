@@ -41,7 +41,7 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info);
 //	* Ne pas oublier pour l'arbitre de dupliquer toute la structure map pour chaque appel !
 //	* En cas d'erreur, r?tablir la carte dans l'?tat initial avant le premier tour du joueur.
 // valeur de retour : bool?en : 0 coups termin?s, 1 structure turn compl?t?e avec un nouveau coup ? jouer.
-int PlayTurn(const SMap *map, STurn *turn);
+int PlayTurn(unsigned int id, const SMap *map, STurn *turn);
 
 // Fonction ? appeler ? la fin de chaque partie
-void EndGame(unsigned int idWinner);
+void EndGame(unsigned int id, unsigned int idWinner);

@@ -9,6 +9,7 @@
 	unsigned int getIdOnClick(unsigned int nbNodes, Centre *cellsList);
 	int isNeighbor(SCell *cell1, SCell *cell2);
 	void printColourOfPlayer(int id);
+	void generateMatrix(MapContext* mapContext, int*** matrix);
 
 
 

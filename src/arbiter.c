@@ -2,33 +2,50 @@
 #include <stdio.h>
 #include "arbiter.h"
 
+void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
+    // Initialisation des IA
+    for (int i=0; i<nbPlayer; i++) {
+      if (players[i].interface != -1){
+        SPlayerInfo info;
+        interfaces[players[i].interface].InitGame(i, nbPlayer, &info);
+        players[i].playerInfo = info;
+      }
+    }
 
-void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
-    int player = 0;
+
+    int playerTurn = 0;
     int end = 0;
+
+    // La matrice d'adjacence
+    int **neighborsMatrix = malloc(sizeof(int*)*mapContext->nbNodes);
+    for (int i=0;i<mapContext->nbNodes;i++){
+        neighborsMatrix[i] = malloc(sizeof(int)*mapContext->nbNodes);
+    }
+    generateMatrix(mapContext, &neighborsMatrix);
+
     //Boucle de jeu
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
 
-        if (interfaces[player] == NULL) {
+        if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
             //Tour d'un joueur humain
 
             int click;
-            printf("C'est au joueur %d de jouer : ", player+1);
-            printColourOfPlayer(player);
+            printf("C'est au joueur %d de jouer : ", playerTurn+1);
+            printColourOfPlayer(playerTurn);
             click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-            
+
             if (click == -2) {
                 end = 1;
             } else if (click == -1) {
                 //passage au joueur suivant
-                printf("On change de joueur \n");
-                player = (player + 1) % nbPlayer;
+                printf("On change de joueur\n");
+                playerTurn = (playerTurn + 1) % nbPlayer;
             } else {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
-                if (player != mapContext->map->cells[click].owner) {
+                if (playerTurn != mapContext->map->cells[click].owner) {
                     printf("Ce n'est pas a ce joueur de jouer\n");
                 } else {
                     int cellFrom = click;
@@ -38,8 +55,8 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
                         end = 1;
                     } else if (cellTo == -1) {
                         //passage au joueur suivant
-                        printf("On change de joueur \n");
-                        player = (player + 1) % nbPlayer;
+                        printf("On change de joueur\n");
+                        playerTurn = (playerTurn + 1) % nbPlayer;
                     } else{
 
                         turn->cellFrom = (unsigned int)cellFrom;
@@ -55,19 +72,17 @@ void gameLoop(MapContext *mapContext, SInterface **interfaces, int nbPlayer) {
             //Tour d'une IA
         else {
             printf("Tour de l'IA\n");
-/*            SMap *mapCopy;
-
-            //on copie la map
-            mapCopy = createMapCopy(mapContext->map);*/
 
             //tant que l'IA veut rejouer
-            while (interfaces[player]->PlayTurn(mapContext->map, turn)) {
+            while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
 
                 runTurn(turn, mapContext);
+                drawMap(mapContext->cellsList, mapContext->nbNodes);
             }
             //Quand l'ia termine son tour ou coup incorrect
-            player = (player + 1) % nbPlayer;
+            playerTurn = (playerTurn + 1) % nbPlayer;
         }
+
     }
 }
 
@@ -135,13 +150,17 @@ void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin){
 
 //renvoie 1 si le coup est autorisé, 0 sinon
 int checkMove(STurn *turn, MapContext *mapContext){
-    int autorized = 1;
+    int authorized = 1;
     if(mapContext->map->cells[turn->cellFrom].nbDices <= 1){
         printf("Erreur : une cellule ne peut pas attaquer si elle n'a qu'un de\n");
-        autorized = 0;
+        authorized = 0;
     }else if (!isNeighbor(&(mapContext->map->cells[turn->cellFrom]), &(mapContext->map->cells[turn->cellTo]))) {
         printf("Erreur : une cellule ne peut pas attaquer une cellule qui n'est pas voisine\n");
-        autorized =  0;
+        authorized =  0;
+    } else if (mapContext->map->cells[turn->cellFrom].owner == mapContext->map->cells[turn->cellTo].owner){
+        authorized = 0;
+        printf("Erreur : on ne peut pas s'attaquer soi-meme\n");
+
     }
-    return autorized;
+    return authorized;
 }

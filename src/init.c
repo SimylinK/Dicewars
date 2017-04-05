@@ -61,6 +61,9 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
 	unsigned int nbCellsLeft = nbNodes % nbPlayer;
 
+    // On considère que le nombre de dés par SCell est environ de 3
+    unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
+
 	// Nombre de SCell exact par joueur
 	unsigned int nbCellPerPlayer[nbPlayer];
 	for (int i = 0; i < nbPlayer; i++) {
@@ -80,25 +83,24 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 	int *indices = calloc(nbPlayer, sizeof(int));
 	// On donne à chaque joueur ses cellules
+    int owner;
 	for (int i = 0; i<nbNodes; i++) {
-			playerCells[map->cells[i].owner][indices[map->cells[i].owner]] = &(map->cells[i]);
-			indices[map->cells[i].owner] += 1;
+            owner = map->cells[i].owner;
+			playerCells[owner][indices[owner]] = &(map->cells[i]);
+			indices[owner] += 1;
 	}
-	free(indices);
 
 	// On remet les indices à 0
-	indices = calloc(nbPlayer, sizeof(int));
+	for (int i=0; i<nbPlayer; i++){
+        indices[i] = 0;
+    }
 
 	// Pour chaque joueur, on donne un dé à chacune de ses SCell
 	for (int i = 0; i < nbPlayer; i++) {
 		for (int j=0; j < nbCellPerPlayer[i]; j++) {
-			playerCells[map->cells[i].owner][indices[map->cells[i].owner]]->nbDices = 1;
-			indices[map->cells[i].owner] += 1;
+			playerCells[i][j]->nbDices = 1;
 		}
 	}
-
-	// On considère que le nombre de dés par SCell est environ de 3
-	unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
 
 	// Le nombre restant de dés à donner par joueur
 	unsigned int dicesLeft[nbPlayer];
@@ -200,17 +202,21 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 
 //initialise interfaces
 //renvoie 0 si ça c'est bien passé, 1 sinon
-int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
+int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]){
 
   // Le nombre d'humains
   int nbHumans = nbPlayer - argc + 3;
 	printf("nbHumans : %d\n", nbHumans);
 
 	int indexArgcLibs = 0;
+	int indexInterfaces = 0;
   for (int i=0; i<nbPlayer; i++){
-    //Les joueurs normaux
+    //Initialisation des joueurs humains
     if (i < nbHumans){
-      interfaces[i] = NULL;
+      players[i].id = i;
+      players[i].interface = -1;
+
+    //Initialisation des joueurs IA
     } else {
       void *ia;
       pfInitGame InitGame;
@@ -241,14 +247,15 @@ int initPlayers(int nbPlayer, SInterface **interfaces, int argc, char *argv[]){
       }
       indexArgcLibs++;
 
-      SInterface ia1 = {.InitGame = InitGame, .PlayTurn = PlayTurn, .EndGame = EndGame};
+      interfaces[indexInterfaces].InitGame = InitGame;
+      interfaces[indexInterfaces].PlayTurn = PlayTurn;
+      interfaces[indexInterfaces].EndGame = EndGame;
 
-      interfaces[i] = &ia1;
+      //Initialisation du joueur représentant l'IA
+      players[i].id = i;
+      players[i].interface = indexInterfaces;
 
-      //Initialisation de l'IA au passage
-      SPlayerInfo info;
-      interfaces[i]->InitGame(0, nbPlayer, &info);
-
+      indexInterfaces++;
     }
   }
 
