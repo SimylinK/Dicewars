@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#include "interface.h"
-#include "util.h"
+#include "../interface.h"
+#include "utilIA.h"
 
 // Structure pour garder les informations du contexte de la partie
 typedef struct
@@ -11,7 +10,7 @@ typedef struct
 	int nbPlayer;	// Noms des personnes participant au projet.
 } SContext;
 
-SContext contexte; // variable global du contexte
+SContext contexte; // variable globale du contexte
 
 void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
 	//printf("IA %i initialized\n", id);
@@ -30,6 +29,7 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
 //Attaque si il a plus de cases que l'adversaire
 int PlayTurn(unsigned int id, const SMap *map, STurn *turn){
 
+	int reinforcements = calcReinforcements((SMap *)map, id);
 	for (int i=0; i < map->nbCells; i++){
 		if (map->cells[i].owner == id){
 			for (int j=0; j < map->cells[i].nbNeighbors; j++){
@@ -43,6 +43,8 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn){
 			}
 		}
 	}
+
+
 	return 0;
 }
 

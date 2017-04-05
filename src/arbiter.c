@@ -12,76 +12,91 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
       }
     }
 
+    //Tableau répertoriant le nombre de cellules de chaque joueurs
+    //Permet de connaitre les joueurs éliminés
+    int nbPlayersCells[nbPlayer];
 
     int playerTurn = 0;
     int end = 0;
 
 
     //Boucle de jeu
+    STurn *turn = malloc(sizeof(STurn));
+
     while (!end) {
-        STurn *turn = malloc(sizeof(STurn));
 
-        if (players[playerTurn].interface == -1) {
-            //Récupération du choix du joueur
-            //Tour d'un joueur humain
+        if(nbPlayersCells[playerTurn] == 0){
+          // Cas d'un joueur éliminé
+          playerTurn = (playerTurn + 1) % nbPlayer;
+        } else {
 
-            int click;
-            printf("C'est au joueur %d de jouer : ", playerTurn+1);
-            printColourOfPlayer(playerTurn);
-            click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+            if (players[playerTurn].interface == -1) {
+                //Récupération du choix du joueur
+                //Tour d'un joueur humain
 
-            if (click == -2) {
-                end = 1;
-            } else if (click == -1) {
-                //passage au joueur suivant
-                printf("On change de joueur\n");
-	            giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
-	            playerTurn = (playerTurn + 1) % nbPlayer;
-            } else {
+                int click;
+                printf("C'est au joueur %d de jouer : ", playerTurn + 1);
+                printColourOfPlayer(playerTurn);
+                click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
 
-                //on vérifie que le joueur a cliqué sur la bonne case
-                if (playerTurn != mapContext->map->cells[click].owner) {
-                    printf("Ce n'est pas a ce joueur de jouer\n");
+                if (click == -2) {
+                    end = 1;
+                } else if (click == -1) {
+                    //passage au joueur suivant
+                    printf("On change de joueur\n");
+                    giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+                    playerTurn = (playerTurn + 1) % nbPlayer;
                 } else {
-                    int cellFrom = click;
-                    int cellTo;
-                    cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
-                    if (cellTo == -2) {
-                        end = 1;
-                    } else if (cellTo == -1) {
-                        //passage au joueur suivant
-                        printf("On change de joueur\n");
-	                    giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
-	                    playerTurn = (playerTurn + 1) % nbPlayer;
-                    } else{
-                        turn->cellFrom = (unsigned int)cellFrom;
-                        turn->cellTo = (unsigned int)cellTo;
 
-                        runTurn(turn, mapContext);
+                    //on vérifie que le joueur a cliqué sur la bonne case
+                    if (playerTurn != mapContext->map->cells[click].owner) {
+                        printf("Ce n'est pas a ce joueur de jouer\n");
+                    } else {
+                        int cellFrom = click;
+                        int cellTo;
+                        cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+                        if (cellTo == -2) {
+                            end = 1;
+                        } else if (cellTo == -1) {
+                            //passage au joueur suivant
+                            printf("On change de joueur\n");
+                            giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+                            playerTurn = (playerTurn + 1) % nbPlayer;
+                        } else {
+                            turn->cellFrom = (unsigned int) cellFrom;
+                            turn->cellTo = (unsigned int) cellTo;
+                            runTurn(turn, mapContext);
+                        }
                     }
-                  }
-            }
-            // On redessine la map
-            drawMap(mapContext->cellsList, mapContext->nbNodes);
-
-        }
-            //Tour d'une IA
-        else {
-            SMap *mapCopy;
-
-            //tant que l'IA veut rejouer
-            while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
-                mapCopy = copyMap(mapContext, nbPlayer);
-
-                updateMapContext(mapCopy, mapContext);
-                runTurn(turn, mapContext);
+                }
+                // On redessine la map
                 drawMap(mapContext->cellsList, mapContext->nbNodes);
+
             }
-            //Quand l'ia termine son tour ou coup incorrect
-	        giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
-	        playerTurn = (playerTurn + 1) % nbPlayer;
+
+                //Tour d'une IA
+            else {
+                SMap *mapCopy;
+
+                //tant que l'IA veut rejouer
+                while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
+                    mapCopy = copyMap(mapContext, nbPlayer);
+
+                    updateMapContext(mapCopy, mapContext);
+                    runTurn(turn, mapContext);
+                    drawMap(mapContext->cellsList, mapContext->nbNodes);
+                }
+                //Quand l'ia termine son tour ou coup incorrect
+                giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+                playerTurn = (playerTurn + 1) % nbPlayer;
+            }
         }
+
+        getNbPlayersCells(nbPlayersCells, nbPlayer, mapContext->map->cells, mapContext->map->nbCells);
+        if (gameIsOver(nbPlayersCells, nbPlayer)) end = 1;
+
     }
+    free(turn);
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {
@@ -170,12 +185,10 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
     newMap->nbCells = mapContextToCopy->map->nbCells;
     newMap->cells = malloc(sizeof(SCell) * newMap->nbCells);
 
-    newMap->stack = malloc(sizeof(unsigned int) * nbPlayer);
-    for (int i = 0 ; i < nbPlayer ; i++){
-        newMap->stack[i] = 0;
-    }
+	newMap->stack = calloc(nbPlayer, sizeof(unsigned int));
 
-    for (int i = 0; i < newMap->nbCells; i++) {
+
+	for (int i = 0; i < newMap->nbCells; i++) {
         newMap->cells[i].id = mapContextToCopy->map->cells[i].id;
         newMap->cells[i].owner = mapContextToCopy->map->cells[i].owner;
         newMap->cells[i].nbDices = mapContextToCopy->map->cells[i].nbDices;
@@ -212,6 +225,7 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
     mapContextToUpdate->cellsList = cellsList;
 }
 
+
 void destroyMap(SMap *mapToDestroy) {
     for (int i = 0; i < mapToDestroy->nbCells; i++) {
         free(mapToDestroy->cells[i].neighbors);
@@ -223,3 +237,22 @@ void destroyMap(SMap *mapToDestroy) {
     free(mapToDestroy);
 }
 
+//Met à jour la liste du nombre des cellules de chaque joueur
+void getNbPlayersCells(int *nbPlayersCells, int nbPlayer, SCell *cells, int nbCells){
+  for(int i=0; i<nbPlayer; i++){
+    nbPlayersCells[i]=0;
+  }
+  for(int i=0; i<nbCells; i++){
+    int owner = cells[i].owner;
+    nbPlayersCells[owner]++;
+  }
+}
+
+//Regarde s'il ne reste plus qu'un joueur possédant des cellules
+int gameIsOver(int *nbPlayersCells, int nbPlayer){
+  int nbPlayersWIthCells = 0;
+  for (int i=0; i<nbPlayer; i++) {
+    if(nbPlayersCells[i] > 0) nbPlayersWIthCells++;
+  }
+  return (nbPlayersWIthCells == 1);
+}

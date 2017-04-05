@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "map.h"
 #include "util.h"
+#include "interface.h"
 #include <time.h>
 
 SDL_Window *window = NULL;
@@ -28,7 +29,6 @@ void mainMap(MapContext *mapContext) {
 
 	//Destruction des ressources
 }
-
 
 
 void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
