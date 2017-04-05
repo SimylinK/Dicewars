@@ -15,6 +15,7 @@
 	void drawScore(int joueur, int diceValue, int i);
 
 
+
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap
 	//x et y étant le centre de l'image, width et height sa hauteur et sa largeur souhaitées
 	//name doit être l'adresse où se trouve l'image
