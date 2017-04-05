@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "map.h"
 #include "util.h"
+#include "interface.h"
 #include <time.h>
 
 SDL_Window *window = NULL;
@@ -31,10 +32,11 @@ void mainMap(MapContext *mapContext) {
 
 
 void destroyMap(SMap *mapToDestroy) {
-    free(mapToDestroy->cells->neighbors);
+	free(mapToDestroy->stack);
+	for (int i=0; i<mapToDestroy->nbCells; i++) {
+		free(mapToDestroy->cells[i].neighbors);
+	}
     free(mapToDestroy->cells);
-    free(mapToDestroy->stack);
-
     free(mapToDestroy);
 }
 

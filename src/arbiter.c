@@ -20,7 +20,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     //Boucle de jeu
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
-        SMap *mapCopy;
 
         if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
@@ -65,19 +64,20 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
             drawMap(mapContext->cellsList, mapContext->nbNodes);
 
         }
-            //Tour d'une IA
+	        //Tour d'une IA
         else {
-            mapCopy = copyMap(mapContext, nbPlayer);
+//            SMap *mapCopy = copyMap(mapContext, nbPlayer);
 
             //tant que l'IA veut rejouer
             while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
 
-                updateMapContext(mapCopy, mapContext);
+//                updateMapContext(mapCopy, mapContext);
                 runTurn(turn, mapContext);
                 drawMap(mapContext->cellsList, mapContext->nbNodes);
             }
             //Quand l'ia termine son tour ou coup incorrect
 	        giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+	        drawMap(mapContext->cellsList, mapContext->nbNodes);
 	        playerTurn = (playerTurn + 1) % nbPlayer;
         }
     }
@@ -169,12 +169,10 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
     newMap->nbCells = mapContextToCopy->map->nbCells;
     newMap->cells = malloc(sizeof(SCell) * newMap->nbCells);
 
-    newMap->stack = malloc(sizeof(unsigned int) * nbPlayer);
-    for (int i = 0 ; i < nbPlayer ; i++){
-        newMap->stack[i] = 0;
-    }
+	newMap->stack = calloc(nbPlayer, sizeof(unsigned int));
 
-    for (int i = 0; i < newMap->nbCells; i++) {
+
+	for (int i = 0; i < newMap->nbCells; i++) {
         newMap->cells[i].id = mapContextToCopy->map->cells[i].id;
         newMap->cells[i].owner = mapContextToCopy->map->cells[i].owner;
         newMap->cells[i].nbDices = mapContextToCopy->map->cells[i].nbDices;
