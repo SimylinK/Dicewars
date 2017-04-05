@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "map.h"
 #include "util.h"
+#include <time.h>
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -28,7 +30,17 @@ void mainMap(MapContext *mapContext) {
 }
 
 
-void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
+void destroyMap(SMap *mapToDestroy) {
+    free(mapToDestroy->cells->neighbors);
+    free(mapToDestroy->cells);
+    free(mapToDestroy->stack);
+
+    free(mapToDestroy);
+}
+
+
+
+void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -170,51 +182,53 @@ void drawScore(int joueur, int diceValue, int i){
 	int largeurDes = DICESWIDTH*2;
 	int hauteurDes = DICESHEIGHT*2;
 
-	if (joueur == 0){ positionY = BUTTONY-20;}
-	else { positionY = BUTTONY+20;}
+	if (joueur == 0){
+        positionY = BUTTONY-20;
+    } else {
+        positionY = BUTTONY+20;
+    }
 
 	switch (diceValue) {
 
-	        case 1:
-            	    insertPicture("../sprites/1.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
+        case 1:
+            insertPicture("../sprites/1.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
 
-		case 2:
-            	    insertPicture("../sprites/2.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
+        case 2:
+            insertPicture("../sprites/2.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
 
-		case 3:
-            	    insertPicture("../sprites/3.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
+        case 3:
+            insertPicture("../sprites/3.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
 
-		case 4:
-            	    insertPicture("../sprites/4.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
+        case 4:
+            insertPicture("../sprites/4.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
 
-		case 5:
-            	    insertPicture("../sprites/5.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
+        case 5:
+            insertPicture("../sprites/5.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
 
-		case 6:
-            	    insertPicture("../sprites/6.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-               	break;
-	
-	    }
+        case 6:
+            insertPicture("../sprites/6.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            break;
+    }
 
 	SDL_RenderPresent(renderer);
 }
 
 
 void drawMap(Centre *cellsList, unsigned int nbNodes){
-
+   
 	// On dessine les pixels
 	drawPixels(renderer, cellsList, nbNodes);
 	// On dessine les bordures
 	drawBorders(renderer, cellsList, nbNodes);
 	// On affiche les dés
 	displayDices(window, cellsList, nbNodes);
-    	//On ajoute le bouton "tour suivant"
-    	insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    //On ajoute le bouton "tour suivant"
+    insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);

@@ -20,6 +20,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     //Boucle de jeu
     while (!end) {
         STurn *turn = malloc(sizeof(STurn));
+        SMap *mapCopy;
 
         if (players[playerTurn].interface == -1) {
             //Récupération du choix du joueur
@@ -66,9 +67,12 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         }
             //Tour d'une IA
         else {
+            mapCopy = copyMap(mapContext, nbPlayer);
+
             //tant que l'IA veut rejouer
             while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
 
+                updateMapContext(mapCopy, mapContext);
                 runTurn(turn, mapContext);
                 drawMap(mapContext->cellsList, mapContext->nbNodes);
             }
@@ -158,3 +162,51 @@ int checkMove(STurn *turn, MapContext *mapContext){
     return authorized;
 }
 
+SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
+    // Initialisation de la copie de la map
+    SMap *newMap = malloc(sizeof(SMap));
+
+    newMap->nbCells = mapContextToCopy->map->nbCells;
+    newMap->cells = malloc(sizeof(SCell) * newMap->nbCells);
+
+    newMap->stack = malloc(sizeof(unsigned int) * nbPlayer);
+    for (int i = 0 ; i < nbPlayer ; i++){
+        newMap->stack[i] = 0;
+    }
+
+    for (int i = 0; i < newMap->nbCells; i++) {
+        newMap->cells[i].id = mapContextToCopy->map->cells[i].id;
+        newMap->cells[i].owner = mapContextToCopy->map->cells[i].owner;
+        newMap->cells[i].nbDices = mapContextToCopy->map->cells[i].nbDices;
+        newMap->cells[i].nbNeighbors = mapContextToCopy->map->cells[i].nbNeighbors;
+        newMap->cells[i].neighbors = malloc(newMap->cells[i].nbNeighbors * sizeof(SCell *));
+    }
+
+    for (int i = 0; i < newMap->nbCells; i++) {
+        for (int j = 0; j < mapContextToCopy->map->cells[i].nbNeighbors; j++) {
+            newMap->cells[i].neighbors[j] =  &(newMap->cells[mapContextToCopy->map->cells[i].neighbors[j]->id]);
+        }
+    }
+
+    for (int i = 0 ; i < nbPlayer ; i ++){
+        newMap->stack[i] = mapContextToCopy->map->stack[i];
+    }
+
+    return newMap;
+}
+
+void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
+
+    destroyMap(mapContextToUpdate->map);
+    mapContextToUpdate->map = mapCopy;
+
+    Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
+    for (int i = 0 ; i < mapCopy->nbCells ; i++){
+        cellsList[i].x = mapContextToUpdate->cellsList[i].x;
+        cellsList[i].y = mapContextToUpdate->cellsList[i].y ;
+        cellsList[i].cell = &(mapCopy->cells[i]);
+    }
+
+    free(mapContextToUpdate->cellsList);
+    mapContextToUpdate->cellsList = cellsList;
+}

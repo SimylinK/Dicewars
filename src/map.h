@@ -11,9 +11,12 @@
 	void assignNeighbor(int id1, int id2, SMap *map);
 	void drawPixels(SDL_Renderer* renderer, Centre* cellsList, unsigned int nbNodes);
 	void drawMap(Centre* cellsList, unsigned int nbNodes);
-	void destroyMap(SDL_Window *window, SDL_Renderer* renderer);
+	void destroyWindow(SDL_Window *window, SDL_Renderer* renderer);
 	void drawScore(int joueur, int diceValue, int i);
-
+    SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer);
+    void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate);
+    void modifyMap(SMap *map);
+    void destroyMap(SMap *mapToDestroy);
 
 
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap
