@@ -79,13 +79,21 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 SMap *mapCopy;
 
                 //tant que l'IA veut rejouer
-                while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
+                int continueTurn;
+                do {
+
                     mapCopy = copyMap(mapContext, nbPlayer);
+                    continueTurn = interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn);
 
                     updateMapContext(mapCopy, mapContext);
-                    runTurn(turn, mapContext);
-                    drawMap(mapContext->cellsList, mapContext->nbNodes);
+                    if (continueTurn){
+                        runTurn(turn, mapContext);
+                        drawMap(mapContext->cellsList, mapContext->nbNodes);
+                    }
+
                 }
+                while (continueTurn);
+
                 //Quand l'ia termine son tour ou coup incorrect
                 giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
                 playerTurn = (playerTurn + 1) % nbPlayer;
@@ -224,7 +232,6 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
     free(mapContextToUpdate->cellsList);
     mapContextToUpdate->cellsList = cellsList;
 }
-
 
 void destroyMap(SMap *mapToDestroy) {
     for (int i = 0; i < mapToDestroy->nbCells; i++) {
