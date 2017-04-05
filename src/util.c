@@ -212,7 +212,10 @@ int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlaye
 
 	int reinforcements = maxConnex(player);
 
-	return reinforcements;
+	int stack = mapContext->map->stack[idPlayer];
+	mapContext->map->stack[idPlayer]-=stack;
+
+	return reinforcements + stack;
 }
 
 void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer){
