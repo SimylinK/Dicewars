@@ -28,7 +28,17 @@ void mainMap(MapContext *mapContext) {
 }
 
 
-void destroyMap(SDL_Window *window, SDL_Renderer* renderer) {
+void destroyMap(SMap *mapToDestroy) {
+    free(mapToDestroy->cells->neighbors);
+    free(mapToDestroy->cells);
+    free(mapToDestroy->stack);
+
+    free(mapToDestroy);
+}
+
+
+
+void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
