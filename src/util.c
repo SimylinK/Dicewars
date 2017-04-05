@@ -113,6 +113,7 @@ int isNeighbor(SCell *cell1, SCell *cell2){
 	}
 	return neighbor;
 }
+
 void printColourOfPlayer(int id){
     switch (id){ // On définit les couleurs des joueurs
         case 0:
@@ -201,7 +202,7 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 }
 
 
-// Fonction qui donne ses renforts d'un joueur ayant l'id : idPlayer
+// Fonction qui calcule les renforts d'un joueur ayant l'id : idPlayer
 // On fait le max du nombre de SCell de ses composantes connexes
 int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlayer){
 
