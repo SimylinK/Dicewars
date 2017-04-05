@@ -33,9 +33,7 @@ int main(int argc, char *argv[]) {
         if (initPlayers(nbPlayer, interfaces, argc, argv)) {
             return 1;
         }
-
-        STurn* turn;
-
+        
         //appel de gameLoop
         gameLoop(mapContext, interfaces, nbPlayer);
     }
