@@ -7,7 +7,7 @@
 
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30, 60);
+	unsigned int nbNodes = randomBounds(30,60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));

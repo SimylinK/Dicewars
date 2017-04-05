@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
         int nbHumans = nbPlayer - argc + 3;
 
         // Initialisation des joueurs via interfaces
+
         //Malloc sur les 2 tableaux
         SPlayer *players = malloc(sizeof(SPlayer)*nbPlayer);
         SInterface *interfaces = malloc(sizeof(SInterface)*(nbPlayer - nbHumans));

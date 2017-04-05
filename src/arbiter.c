@@ -16,12 +16,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     int playerTurn = 0;
     int end = 0;
 
-    // La matrice d'adjacence
-    int **neighborsMatrix = malloc(sizeof(int*)*mapContext->nbNodes);
-    for (int i=0;i<mapContext->nbNodes;i++){
-        neighborsMatrix[i] = malloc(sizeof(int)*mapContext->nbNodes);
-    }
-    generateMatrix(mapContext, &neighborsMatrix);
 
     //Boucle de jeu
     while (!end) {
@@ -41,7 +35,8 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
             } else if (click == -1) {
                 //passage au joueur suivant
                 printf("On change de joueur\n");
-                playerTurn = (playerTurn + 1) % nbPlayer;
+	            giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+	            playerTurn = (playerTurn + 1) % nbPlayer;
             } else {
 
                 //on vérifie que le joueur a cliqué sur la bonne case
@@ -56,9 +51,9 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     } else if (cellTo == -1) {
                         //passage au joueur suivant
                         printf("On change de joueur\n");
-                        playerTurn = (playerTurn + 1) % nbPlayer;
+	                    giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+	                    playerTurn = (playerTurn + 1) % nbPlayer;
                     } else{
-
                         turn->cellFrom = (unsigned int)cellFrom;
                         turn->cellTo = (unsigned int)cellTo;
                         runTurn(turn, mapContext);
@@ -71,8 +66,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         }
             //Tour d'une IA
         else {
-            printf("Tour de l'IA\n");
-
             //tant que l'IA veut rejouer
             while (interfaces[players[playerTurn].interface].PlayTurn(playerTurn, mapContext->map, turn)) {
 
@@ -80,9 +73,9 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 drawMap(mapContext->cellsList, mapContext->nbNodes);
             }
             //Quand l'ia termine son tour ou coup incorrect
-            playerTurn = (playerTurn + 1) % nbPlayer;
+	        giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+	        playerTurn = (playerTurn + 1) % nbPlayer;
         }
-
     }
 }
 
@@ -115,7 +108,7 @@ int whoWins(SCell cellFrom, SCell cellTo){
     int dicesValueFrom = 0;
     for (int i=0; i<cellFrom.nbDices; i++) {
       thisDiceValueFrom = randomBounds(1,6); // AJOUT
-      drawScore(0, thisDiceValueFrom, i); // AJOUT
+//      drawScore(0, thisDiceValueFrom, i); // AJOUT
       dicesValueFrom += thisDiceValueFrom; // AJOUT
     }
 
@@ -123,7 +116,7 @@ int whoWins(SCell cellFrom, SCell cellTo){
     int dicesValueTo = 0;
     for (int i=0; i<cellTo.nbDices; i++) {
       thisDiceValueTo = randomBounds(1,6); // AJOUT
-      drawScore(1, thisDiceValueTo, i); // AJOUT
+//      drawScore(1, thisDiceValueTo, i); // AJOUT
       dicesValueTo += thisDiceValueTo; // AJOUT
     }
 
@@ -164,3 +157,4 @@ int checkMove(STurn *turn, MapContext *mapContext){
     }
     return authorized;
 }
+
