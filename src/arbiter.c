@@ -70,7 +70,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     }
                 }
                 // On redessine la map
-                drawMap(mapContext->cellsList, mapContext->nbNodes);
+                drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
 
             }
 
@@ -88,7 +88,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     updateMapContext(mapCopy, mapContext);
                     if (continueTurn){
                         runTurn(turn, mapContext);
-                        drawMap(mapContext->cellsList, mapContext->nbNodes);
+                        drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
                     }
 
                 }
@@ -96,6 +96,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
                 //Quand l'ia termine son tour ou coup incorrect
                 giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+                drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
                 playerTurn = (playerTurn + 1) % nbPlayer;
             }
         }
@@ -228,6 +229,8 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
         cellsList[i].y = mapContextToUpdate->cellsList[i].y ;
         cellsList[i].cell = &(mapCopy->cells[i]);
     }
+
+    updateGraph(cellsList, mapContextToUpdate);
 
     free(mapContextToUpdate->cellsList);
     mapContextToUpdate->cellsList = cellsList;

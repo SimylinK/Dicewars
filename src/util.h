@@ -33,5 +33,9 @@ typedef struct PlayerIslets{
     int cellsFull(PlayerIslets *player, MapContext *mapContext);
 
 
+//CHANGEMENT
+void updateGraph(Centre *cellsList, MapContext *mapContext);
+
+
 
 #endif
