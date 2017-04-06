@@ -310,7 +310,6 @@ int cellsFull(PlayerIslets *player, MapContext *mapContext){
 	return full;
 }
 
-//CHANGEMENT
 void updateGraph(Centre *cellsList, MapContext *mapContext){
 	for(int i = 0 ; i < WIDTH ; i++) {
 		for (int j = 0 ; j < HEIGHT ; j++) {
@@ -321,4 +320,3 @@ void updateGraph(Centre *cellsList, MapContext *mapContext){
 		}
 	}
 }
-//CHANGEMENT

@@ -8,7 +8,7 @@
 	#define WHEIGHT 600 //hauteur de la fenetre
 
     #define BORDERLANDR 50 //bord sur les cotés gauche et droite de la map
-    #define BORDERTOP 50 //bord sur le coté haut de la map
+    #define BORDERTOP 80 //bord sur le coté haut de la map
 
     #define WIDTH WWIDTH-BORDERLANDR //largeur de la map = 750
     #define HEIGHT WHEIGHT-100 //hauteur de la map = 500
@@ -16,10 +16,18 @@
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 
-	#define BUTTONX WWIDTH-80-BUTTONW //coordonnée x du centre du bouton
+
+//Caracteristiques du bouton endturn
+	#define BUTTONX WWIDTH+15-BUTTONW //coordonnée x du centre du bouton
 	#define BUTTONY WHEIGHT-50 //coordonnée y du centre du bouton
-	#define BUTTONW 100
-	#define BUTTONH 40
+	#define BUTTONW 130
+	#define BUTTONH 55
+
+//Caracteristiques du logo dicewars
+    #define TITLEX TITLEW+10 //coordonnée x du centre du bouton
+    #define TITLEY TITLEH/2 //coordonnée y du centre du bouton
+    #define TITLEW 230
+    #define TITLEH 78
 
     #define DICESWIDTH 15 //largeur de la fenetre
     #define DICESHEIGHT 15 //hauteur de la fenetre

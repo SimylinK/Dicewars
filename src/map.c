@@ -93,9 +93,16 @@ void drawPixels(SDL_Renderer* renderer, Graph *graph){
                     SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
                     break;
                 default:
-                    printf("Cellule sans owner\n");
+                    printf("Cellule sans owner d'id %d et à [%d][%d]\n", (*graph)[x][y]->id, x, y);
             }
             SDL_RenderDrawPoint(renderer, x, y);
+            if(x == BORDERLANDR || y == BORDERTOP || x == WIDTH-1 || y == HEIGHT-1){
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+                SDL_RenderDrawPoint(renderer, x-1, y-1);SDL_RenderDrawPoint(renderer, x, y-1);SDL_RenderDrawPoint(renderer, x+1, y-1);
+                SDL_RenderDrawPoint(renderer, x-1, y);SDL_RenderDrawPoint(renderer, x, y);SDL_RenderDrawPoint(renderer, x+1, y);
+                SDL_RenderDrawPoint(renderer, x-1, y+1);SDL_RenderDrawPoint(renderer, x, y+1);SDL_RenderDrawPoint(renderer, x+1, y+1);
+            }
+
         }
     }
 }
@@ -204,15 +211,15 @@ void drawScore(int joueur, int diceValue, int i){
 void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
 
 	// On dessine les pixels
-	//drawPixels(renderer, cellsList, nbNodes);
 	drawPixels(renderer, graph);
 	// On dessine les bordures
-	//drawBorders(renderer, cellsList, nbNodes);
     drawBorders(renderer, graph);
 	// On affiche les dés
 	displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
     insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    //On affiche le titre
+    insertPicture("../sprites/dicewars.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);

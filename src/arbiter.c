@@ -42,11 +42,15 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 if (click == -2) {
                     end = 1;
                 } else if (click == -1) {
+
                     //passage au joueur suivant
                     printf("On change de joueur\n");
                     giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
                     playerTurn = (playerTurn + 1) % nbPlayer;
                 } else {
+
+                    SMap *mapCopy;
+                    mapCopy = copyMap(mapContext, nbPlayer);
 
                     //on vérifie que le joueur a cliqué sur la bonne case
                     if (playerTurn != mapContext->map->cells[click].owner) {
@@ -66,6 +70,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                             turn->cellFrom = (unsigned int) cellFrom;
                             turn->cellTo = (unsigned int) cellTo;
                             runTurn(turn, mapContext);
+                            updateMapContext(mapCopy, mapContext);
                         }
                     }
                 }
@@ -221,6 +226,7 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
 void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
 
     destroyMap(mapContextToUpdate->map);
+
     mapContextToUpdate->map = mapCopy;
 
     Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
