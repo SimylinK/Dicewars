@@ -58,12 +58,9 @@ void outputTurn(int cellFrom, int cellTo, int attackWin){
 }
 
 void outputEndGame(int idWin){
-    char victory[9] = "victory  ";
 
     if (file != NULL) {
-        fputs(victory, file);// le séparateur entre 2 résultats
-        fputc(idWin + '0', file);
-        fputc('\n', file);
+        fprintf(file, "victory %d\n", idWin);
     } else {
         printf("Un problème a eu lieu lors de l'écriture des logs.\n");
     }

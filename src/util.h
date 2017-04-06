@@ -32,6 +32,11 @@ typedef struct PlayerIslets{
     void DFS(PlayerIslets *player, SCell cell, int idPlayer);
     int cellsFull(PlayerIslets *player, MapContext *mapContext);
 
+	void freeDl(SInterface *interfaces, int nbIA);
+
+//CHANGEMENT
+void updateGraph(Centre *cellsList, MapContext *mapContext);
+
 
 
 #endif

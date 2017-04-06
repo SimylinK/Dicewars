@@ -5,17 +5,16 @@
 	#include <SDL2/SDL.h>
 
 	void mainMap(MapContext *mapContext);
-	void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer);
 	Centre* generateList(int nbNodes, SMap *map);
-	void drawBorders(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes);
 	void assignNeighbor(int id1, int id2, SMap *map);
-	void drawPixels(SDL_Renderer* renderer, Centre* cellsList, unsigned int nbNodes);
-	void drawMap(Centre* cellsList, unsigned int nbNodes);
+	void drawMap(Centre* cellsList, unsigned int nbNodes, Graph *graph);
 	void destroyWindow(SDL_Window *window, SDL_Renderer* renderer);
 	void drawScore(int joueur, int diceValue, int i);
     SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer);
     void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate);
+    void drawPixels(SDL_Renderer* renderer, Graph *graph);
 
+	void drawBorders(SDL_Renderer* renderer, Graph *graph);
 
 
 	//pour insérer une image BITMAP sur une fenêtre déjà existante /!\ seulement une image bitmap
