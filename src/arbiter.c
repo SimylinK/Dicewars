@@ -96,6 +96,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
                 //Quand l'ia termine son tour ou coup incorrect
                 giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
+                drawMap(mapContext->cellsList, mapContext->nbNodes);
                 playerTurn = (playerTurn + 1) % nbPlayer;
             }
         }
