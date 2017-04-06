@@ -55,7 +55,11 @@ int main(int argc, char *argv[]) {
           }
 
           //appel de gameLoop
-          gameLoop(mapContext, playersRandom, interfaces, nbPlayer);
+          int isFirst = 0, isLast = 0;
+          if (i == 0) isFirst=1;
+          if (i == nbGame-1) isLast=1;
+
+          gameLoop(mapContext, playersRandom, interfaces, nbPlayer, isFirst, isLast);
         }
     }
     return 0;

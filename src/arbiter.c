@@ -3,8 +3,11 @@
 #include "arbiter.h"
 #include "output.h"
 
-void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
-    outputOpen();
+//isFirst vaut 1 si c'est le premier appel de gameLoop, 0 sinon
+//isLast vaut 1 si c'est le dernier appel de gameLoop, 0 sinon
+void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast) {
+    // Cas du premier appel de gameLoop
+    if (isFirst) outputOpen();
 
     outputInit(mapContext->map);
 
@@ -120,7 +123,10 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     }
 
     outputEndGame(players[idGagnant].id); //log
-    outputClose();
+
+    // Cas du dernier appel de gameLoop
+    if (isLast) outputClose();
+
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {

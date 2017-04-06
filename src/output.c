@@ -4,7 +4,7 @@
 FILE *file = NULL;
 
 void outputOpen(){
-    if ((file = fopen("../resultats", "a")) == NULL) {
+    if ((file = fopen("../resultats", "w")) == NULL) {
         printf("L*Erreur : l'ouverture du fichier de sortie a échoué.\n");
     }
 }
@@ -26,8 +26,6 @@ void outputInit(SMap *map){
 }
 
 void outputTurn(int cellFrom, int cellTo, int attackWin){
-    printf("turn %d %d %d\n", cellFrom, cellTo, attackWin);
-
     if (file != NULL) {
         fprintf(file, "turn %d %d %d\n", cellFrom, cellTo, attackWin);
     } else {
