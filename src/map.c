@@ -41,34 +41,9 @@ void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
 
 
 // Colore les pixels de bordure en noir
-void drawBorders(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes){
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
 
-	Centre closer;
-	Centre rightNeighborCloser;
-	Centre downNeighborCloser;
-
-	for (unsigned int x = BORDERLANDR; x < WIDTH - 1; x++) {
-		for (unsigned int y = BORDERTOP; y < HEIGHT - 1; y++) {
-			// Quand on trouve un changement d'id
-			closer = getCloser(cellsList, nbNodes, x, y);
-			rightNeighborCloser = getCloser(cellsList, nbNodes, x+1, y);
-			downNeighborCloser = getCloser(cellsList, nbNodes, x, y+1);
-			if (closer.cell->id != rightNeighborCloser.cell->id)
-			{
-				SDL_RenderDrawPoint(renderer, x, y);	// On dessine en noir
-
-			} else if  (closer.cell->id != downNeighborCloser.cell->id) {
-
-				SDL_RenderDrawPoint(renderer, x, y); // On dessine en noir
-			}
-		}
-	}
-}
-
-void drawBordersAlt(SDL_Renderer* renderer, Graph *graph){
-
+void drawBorders(SDL_Renderer* renderer, Graph *graph){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
 
     for (unsigned int x = BORDERLANDR; x < WIDTH - 1; x++) {
@@ -87,51 +62,7 @@ void drawBordersAlt(SDL_Renderer* renderer, Graph *graph){
     }
 }
 
-/*
-
-// Utiliser SDL_RenderPresent après cette fonction
-void drawPixels(SDL_Renderer* renderer, Centre *cellsList, unsigned int nbNodes){
-	SDL_SetRenderDrawColor(renderer, 205, 181, 205, 255); // Couleur du background
-    SDL_RenderClear(renderer);
-	Centre closer; // Le centre le plus près
-	for (unsigned int x=BORDERLANDR; x<WIDTH; x++){
-		for (unsigned int y=BORDERTOP; y<HEIGHT; y++){
-			closer=getCloser(cellsList, nbNodes, x, y);
-			switch (closer.cell->owner){ // On définit les couleurs des joueurs
-				case 0:
-					SDL_SetRenderDrawColor(renderer, 255, 255, 0,255); // jaune
-					break;
-				case 1:
-					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // blanc
-					break;
-				case 2:
-					SDL_SetRenderDrawColor(renderer, 20, 134, 107, 255); // cyan
-					break;
-				case 3:
-					SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255); // rouge
-					break;
-				case 4:
-					SDL_SetRenderDrawColor(renderer, 0, 66, 100, 255); // bleu
-					break;
-				case 5:
-					SDL_SetRenderDrawColor(renderer, 229, 91, 176, 255); // rose
-					break;
-				case 6:
-					SDL_SetRenderDrawColor(renderer, 255, 60, 4, 255); // orange
-					break;
-				case 7:
-					SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
-					break;
-				default:
-					printf("Cellule sans owner\n");
-			}
-				SDL_RenderDrawPoint(renderer, x, y);
-		}
-	}
-}
-*/
-
-void drawPixelsAlt(SDL_Renderer* renderer, Graph *graph){
+void drawPixels(SDL_Renderer* renderer, Graph *graph){
     SDL_SetRenderDrawColor(renderer, 205, 181, 205, 255); // Couleur du background
     SDL_RenderClear(renderer);
     for (unsigned int x=BORDERLANDR; x<WIDTH; x++){
@@ -274,10 +205,10 @@ void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
 
 	// On dessine les pixels
 	//drawPixels(renderer, cellsList, nbNodes);
-	drawPixelsAlt(renderer, graph);
+	drawPixels(renderer, graph);
 	// On dessine les bordures
 	//drawBorders(renderer, cellsList, nbNodes);
-    drawBordersAlt(renderer, graph);
+    drawBorders(renderer, graph);
 	// On affiche les dés
 	displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"

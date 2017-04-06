@@ -16,7 +16,7 @@
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 
-	#define BUTTONX 80+BUTTONW //coordonnée x du centre du bouton
+	#define BUTTONX WWIDTH-80-BUTTONW //coordonnée x du centre du bouton
 	#define BUTTONY WHEIGHT-50 //coordonnée y du centre du bouton
 	#define BUTTONW 100
 	#define BUTTONH 40
