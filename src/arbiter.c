@@ -1,6 +1,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include "arbiter.h"
+#include "interface.h"
 
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
     // Initialisation des IA
@@ -15,6 +16,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
     //Tableau répertoriant le nombre de cellules de chaque joueurs
     //Permet de connaitre les joueurs éliminés
     int nbPlayersCells[nbPlayer];
+	getNbPlayersCells(nbPlayersCells, nbPlayer, mapContext->map->cells, mapContext->map->nbCells);
 
     int playerTurn = 0;
     int end = 0;
@@ -70,7 +72,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     }
                 }
                 // On redessine la map
-                drawMap(mapContext->cellsList, mapContext->nbNodes);
+//                drawMap(mapContext->cellsList, mapContext->nbNodes);
 
             }
 
@@ -88,7 +90,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     updateMapContext(mapCopy, mapContext);
                     if (continueTurn){
                         runTurn(turn, mapContext);
-                        drawMap(mapContext->cellsList, mapContext->nbNodes);
+//                        drawMap(mapContext->cellsList, mapContext->nbNodes);
                     }
 
                 }
@@ -96,7 +98,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
                 //Quand l'ia termine son tour ou coup incorrect
                 giveReinforcements(mapContext, nbPlayer, playerTurn); // On donne les renforts
-                drawMap(mapContext->cellsList, mapContext->nbNodes);
+//                drawMap(mapContext->cellsList, mapContext->nbNodes);
                 playerTurn = (playerTurn + 1) % nbPlayer;
             }
         }
@@ -106,6 +108,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
     }
     free(turn);
+	destroyMap(mapContext);
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {
@@ -220,9 +223,6 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
 
 void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
 
-    destroyMap(mapContextToUpdate->map);
-    mapContextToUpdate->map = mapCopy;
-
     Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
     for (int i = 0 ; i < mapCopy->nbCells ; i++){
         cellsList[i].x = mapContextToUpdate->cellsList[i].x;
@@ -230,19 +230,28 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
         cellsList[i].cell = &(mapCopy->cells[i]);
     }
 
-    free(mapContextToUpdate->cellsList);
+	// On fait les free
+	destroyMap(mapContextToUpdate);
+
+	mapContextToUpdate->map = mapCopy;
     mapContextToUpdate->cellsList = cellsList;
 }
 
-void destroyMap(SMap *mapToDestroy) {
-    for (int i = 0; i < mapToDestroy->nbCells; i++) {
-        free(mapToDestroy->cells[i].neighbors);
+void destroyMap(MapContext *mapContextToDestroy) {
+	// On détruit la map
+    for (int i = 0; i < mapContextToDestroy->map->nbCells; i++) {
+        free(mapContextToDestroy->map->cells[i].neighbors);
     }
 
-    free(mapToDestroy->cells);
-    free(mapToDestroy->stack);
+    free(mapContextToDestroy->map->cells);
+    free(mapContextToDestroy->map->stack);
 
-    free(mapToDestroy);
+    free(mapContextToDestroy->map);
+
+	// On détruit cellsList
+	free(mapContextToDestroy->cellsList);
+
+
 }
 
 //Met à jour la liste du nombre des cellules de chaque joueur

@@ -54,6 +54,8 @@
 		pfInitGame InitGame;
 		pfPlayTurn PlayTurn;
 		pfEndGame EndGame;
+
+		void *plib;
 	} SInterface;
 
 	typedef struct {

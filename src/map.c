@@ -11,21 +11,21 @@ SDL_Renderer *renderer = NULL;
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 void mainMap(MapContext *mapContext) {
 
-	SDL_Init(SDL_INIT_VIDEO);
-
-	window = SDL_CreateWindow(
-			"Dicewars",                  // window title
-			SDL_WINDOWPOS_UNDEFINED,           // initial x position
-			SDL_WINDOWPOS_UNDEFINED,           // initial y position
-			WWIDTH,                               // width, in pixels
-            WHEIGHT,                               // height, in pixels
-			SDL_WINDOW_SHOWN                  // flags - see below
-	);
-
-	renderer = SDL_CreateRenderer(window, -1, 0);
+//	SDL_Init(SDL_INIT_VIDEO);
+//
+//	window = SDL_CreateWindow(
+//			"Dicewars",                  // window title
+//			SDL_WINDOWPOS_UNDEFINED,           // initial x position
+//			SDL_WINDOWPOS_UNDEFINED,           // initial y position
+//			WWIDTH,                               // width, in pixels
+//            WHEIGHT,                               // height, in pixels
+//			SDL_WINDOW_SHOWN                  // flags - see below
+//	);
+//
+//	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// Boucle d'affichage principale
-	drawMap(mapContext->cellsList, mapContext->nbNodes);
+//	drawMap(mapContext->cellsList, mapContext->nbNodes);
 
 	//Destruction des ressources
 }
