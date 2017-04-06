@@ -7,7 +7,7 @@
 
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30, 60);
+	unsigned int nbNodes = randomBounds(30,60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
@@ -16,7 +16,7 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	for (int i = 0; i < nbNodes; i++) {
 		map->cells[i].neighbors = malloc(nbNodes * sizeof(SCell *));
 	}
-	map->stack = malloc(sizeof(unsigned int) * nbPlayer);
+	map->stack = calloc(nbPlayer, sizeof(unsigned int));
 
 	// On assigne les SCell aux joueurs
 	assignSCell(nbPlayer, nbNodes, map);

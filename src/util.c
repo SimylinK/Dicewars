@@ -113,6 +113,7 @@ int isNeighbor(SCell *cell1, SCell *cell2){
 	}
 	return neighbor;
 }
+
 void printColourOfPlayer(int id){
     switch (id){ // On définit les couleurs des joueurs
         case 0:
@@ -145,18 +146,166 @@ void printColourOfPlayer(int id){
     }
 }
 
-// Génère une matrice d'adjacence
-// Pour la lire, aller pour i de 0 à nbNodes, pour j de i+1 à nbNodes : elle est symétrique à diagonale nulle
-void generateMatrix(MapContext* mapContext, int*** matrix){
+// Fonction qui donne ses renforts à un joueur
+void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
+
+	// On initialise les structures nécessaires
+	PlayerIslets *player = malloc(sizeof(PlayerIslets));
+
+	player->islet = malloc(sizeof(Islet)*mapContext->nbNodes);
+	player->allMyCells = malloc(sizeof(SCell)*mapContext->nbNodes);
+	player->nbIslets = 0;
+	player->nbOfCells = 0;
 
 	for (int i=0; i<mapContext->nbNodes; i++){
-		for (int j=0; j<mapContext->nbNodes; j++){
-			// Si les cellules sont voisines
-			if(isNeighbor(&mapContext->map->cells[i], &mapContext->map->cells[j])){
-				(*matrix)[i][j] = 1;
-			} else{
-				(*matrix)[i][j] = 0;
-			}
+		player->islet[i].cells = malloc(sizeof(SCell)*mapContext->nbNodes);
+		player->islet[i].nbCells = 0;
+	}
+
+
+	int reinforcements = calcReinforcements(player, mapContext , idPlayer);
+
+	// On distribue les renforts
+	int idGiven;
+	int idCell;
+	int dicesStack = mapContext->map->stack[idPlayer];
+
+	for (int i = 0; i < reinforcements; i++) {
+
+		// On vérifie si les cellules ne sont pas toutes pleines et en même temps on enlève celles à 8 dés de allMyCells
+		// On doit le faire à chaque tour
+		if (cellsFull(player, mapContext)) {
+			mapContext->map->stack[idPlayer] += 1;
+            if (mapContext->map->stack[idPlayer] > 40){ // On excède pas 40
+                mapContext->map->stack[idPlayer] = 40;
+            }
+		} else {
+			// On fait un random sur toutes les cellules restantes
+			idGiven = goodRandom((unsigned int) player->nbOfCells-1); // Max est compris dans goodRandom
+
+			// On donne un dé
+			idCell = player->allMyCells[idGiven].id;
+			mapContext->map->cells[idCell].nbDices++;
+
 		}
 	}
+
+	// On donne les dés de la stack s'il reste des cellules à qui donner
+	for (int i = 0; i < dicesStack; i++) {
+		if (!(cellsFull(player, mapContext))){
+			// On fait un random sur toutes les cellules restantes
+			idGiven = goodRandom((unsigned int) player->nbOfCells-1); // Max est compris dans goodRandom
+
+			// On donne un dé
+			idCell = player->allMyCells[idGiven].id;
+			mapContext->map->cells[idCell].nbDices++;
+
+			mapContext->map->stack[idPlayer]--;
+	}
+}
+
+	// On libère les ressources
+//	for (int i=0; i<player->nbIslets; i++){
+//		free(player->islet[i].cells);
+//	}
+//
+//	free(player->allMyCells);
+//	free(player->islet);
+//	free(player);
+}
+
+
+// Fonction qui calcule les renforts d'un joueur ayant l'id : idPlayer
+// On fait le max du nombre de SCell de ses composantes connexes
+int calcReinforcements(PlayerIslets *player, MapContext *mapContext, int idPlayer){
+
+    getAllCells(player, mapContext, idPlayer);
+
+    assembleIslets(player, idPlayer);
+
+	int reinforcements = maxConnex(player);
+
+	return reinforcements;
+}
+
+void getAllCells(PlayerIslets *player, MapContext *mapContext, int idPlayer){
+    int index = 0;
+    for (int i=0; i<mapContext->nbNodes; i++){
+        if (mapContext->map->cells[i].owner == idPlayer){
+            player->allMyCells[index] = mapContext->map->cells[i];
+			player->nbOfCells+=1;
+			index++;
+        }
+    }
+}
+
+void assembleIslets(PlayerIslets *player, int idPlayer){
+	for (int i=0; i<player->nbOfCells; i++){
+		if (!cellInIslet(player, player->allMyCells[i].id)){ // Si la cellule n'a pas été visitée
+			player->nbIslets++; // On a donc une composante connexe en plus
+			DFS(player, player->allMyCells[i], idPlayer);
+		}
+	}
+}
+
+// Parcours en profondeur
+void DFS(PlayerIslets *player, SCell cell, int idPlayer){
+	// On ajoute la cellule a une composante connexe
+	int index = player->nbIslets-1;
+	player->islet[index].cells[player->islet[index].nbCells] =  cell;
+	player->islet[index].nbCells ++;
+
+
+	for (int i=0; i<cell.nbNeighbors; i++){
+			if (cell.neighbors[i]->owner == idPlayer && !cellInIslet(player, cell.neighbors[i]->id)) { // Si la cellule a le bon owner et n'a pas été visitée
+			DFS(player, *(cell.neighbors[i]), idPlayer);
+		}
+	}
+}
+
+int maxConnex(PlayerIslets *player){
+	int max = 0;
+	for (int i = 0; i < player->nbIslets; i++){
+		if (player->islet[i].nbCells>max){
+			max = player->islet[i].nbCells;
+		}
+	}
+	return max;
+}
+
+// Renvoie si la cellule est dans les ilôts du joueur
+int cellInIslet(PlayerIslets *player, int id){
+    int found = 0;
+	for (int i=0; i<player->nbIslets && !found; i++){
+		for (int j=0; j<player->islet[i].nbCells &&!found; j++){
+			if (player->islet[i].cells[j].id == id) {
+				found = 1;
+			}
+		}
+    }
+    return found;
+}
+
+// On check si tout est full, et on enlève les cellules qui ont 8 dés
+int cellsFull(PlayerIslets *player, MapContext *mapContext){
+	int full = 1;
+	SCell *goodTab = malloc(sizeof(SCell)*player->nbOfCells);
+	int index = 0;
+
+	for (int i=0; i<player->nbOfCells; i++){
+		if(mapContext->map->cells[player->allMyCells[i].id].nbDices != 8){
+			full = 0;
+			goodTab[index] = player->allMyCells[i];
+			index++;
+		}
+	}
+	
+	// On réalloue le tableau à la bonne taille
+	goodTab = realloc(goodTab, sizeof(SCell)*index);
+	// On remplace le tableau
+	player->allMyCells = goodTab;
+	// On change le nombre de cellules
+	player->nbOfCells = index;
+
+	return full;
 }
