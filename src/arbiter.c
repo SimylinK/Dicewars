@@ -7,7 +7,17 @@
 //isLast vaut 1 si c'est le dernier appel de gameLoop, 0 sinon
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast) {
     // Cas du premier appel de gameLoop
-    if (isFirst) outputOpen();
+    if (isFirst) {
+        outputOpen();
+
+        //Logs
+        for(int i=0; i<nbPlayer; i++){
+            if(players[i].interface>=0){ // joueur avec IA
+                printf("i : %d\n", i);
+                outputPlayer(players[i].id, players[i].playerInfo);
+            }
+        }
+    }
 
     outputInit(mapContext->map);
 
