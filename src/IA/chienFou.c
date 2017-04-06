@@ -31,12 +31,12 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
 //Attaque si il a plus de cases que l'adversaire
 int PlayTurn(unsigned int id, const SMap *map, STurn *turn){
 
-	int reinforcements = calcReinforcements((SMap *)map, id);
 	for (int i=0; i < map->nbCells; i++){
 		if (map->cells[i].owner == id){
 			for (int j=0; j < map->cells[i].nbNeighbors; j++){
-				if (map->cells[i].neighbors[j]->owner != id //la case attaqué n'appartient pas a l'IA
-				    && map->cells[i].nbDices > map->cells[i].neighbors[j]->nbDices){  //la case de l'IA a plus de dé que l'autre case
+				if (map->cells[i].neighbors[j]->owner != id //la case attaquée n'appartient pas a l'IA
+					&& map->cells[i].nbDices > 1
+				    && map->cells[i].nbDices >= map->cells[i].neighbors[j]->nbDices){  //la case de l'IA a plus de dé que l'autre case
 					//Attaque
 					turn->cellFrom = (unsigned int)map->cells[i].id;
 					turn->cellTo = (unsigned int)map->cells[i].neighbors[j]->id;
@@ -45,7 +45,6 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn){
 			}
 		}
 	}
-
 
 	return 0;
 }
