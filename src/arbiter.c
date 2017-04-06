@@ -33,7 +33,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
             if (players[playerTurn].interface == -1) {
                 //Récupération du choix du joueur
                 //Tour d'un joueur humain
-
                 int click;
                 printf("C'est au joueur %d de jouer : ", playerTurn + 1);
                 printColourOfPlayer(playerTurn);
@@ -102,6 +101,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         }
 
         getNbPlayersCells(nbPlayersCells, nbPlayer, mapContext->map->cells, mapContext->map->nbCells);
+        drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
         if (gameIsOver(nbPlayersCells, nbPlayer)) end = 1;
 
     }
@@ -220,8 +220,7 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
 
 void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
 
-    destroyMap(mapContextToUpdate->map);
-    mapContextToUpdate->map = mapCopy;
+
 
     Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
     for (int i = 0 ; i < mapCopy->nbCells ; i++){
@@ -230,21 +229,27 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
         cellsList[i].cell = &(mapCopy->cells[i]);
     }
 
+
     updateGraph(cellsList, mapContextToUpdate);
 
-    free(mapContextToUpdate->cellsList);
+    destroyMap(mapContextToUpdate);
+    mapContextToUpdate->map = mapCopy;
+
     mapContextToUpdate->cellsList = cellsList;
 }
 
-void destroyMap(SMap *mapToDestroy) {
-    for (int i = 0; i < mapToDestroy->nbCells; i++) {
-        free(mapToDestroy->cells[i].neighbors);
+void destroyMap(MapContext *mapContextToDestroy) {
+    for (int i = 0; i < mapContextToDestroy->nbNodes; i++) {
+        free(mapContextToDestroy->map->cells[i].neighbors);
     }
 
-    free(mapToDestroy->cells);
-    free(mapToDestroy->stack);
+    free(mapContextToDestroy->map->cells);
+    free(mapContextToDestroy->map->stack);
 
-    free(mapToDestroy);
+    free(mapContextToDestroy->map);
+
+    // On detruit cellsList
+    free(mapContextToDestroy->cellsList);
 }
 
 //Met à jour la liste du nombre des cellules de chaque joueur

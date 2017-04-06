@@ -205,7 +205,7 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 }
 
 	// On libère les ressources
-//	for (int i=0; i<player->nbIslets; i++){
+//	for (int i=0; i<mapContext->nbNodes; i++){
 //		free(player->islet[i].cells);
 //	}
 //
@@ -312,13 +312,12 @@ int cellsFull(PlayerIslets *player, MapContext *mapContext){
 
 //CHANGEMENT
 void updateGraph(Centre *cellsList, MapContext *mapContext){
+	int id;
 	for(int i = 0 ; i < WIDTH ; i++) {
 		for (int j = 0 ; j < HEIGHT ; j++) {
-			for (int k = 0 ; k < mapContext->nbNodes ; k++) {
-				if (mapContext->graph[i][j]->id == cellsList[k].cell->id)
-					mapContext->graph[i][j] = cellsList[k].cell;
+			id = mapContext->graph[i][j]->id;
+			mapContext->graph[i][j] = cellsList[id].cell;
 			}
 		}
 	}
-}
 //CHANGEMENT
