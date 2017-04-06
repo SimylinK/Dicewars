@@ -21,10 +21,10 @@ unsigned int randomBounds(unsigned int min, unsigned int max);
 int isNeighbor(SCell *cell1, SCell *cell2);
 
 // Pour les renforts
-int calcReinforcements(SMap *map, int idPlayer);
+int calcReinforcements(const SMap *map, int idPlayer, PlayerIslets* player);
 int maxConnex(PlayerIslets *player);
 int cellInIslet(PlayerIslets *player, int id);
-void getAllCells(PlayerIslets *player, SMap *map, int idPlayer);
+void getAllCells(PlayerIslets *player, const SMap *map, int idPlayer);
 void assembleIslets(PlayerIslets *player, int idPlayer);
 void DFS(PlayerIslets *player, SCell cell, int idPlayer);
 
