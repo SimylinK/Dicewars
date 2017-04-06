@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 			MapContext *mapContext = malloc(sizeof(MapContext));
 			initMap(mapContext, nbPlayer);
 
-//          mainMap(mapContext);
+          mainMap(mapContext);
 
 			// L'ordre des joueurs est aléatoire
 			SPlayer *playersRandom = malloc(sizeof(SPlayer)*nbPlayer);

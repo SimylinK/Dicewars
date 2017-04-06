@@ -27,13 +27,7 @@ int isNeighbor(SCell *cell1, SCell *cell2){
 
 // Fonction qui calcule les renforts d'un joueur ayant l'id : idPlayer
 // On fait le max du nombre de SCell de ses composantes connexes
-int calcReinforcements(const SMap *map, int idPlayer, PlayerIslets* player){
-
-	for (int i=0; i<map->nbCells; i++){
-		player->islet[i].cells = malloc(sizeof(SCell)*map->nbCells);
-		player->islet[i].nbCells = 0;
-	}
-
+int calcReinforcements(const SMap *map, int idPlayer, PlayerIslets *player){
 
 	getAllCells(player, map, idPlayer);
 

@@ -27,11 +27,25 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	//On assigne les voisins
 	neighbors(cellsList, map, nbNodes);
 
-
 	mapContext->map = map;
 	mapContext->cellsList = cellsList;
 	mapContext->nbNodes = nbNodes;
+
+	//Création du graph
+    initGraph(mapContext, cellsList, nbNodes);
+
 	return mapContext;
+}
+
+void initGraph(MapContext *mapContext, Centre *cellsList, unsigned int nbNodes){
+    Centre closer;
+
+    for(int i = 0 ; i < WIDTH ; i++){
+        for(int j = 0 ; j < HEIGHT ; j++){
+            closer = getCloser(cellsList, nbNodes, (unsigned int)i, (unsigned int)j);
+			mapContext->graph[i][j] = (closer.cell);
+        }
+    }
 }
 
 // Assigne les SCell aux joueurs

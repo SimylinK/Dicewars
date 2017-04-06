@@ -40,7 +40,7 @@ unsigned int distRandomBounds(unsigned int dist, unsigned int min, unsigned int 
 }
 
 // Retourne la cellule la plus proche
-Centre getCloser(Centre* cellsList,unsigned int size, unsigned int x, unsigned int y){
+Centre getCloser(Centre* cellsList, unsigned int size, unsigned int x, unsigned int y){
 
 	unsigned int minDist = (unsigned int)abs(cellsList[0].x - x) + abs(cellsList[0].y - y);// Distance de manatthan
 	int minIndex = 0;
@@ -317,4 +317,14 @@ void freeDl(SInterface *interfaces, int nbIA){
 		dlclose(interfaces[i].plib);
 	}
 
+}
+
+void updateGraph(Centre *cellsList, MapContext *mapContext){
+	int id;
+	for (int i = 0; i < WIDTH; i++) {
+		for (int j = 0; j < HEIGHT; j++) {
+			id = mapContext->graph[i][j]->id;
+			mapContext->graph[i][j] = cellsList[id].cell;
+		}
+	}
 }
