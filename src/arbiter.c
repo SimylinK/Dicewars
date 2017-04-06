@@ -6,6 +6,16 @@
 //isFirst vaut 1 si c'est le premier appel de gameLoop, 0 sinon
 //isLast vaut 1 si c'est le dernier appel de gameLoop, 0 sinon
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast) {
+
+    // Initialisation des IA
+    for (int i=0; i<nbPlayer; i++) {
+        if (players[i].interface != -1){
+            SPlayerInfo info;
+            interfaces[players[i].interface].InitGame(i, nbPlayer, &info);
+            players[i].playerInfo = info;
+        }
+    }
+
     // Cas du premier appel de gameLoop
     if (isFirst) {
         outputOpen();
@@ -19,16 +29,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         }
     }
 
-    outputInit(mapContext->map);
-
-    // Initialisation des IA
-    for (int i=0; i<nbPlayer; i++) {
-        if (players[i].interface != -1){
-            SPlayerInfo info;
-            interfaces[players[i].interface].InitGame(i, nbPlayer, &info);
-            players[i].playerInfo = info;
-        }
-    }
+    outputInit(mapContext->map); //Logs
 
     //Tableau répertoriant le nombre de cellules de chaque joueurs
     //Permet de connaitre les joueurs éliminés

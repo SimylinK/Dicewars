@@ -24,6 +24,8 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
 	strcpy(info->members[1], "Le Priol Yoann");
 	strcpy(info->members[2], "Maraval Nathan");
 	strcpy(info->members[3], "Pagano Lucas");
+	strcpy(info->members[4], "");
+	strcpy(info->members[5], "");
 }
 
 //Attaque si il a plus de cases que l'adversaire

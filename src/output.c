@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "output.h"
 
 FILE *file = NULL;
@@ -16,12 +17,13 @@ void outputClose(){
 //Affiche info sur les IA
 void outputPlayer(int id, SPlayerInfo player){
     if (file != NULL) {
-        fprintf(file, "player %d %s", id, player.name);
+        int nameLen = strlen(player.name);
+        fprintf(file, "player %d %d %s", id, nameLen, player.name);
 
         //affichage du nom des créateurs de l'IA
         for(int i=0; i<6; i++){ //6 vient de members[6][50] de interface.h, il faudrait pouvoir mettre une variable globale dans interface.h
-            fputc(' ', file);
-            fputs(player.members[i], file);
+            int memberLen = strlen(player.members[i]);
+            fprintf(file, " %d %s", memberLen, player.members[i]);
         }
         fputc('\n', file);
 
