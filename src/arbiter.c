@@ -107,6 +107,16 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
     }
     free(turn);
+
+    //Pour déterminer le gagnant
+    int idGagnant = -1;
+    int i = 0;
+    while(idGagnant == -1){
+      if(nbPlayersCells[i] > 0) idGagnant = i;
+      i++;
+    }
+
+    outputEndGame(players[idGagnant].id); //log
 }
 
 void runTurn(STurn *turn, MapContext *mapContext) {
