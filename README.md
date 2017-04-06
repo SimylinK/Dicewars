@@ -6,10 +6,14 @@ Projet C d'une IA et interface graphique pour le jeu Dicewars : https://jayisgam
 Règles implicites :
 
         Map : Graphe planaire avec une seule composante connexe. de 30 à 60 sommets.
-        Choix du nombre de sommet quasi uniforme par équipe (différence max de 1)
+        Choix du nombre de sommets quasi uniforme par équipe (différence max de 1)
         Répartition aléatoire du nombre de dés par sommet d'une équipe (avec au min 1 dé par sommet)
         Pile de dés de 40 éléments maximum
         Pas de temps max à contrôler par tour (mais restez raisonnables !)
+
+Pour les logs :
+        Le chemin vers le fichier de sortie est modifiable dans le fichier src/output
+        Il est défini par la macro OUTPUTFILE
 
 
 Pour compiler une bibliothèque dynamique :

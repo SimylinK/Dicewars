@@ -5,8 +5,8 @@
 FILE *file = NULL;
 
 void outputOpen(){
-    if ((file = fopen("../resultats", "w")) == NULL) {
-        printf("L*Erreur : l'ouverture du fichier de sortie a échoué.\n");
+    if ((file = fopen(OUTPUTFILE, "w")) == NULL) {
+        printf("Erreur : l'ouverture du fichier de sortie a échoué.\n");
     }
 }
 
