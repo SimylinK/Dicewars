@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "output.h"
 
 FILE *file = NULL;
 
@@ -12,9 +13,21 @@ void outputClose(){
     if (file != NULL)  fclose(file);
 }
 
+void outputInit(SMap *map){
+    for (int i=0; i<map->nbCells; i++){
+        fprintf(file, "cell %d %d %d %d", map->cells[i].id, map->cells[i].owner, map->cells[i].nbDices, map->cells[i].nbNeighbors);
+
+        //affichage des ids des cellules voisines
+        for(int j=0; j<map->cells[i].nbNeighbors; j++){
+            fprintf(file, " %d", map->cells[i].neighbors[j]->id);
+        }
+        fputc('\n', file);
+    }
+}
+
 void outputTurn(int cellFrom, int cellTo, int attackWin){
     printf("turn %d %d %d\n", cellFrom, cellTo, attackWin);
-    
+
     if (file != NULL) {
         fprintf(file, "turn %d %d %d\n", cellFrom, cellTo, attackWin);
     } else {

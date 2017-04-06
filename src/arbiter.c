@@ -6,6 +6,8 @@
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer) {
     outputOpen();
 
+    outputInit(mapContext->map);
+
     // Initialisation des IA
     for (int i=0; i<nbPlayer; i++) {
         if (players[i].interface != -1){

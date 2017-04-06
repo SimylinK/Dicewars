@@ -22,7 +22,7 @@ init.o: init.c init.h interface.h
 arbiter.o: arbiter.c arbiter.h interface.h
 	$(CC) $(CFLAGS) -c arbiter.c -o arbiter.o -lm
 
-output.o: output.c output.h
+output.o: output.c output.h interface.h
 	$(CC) $(CFLAGS) -c output.c -o output.o -lm
 
 clean:
