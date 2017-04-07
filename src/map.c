@@ -209,6 +209,8 @@ void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
 	displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
     insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    //On affiche le titre
+    insertPicture("../sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);
