@@ -50,8 +50,11 @@ int main(int argc, char *argv[]) {
 				while (associate[rand]==1){
 					rand = (rand+1)%nbPlayer;
 				}
-				playersRandom[rand]=players[j];
-				associate[rand]=1;
+				//TODO : les ligne suivante a été changé pour les tests
+				//playersRandom[rand]=players[j];
+				//associate[rand]=1;
+				playersRandom[j]=players[j];
+				associate[j]=1;
 			}
 
 			//appel de gameLoop
