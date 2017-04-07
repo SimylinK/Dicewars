@@ -1,10 +1,10 @@
 #ifndef _ARBITER_H
 #define _ARBITER_H
 
-    #include "init.h"
-    #include "interface.h"
-    #include "map.h"
-    #include "util.h"
+    #include "utils/interface.h"
+    #include "display/map.h"
+    #include "utils/init.h"
+    #include "utils/util.h"
 
 
 	void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast);

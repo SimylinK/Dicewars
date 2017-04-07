@@ -1,7 +1,7 @@
 #ifndef DICEWARS_INIT_H
 #define DICEWARS_INIT_H
 
-	#include "interface.h"
+	#include "../utils/interface.h"
 
 	// Initialisation de la map
 	#define WWIDTH 800 //largeur de la fenetre

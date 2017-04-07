@@ -1,8 +1,8 @@
 #include <malloc.h>
 #include <stdio.h>
+
 #include "arbiter.h"
-#include "output.h"
-#include "interface.h"
+#include "logs/output.h"
 
 
 //isFirst vaut 1 si c'est le premier appel de gameLoop, 0 sinon
