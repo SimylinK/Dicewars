@@ -5,7 +5,6 @@
 #include "init.h"
 #include "util.h"
 
-
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
 	unsigned int nbNodes = randomBounds(30, 60);
