@@ -2,7 +2,7 @@
 #define DICEWARS_PROBA_H
 
 // Tableau des probabiltés des lancers de dés
-// tabProbas[0][1] : 0 attaque, 1 défend
+// tabProbas[0][1] : 0 défend, 1 attaque
 double tabProbas[8][8] = {{0.41, 0.83, 0.97, 0.99, 0.99, 0.99, 1.00, 1.00},
                           {0.09, 0.44, 0.78, 0.94, 0.98, 0.99, 0.99, 0.99},
                           {0.01, 0.15, 0.45, 0.74, 0.90, 0.97, 0.99, 0.99},

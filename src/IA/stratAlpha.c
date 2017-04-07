@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "../interface.h"
 #include "utilIA.h"
 #include "proba.h"
@@ -78,6 +79,7 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 		for (int i=0; i<numberOfPlayableTurns; i++) {
 			idFrom = playableTurns[i].cellFrom;
 			idTo = playableTurns[i].cellTo;
+
 			if (map->cells[idFrom].nbDices > map->cells[idTo].nbDices){
 				playableTurns[numberOfPlayableTurns].cellFrom = (unsigned int) map->cells[idFrom].id;;
 				playableTurns[numberOfPlayableTurns].cellTo = (unsigned int) map->cells[idTo].id;
@@ -93,8 +95,8 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 	int nbBestTurns = pickBestTurns(player, playableTurns, bestTurns, numberOfPlayableTurns, map, id, reinforcements);
 
 	// On cherche la meilleure probabilité, selon s'il existe des bestTurns ou non
-	int bestFrom;
-	int bestTo;
+	int bestFrom = 0;
+	int bestTo = 0;
 	double bestProb = 0;
 
 	if (nbBestTurns<0){
@@ -108,18 +110,20 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 			}
 		}
 	} else {
-		for (int i=0; i<numberOfPlayableTurns; i++){
+		for (int i = 0; i < numberOfPlayableTurns; i++) {
 			idFrom = playableTurns[i].cellFrom;
 			idTo = playableTurns[i].cellTo;
-			if(tabProbas[map->cells[idFrom].nbDices-1][map->cells[idFrom].nbDices-1]>bestProb){
+			printf("best : %f\n", bestProb);
+			if ((tabProbas[map->cells[idTo].nbDices - 1][map->cells[idFrom].nbDices - 1]) > bestProb) {
 				bestFrom = idFrom;
 				bestTo = idTo;
 				playAgain = 1;
+				bestProb = tabProbas[map->cells[idTo].nbDices - 1][map->cells[idFrom].nbDices - 1];
 			}
 		}
 	}
 
-
+	printf("J'ai %i des et j'attaque une cellule à %i dés\n", map->cells[bestFrom].nbDices, map->cells[bestTo].nbDices);
 	turn->cellTo = (unsigned int)bestTo; // Si non initialisé, on renvoie 0, donc pas de problème
 	turn->cellFrom = (unsigned int)bestFrom;
 
@@ -135,6 +139,7 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 	free(player->islet);
 	free(player);
 
+	sleep(5);
 	return playAgain ;
 }
 
