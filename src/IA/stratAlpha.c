@@ -67,7 +67,7 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 			}
 		}
 	}
-	
+
 	int idFrom;
 	int idTo;
 	// On élimine les coups à dés égaux si la stack est sous 8
@@ -94,11 +94,11 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 	int bestFrom;
 	int bestTo;
 
-	int bestProb = 0;
+	double bestProb = 0;
 	for (int i=0; i<numberOfPlayableTurns; i++){
 		idFrom = playableTurns[i].cellFrom;
 		idTo = playableTurns[i].cellTo;
-		if(tabProbas[map->cells[idFrom].nbDices][map->cells[idFrom].nbDices]>bestProb){
+		if(tabProbas[map->cells[idFrom].nbDices-1][map->cells[idFrom].nbDices-1]>bestProb){
 			bestFrom = idFrom;
 			bestTo = idTo;
 			playAgain = 1;
