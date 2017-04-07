@@ -57,6 +57,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 int click;
                 printf("C'est au joueur %d de jouer : ", playerTurn + 1);
                 printColourOfPlayer(playerTurn);
+                drawMapTurn(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn);
                 click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
 
                 if (click == -2) {

@@ -39,7 +39,37 @@ void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
 	//TODO : des free ?
 }
 
-
+void drawDiceOfPlayer(int id){
+    switch (id){ // On définit les couleurs des joueurs
+        case 0:
+            insertPicture("../sprites/yellowdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 1:
+            insertPicture("../sprites/whitedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 2:
+            insertPicture("../sprites/cyandice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 3:
+            insertPicture("../sprites/reddice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 4:
+            insertPicture("../sprites/bluedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 5:
+            insertPicture("../sprites/pinkdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 6:
+            insertPicture("../sprites/orangedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        case 7:
+            insertPicture("../sprites/greendice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            break;
+        default:
+            printf("Pas de couleur\n");
+            break;
+    }
+}
 
 void drawBorders(SDL_Renderer* renderer, Graph *graph){
 
@@ -206,18 +236,34 @@ void drawScore(int joueur, int diceValue, int i){
 }
 
 
-void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
+void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph) {
 
-	// On dessine les pixels
-	drawPixels(renderer, graph);
-	// On dessine les bordures
+    // On dessine les pixels
+    drawPixels(renderer, graph);
+    // On dessine les bordures
     drawBorders(renderer, graph);
-	// On affiche les dés
-	displayDices(window, cellsList, nbNodes);
+    // On affiche les dés
+    displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
     insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
     //On affiche le titre
     insertPicture("../sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
+}
+
+void drawMapTurn(Centre *cellsList, unsigned int nbNodes, Graph *graph, int id){
+
+    // On dessine les pixels
+    drawPixels(renderer, graph);
+    // On dessine les bordures
+    drawBorders(renderer, graph);
+    // On affiche les dés
+    displayDices(window, cellsList, nbNodes);
+    //On ajoute le bouton "tour suivant"
+    insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    //On affiche le titre
+    insertPicture("../sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
+    //On affiche le dé coloré du joueur à qui c'est le tour
+    drawDiceOfPlayer(id);
 
 	SDL_RenderPresent(renderer);
 	SDL_RenderClear(renderer);
