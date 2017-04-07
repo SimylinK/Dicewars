@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "map.h"
 #include "util.h"
-#include "interface.h"
 #include <time.h>
 
 SDL_Window *window = NULL;
@@ -164,7 +163,7 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
 
 
 void drawScore(int joueur, int diceValue, int i){
-	
+
 	int positionY;
 	int positionX = BUTTONX+60+20*i;
 	int largeurDes = DICESWIDTH*2;
