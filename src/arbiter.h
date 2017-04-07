@@ -3,8 +3,8 @@
 
     #include "utils/util.h"
 
-    int checkMove(STurn *turn, MapContext *mapContext);
     int whoWins(SCell cellFrom, SCell cellTo);
+    int checkMove(STurn *turn, MapContext *mapContext);
     void getNbPlayersCells(int *nbPlayersCells, int nbOlayer, SCell *cells, int nbCells);
     int gameIsOver(int *nbPlayersCells, int nbPlayer);
 

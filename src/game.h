@@ -6,7 +6,7 @@
     #include "utils/init.h"
 
     void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast);
-    void runTurn(STurn *turn, MapContext *mapContext);
+	void runTurn(STurn *turn, MapContext *mapContext);
     void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
     void destroyMap(MapContext *mapContextToDestroy);
 

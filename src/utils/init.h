@@ -81,5 +81,4 @@
 	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
 
 
-
 #endif //DICEWARS_INIT_H

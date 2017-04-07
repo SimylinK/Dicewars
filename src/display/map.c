@@ -3,7 +3,6 @@
 #include <time.h>
 
 #include "map.h"
-
 #include "../utils/util.h"
 
 SDL_Window *window = NULL;
@@ -205,7 +204,6 @@ void drawScore(int joueur, int diceValue, int i){
 
 	SDL_RenderPresent(renderer);
 }
-
 
 void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
 

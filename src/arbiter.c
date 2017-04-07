@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "arbiter.h"
 
+
 //renvoie l'id de la cellule gagnant le lancé de dé
 int whoWins(SCell cellFrom, SCell cellTo){
     int thisDiceValueFrom = 0;
