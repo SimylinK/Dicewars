@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "utilIA.h"
+#include "../interface.h"
 
 // Retourne un unsigned int entre 0 et max compris
 unsigned int goodRandom(unsigned int max) {
@@ -35,7 +37,7 @@ int calcReinforcements(const SMap *map, int idPlayer, PlayerIslets *player){
 
 	int reinforcements = maxConnex(player);
 
-	return reinforcements;
+	return reinforcements + map->stack[idPlayer];
 }
 
 
@@ -95,4 +97,66 @@ int cellInIslet(PlayerIslets *player, int id){
 		}
 	}
 	return found;
+}
+
+// On regarde quand on augmente notre nombre de renforts
+int pickBestTurns(PlayerIslets *player, STurn *playableTurns, STurn *bestTurns, int nbOfPlayableTurns, const SMap *map, int idPlayer, int reinforcements){
+	int nbBestTurns = 0;
+
+	//On clone le joueur
+	PlayerIslets *player2 = malloc(sizeof(PlayerIslets));
+	clonePlayer(player, player2, map->nbCells);
+
+	int tempOwner;
+	int reinforcements2;
+	// Si on joue le tour, est-ce que notre nombre de renforts augmente ?
+	for (int i=0; i<nbOfPlayableTurns; i++){
+		tempOwner = map->cells[playableTurns[i].cellTo].owner;
+		map->cells[playableTurns[i].cellTo].owner = idPlayer;
+		// On remplit player 2
+		calcReinforcements(map, idPlayer, player2);
+		if(maxConnex(player2) -1 > maxConnex(player)){ // On ne compte pas la cellule qu'on s'est donnée manuellement
+			bestTurns[nbBestTurns].cellTo = (unsigned int)map->cells[playableTurns[i].cellTo].id;
+			bestTurns[nbBestTurns].cellFrom = (unsigned int)map->cells[playableTurns[i].cellFrom].id;
+			nbBestTurns++;
+		}
+		resetPlayer(player2);
+		map->cells[playableTurns[i].cellTo].owner = tempOwner;
+	}
+
+	freePlayer(player2, map->nbCells);
+
+	return nbBestTurns;
+}
+
+void clonePlayer(PlayerIslets *playerToClone, PlayerIslets *playerCloned, int nbCells){
+
+	playerCloned->islet = malloc(sizeof(Islet)*nbCells);
+	playerCloned->allMyCells = malloc(sizeof(SCell)*nbCells);
+	playerCloned->nbIslets = 0;
+	playerCloned->nbOfCells = 0 ;
+
+	for (int i=0; i<nbCells; i++){
+		playerCloned->islet[i].cells = malloc(sizeof(SCell)*nbCells);
+		playerCloned->islet[i].nbCells = 0;
+	}
+}
+
+void freePlayer(PlayerIslets *player, int nbCells){
+	for (int i=0; i<nbCells; i++){
+		free(player->islet[i].cells);
+	}
+
+	free(player->allMyCells);
+	free(player->islet);
+	free(player);
+}
+
+// Reset seulement les indices, pour ne pas avoir à faire de free et être plus rapide
+void resetPlayer(PlayerIslets *player){
+	player->nbOfCells = 0;
+	for (int i=0; i<player->nbIslets; i++){
+		player->islet[i].nbCells = 0;
+	}
+	player->nbIslets = 0;
 }

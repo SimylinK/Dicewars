@@ -28,4 +28,10 @@ void getAllCells(PlayerIslets *player, const SMap *map, int idPlayer);
 void assembleIslets(PlayerIslets *player, int idPlayer);
 void DFS(PlayerIslets *player, SCell cell, int idPlayer);
 
+// L'ia en elle-même
+int pickBestTurns(PlayerIslets *player, STurn *playableTurns, STurn *bestTurns, int nbOfPlayableTurns, const SMap *map, int id, int reinforcements);
+void clonePlayer(PlayerIslets *playerToClone, PlayerIslets *playerCloned, int nbCells);
+void freePlayer(PlayerIslets *player, int nbCells);
+void resetPlayer(PlayerIslets *player);
+
 #endif //DICEWARS_UTILIA_H
