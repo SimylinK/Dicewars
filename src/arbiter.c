@@ -25,7 +25,6 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
         //Logs
         for(int i=0; i<nbPlayer; i++){
             if(players[i].interface>=0){ // joueur avec IA
-                printf("i : %d\n", i);
                 outputPlayer(players[i].id, players[i].playerInfo);
             }
         }

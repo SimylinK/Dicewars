@@ -18,7 +18,7 @@ void InitGame(unsigned int id, unsigned int nbPlayer, SPlayerInfo *info){
 	contexte.id = id;
 	contexte.nbPlayer = nbPlayer;
 
-	strcpy(info->name, "Le chien fou");
+	strcpy(info->name, "Strat alpha");
 
 	strcpy(info->members[0], "Monvoisin Mathilde");
 	strcpy(info->members[1], "Le Priol Yoann");
@@ -48,39 +48,59 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 
 	STurn *playableTurns = malloc(sizeof(STurn)*(player->nbOfCells)*(map->nbCells-player->nbOfCells));
 
-	int cellFrom;
-	int cellTo;
+
 	int playAgain = 0;
 	int numberOfPlayableTurns = 0;
 	// On évalue seulement les tours "jouables" -> voir les if
-	for (int i=0; i < map->nbCells; i++){
-		// On vérifie si on est l'owner et on initialise cellFrom
-		if ((cellFrom = map->cells[i].owner)){
-			for (int j=0; j < map->cells[i].nbNeighbors; j++){
-				// On vérifie si on attaque une cellule dont on est pas l'owner, et on initialise cellTo
-				if(cellFrom != (cellTo = map->cells[i].neighbors[j]->owner)
-				    && tabProbas[cellFrom][cellTo] >= 0.74 // Si on a + de 74% de chances de gagner le coup
-					&& map->cells[cellFrom].nbDices > 1){
-
-					playableTurns[numberOfPlayableTurns].cellFrom = (unsigned int)cellFrom;
-					playableTurns[numberOfPlayableTurns].cellTo = (unsigned int)cellTo;
+	for (int i = 0; i < map->nbCells; i++) {
+		// On vérifie si on est l'owner et si la cellule a plus d'un dé
+		if (id == (unsigned int) map->cells[i].owner && map->cells[i].nbDices > 1) {
+			for (int j = 0; j < map->cells[i].nbNeighbors; j++) {
+				// On vérifie si on attaque une cellule dont on est pas l'owner
+				if (map->cells[i].neighbors[j]->owner != id
+					// On élimine au passage les coups pour lesquels on a moins de dés que l'adversaire
+						&& map->cells[i].nbDices >=  map->cells[i].neighbors[j]->nbDices){
+					playableTurns[numberOfPlayableTurns].cellFrom = (unsigned int) map->cells[i].id;;
+					playableTurns[numberOfPlayableTurns].cellTo = (unsigned int) map->cells[i].neighbors[j]->id;;
 					numberOfPlayableTurns++;
 				}
 			}
 		}
 	}
+	
+	int idFrom;
+	int idTo;
+	// On élimine les coups à dés égaux si la stack est sous 8
+	if (map->stack[id]<8){
+		int numberOfPlayableTurns2 = 0;
+		for (int i=0; i<numberOfPlayableTurns; i++) {
+			idFrom = playableTurns[i].cellFrom;
+			idTo = playableTurns[i].cellTo;
+			if (map->cells[idFrom].nbDices > map->cells[idTo].nbDices){
+				playableTurns[numberOfPlayableTurns].cellFrom = (unsigned int) map->cells[idFrom].id;;
+				playableTurns[numberOfPlayableTurns].cellTo = (unsigned int) map->cells[idTo].id;
+				numberOfPlayableTurns2++;
+			}
+
+		}
+		numberOfPlayableTurns = numberOfPlayableTurns2;
+	}
 
 
-	// On cherche le meilleur tour
+
+
+
+	// On cherche la meilleure probabilité
 	int bestFrom;
 	int bestTo;
+
 	int bestProb = 0;
 	for (int i=0; i<numberOfPlayableTurns; i++){
-		cellFrom = playableTurns[i].cellFrom;
-		cellTo = playableTurns[i].cellTo;
-		if(tabProbas[cellFrom][cellTo]>bestProb){
-			bestFrom = cellFrom;
-			bestTo = cellTo;
+		idFrom = playableTurns[i].cellFrom;
+		idTo = playableTurns[i].cellTo;
+		if(tabProbas[map->cells[idFrom].nbDices][map->cells[idFrom].nbDices]>bestProb){
+			bestFrom = idFrom;
+			bestTo = idTo;
 			playAgain = 1;
 		}
 	}
