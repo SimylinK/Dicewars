@@ -9,7 +9,7 @@
 	void assignNeighbor(int id1, int id2, SMap *map);
 	void drawMap(Centre* cellsList, unsigned int nbNodes, Graph *graph);
 	void destroyWindow(SDL_Window *window, SDL_Renderer* renderer);
-	void drawScore(int joueur, int diceValue, int i);
+	void drawScore(Score *resultats);
     SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer);
     void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate);
     void drawPixels(SDL_Renderer* renderer, Graph *graph);

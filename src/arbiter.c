@@ -150,12 +150,19 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 void runTurn(STurn *turn, MapContext *mapContext) {
     int idWinner;
     int idLoser;
+    Score resultatDes[5];
 
     //si le coup est autorisé
     if (checkMove(turn, mapContext)) {
 
-        //on lance les dés pour savoir qui est le gagnant
-        idWinner = whoWins(mapContext->map->cells[turn->cellFrom], mapContext->map->cells[turn->cellTo]);
+	//on lance les dés
+	lancerDes(mapContext->map->cells[turn->cellFrom], mapContext->map->cells[turn->cellTo], resultatDes);
+
+	//on affiche les scores réalisés dans la fenêtre
+	drawScore(resultatDes);
+
+	//on regarde qui a gagné
+        idWinner = whoWins(mapContext->map->cells[turn->cellFrom], mapContext->map->cells[turn->cellTo], resultatDes);;
         int attackWin = 1;
 
         if (idWinner == turn->cellFrom) {
@@ -172,22 +179,28 @@ void runTurn(STurn *turn, MapContext *mapContext) {
     }
 }
 
-//renvoie l'id de la cellule gagnant le lancé de dé
-int whoWins(SCell cellFrom, SCell cellTo){
-    int thisDiceValueFrom = 0;
-    int dicesValueFrom = 0;
+//effectue les lancers en attaque et en defense
+void lancerDes(SCell cellFrom, SCell cellTo, Score score[]){
+
+
     for (int i=0; i<cellFrom.nbDices; i++) {
-        thisDiceValueFrom = randomBounds(1,6); // AJOUT
-        //      drawScore(0, thisDiceValueFrom, i); // AJOUT
-        dicesValueFrom += thisDiceValueFrom; // AJOUT
+      score[i].diceValueFrom = randomBounds(1,6);    
     }
 
-    int thisDiceValueTo = 0;
-    int dicesValueTo = 0;
     for (int i=0; i<cellTo.nbDices; i++) {
-        thisDiceValueTo = randomBounds(1,6); // AJOUT
-        //      drawScore(1, thisDiceValueTo, i); // AJOUT
-        dicesValueTo += thisDiceValueTo; // AJOUT
+      score[i].diceValueTo = randomBounds(1,6);    
+    }
+}
+
+//renvoie l'id de la cellule gagnant le lancé de dé
+int whoWins(SCell cellFrom, SCell cellTo, Score score[]){
+
+    int dicesValueFrom = 0;
+    int dicesValueTo = 0;
+
+    for (int i=0; i<cellFrom.nbDices; i++) {
+	dicesValueFrom += score[i].diceValueFrom;
+	dicesValueTo += score[i].diceValueTo;
     }
 
     if(dicesValueFrom > dicesValueTo) {

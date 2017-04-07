@@ -9,7 +9,8 @@
 
 	void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast);
 	void runTurn(STurn *turn, MapContext *mapContext);
-	int whoWins(SCell cellFrom, SCell cellTo);
+	void lancerDes(SCell cellFrom, SCell cellTo, Score *score);
+	int whoWins(SCell cellFrom, SCell cellTo, Score *score);
 	void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin);
 	int checkMove(STurn *turn, MapContext *mapContext);
 	void destroyMap(MapContext *mapContextToDestroy);

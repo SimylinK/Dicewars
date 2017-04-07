@@ -80,6 +80,9 @@
 
 	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
 
-
+	typedef struct {
+		int diceValueFrom;
+		int diceValueTo;
+	} Score;
 
 #endif //DICEWARS_INIT_H

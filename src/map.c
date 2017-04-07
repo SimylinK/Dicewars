@@ -162,48 +162,80 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
 }
 
 
-void drawScore(int joueur, int diceValue, int i){
+void drawScore(Score *resultats){
+	
+	for (int i=0; i<sizeof(resultats); i++) {
 
-	int positionY;
+	int positionY = BUTTONY;
 	int positionX = BUTTONX+60+20*i;
 	int largeurDes = DICESWIDTH*2;
 	int hauteurDes = DICESHEIGHT*2;
+	int resultat1, resultat2;	
 
-	if (joueur == 0){
-        positionY = BUTTONY-20;
-    } else {
-        positionY = BUTTONY+20;
-    }
 
-	switch (diceValue) {
-        case 1:
-            insertPicture("../sprites/1.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
+	resultat1 = resultats[i].diceValueFrom;
 
-        case 2:
-            insertPicture("../sprites/2.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
+	switch (resultat1) {
 
-        case 3:
-            insertPicture("../sprites/3.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
+	        case 1:
+            	    insertPicture("../sprites/1.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
 
-        case 4:
-            insertPicture("../sprites/4.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
+		case 2:
+            	    insertPicture("../sprites/2.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
 
-        case 5:
-            insertPicture("../sprites/5.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
+		case 3:
+            	    insertPicture("../sprites/3.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
 
-        case 6:
-            insertPicture("../sprites/6.bmp", window, positionX, positionY, largeurDes, hauteurDes);
-            break;
-    }
+		case 4:
+            	    insertPicture("../sprites/4.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
 
-	SDL_RenderPresent(renderer);
+		case 5:
+            	    insertPicture("../sprites/5.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
+
+		case 6:
+            	    insertPicture("../sprites/6.bmp", window, positionX, positionY+20, largeurDes, hauteurDes);
+               	break;
+
+		}
+
+	
+	resultat2 = resultats[i].diceValueTo;
+
+	switch (resultat2) {
+
+	        case 1:
+            	    insertPicture("../sprites/1.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		case 2:
+            	    insertPicture("../sprites/2.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		case 3:
+            	    insertPicture("../sprites/3.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		case 4:
+            	    insertPicture("../sprites/4.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		case 5:
+            	    insertPicture("../sprites/5.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		case 6:
+            	    insertPicture("../sprites/6.bmp", window, positionX, positionY-20, largeurDes, hauteurDes);
+               	break;
+
+		}
+
+	    }
 }
-
 
 void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph){
 
