@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
 		unsigned int nbGame = (unsigned int)atoi(argv[1]);
 		unsigned int nbPlayer = (unsigned int) atoi(argv[2]);
 		// Le nombre d'humains
-		//TODO : gérer variable nbHumans (elle est recalculé dans la fonction initPlayers)
 		int nbHumans = nbPlayer - argc + 3;
 
 		// Initialisation des joueurs via interfaces
@@ -52,11 +51,8 @@ int main(int argc, char *argv[]) {
 				while (associate[rand]==1){
 					rand = (rand+1)%nbPlayer;
 				}
-				//TODO : les ligne suivante a été changé pour les tests
-				//playersRandom[rand]=players[j];
-				//associate[rand]=1;
-				playersRandom[j]=players[j];
-				associate[j]=1;
+				playersRandom[rand]=players[j];
+				associate[rand]=1;
 			}
 
 			//appel de gameLoop
