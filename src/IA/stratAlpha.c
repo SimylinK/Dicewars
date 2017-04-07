@@ -98,8 +98,8 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 	int bestTo = 0;
 	double bestProb = 0;
 
-    if (bestTurns>0){
-		for (int i=0; i<10; i++){
+    if (nbBestTurns>0){
+		for (int i=0; i<nbBestTurns; i++){
 			idFrom = bestTurns[i].cellFrom;
 			idTo = bestTurns[i].cellTo;
 			if(tabProbas[map->cells[idTo].nbDices-1][map->cells[idFrom].nbDices-1]>bestProb){

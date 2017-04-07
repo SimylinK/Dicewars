@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "utilIA.h"
-#include "../interface.h"
+#include "../utils/interface.h"
 
 // Retourne un unsigned int entre 0 et max compris
 unsigned int goodRandom(unsigned int max) {

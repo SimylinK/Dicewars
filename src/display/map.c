@@ -37,8 +37,6 @@ void destroyWindow() {
 
 }
 
-
-
 void drawBorders(SDL_Renderer* renderer, Graph *graph){
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
@@ -90,7 +88,7 @@ void drawPixels(SDL_Renderer* renderer, Graph *graph){
                     SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
                     break;
                 default:
-                    printf("Cellule sans owner\n");
+                    break;
             }
             SDL_RenderDrawPoint(renderer, x, y);
             if(x == BORDERLANDR || y == BORDERTOP || x == WIDTH-1 || y == HEIGHT-1){
@@ -154,7 +152,6 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
                 insertPicture("sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
 			default:
-				printf("Cellule sans de\n");
 				break;
         }
     }
