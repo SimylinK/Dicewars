@@ -92,28 +92,28 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 
 	// On choisit les tours qui sont meilleurs : on essaie de relier nos composantes connexes
 	STurn *bestTurns = malloc(sizeof(STurn)*numberOfPlayableTurns);
-	int nbBestTurns = pickBestTurns(player, playableTurns, bestTurns, numberOfPlayableTurns, map, id, reinforcements);
+//	int nbBestTurns = pickBestTurns(player, playableTurns, bestTurns, numberOfPlayableTurns, map, id, reinforcements);
 
 	// On cherche la meilleure probabilité, selon s'il existe des bestTurns ou non
 	int bestFrom = 0;
 	int bestTo = 0;
 	double bestProb = 0;
 
-	if (nbBestTurns<0){
-		for (int i=0; i<nbBestTurns; i++){
+    if (0>0){
+		for (int i=0; i<10; i++){
 			idFrom = bestTurns[i].cellFrom;
 			idTo = bestTurns[i].cellTo;
-			if(tabProbas[map->cells[idFrom].nbDices-1][map->cells[idFrom].nbDices-1]>bestProb){
+			if(tabProbas[map->cells[idTo].nbDices-1][map->cells[idFrom].nbDices-1]>bestProb){
 				bestFrom = idFrom;
 				bestTo = idTo;
 				playAgain = 1;
+                bestProb = tabProbas[map->cells[idTo].nbDices-1][map->cells[idFrom].nbDices-1];
 			}
 		}
 	} else {
 		for (int i = 0; i < numberOfPlayableTurns; i++) {
 			idFrom = playableTurns[i].cellFrom;
 			idTo = playableTurns[i].cellTo;
-			printf("best : %f\n", bestProb);
 			if ((tabProbas[map->cells[idTo].nbDices - 1][map->cells[idFrom].nbDices - 1]) > bestProb) {
 				bestFrom = idFrom;
 				bestTo = idTo;
@@ -123,7 +123,6 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 		}
 	}
 
-	printf("J'ai %i des et j'attaque une cellule à %i dés\n", map->cells[bestFrom].nbDices, map->cells[bestTo].nbDices);
 	turn->cellTo = (unsigned int)bestTo; // Si non initialisé, on renvoie 0, donc pas de problème
 	turn->cellFrom = (unsigned int)bestFrom;
 
@@ -139,7 +138,6 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 	free(player->islet);
 	free(player);
 
-	sleep(5);
 	return playAgain ;
 }
 
