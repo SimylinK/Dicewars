@@ -95,6 +95,13 @@ void drawPixels(SDL_Renderer* renderer, Graph *graph){
                     printf("Cellule sans owner\n");
             }
             SDL_RenderDrawPoint(renderer, x, y);
+            if(x == BORDERLANDR || y == BORDERTOP || x == WIDTH-1 || y == HEIGHT-1){
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+                SDL_RenderDrawPoint(renderer, x-1, y-1);SDL_RenderDrawPoint(renderer, x, y-1);SDL_RenderDrawPoint(renderer, x+1, y-1);
+                SDL_RenderDrawPoint(renderer, x-1, y);SDL_RenderDrawPoint(renderer, x, y);SDL_RenderDrawPoint(renderer, x+1, y);
+                SDL_RenderDrawPoint(renderer, x-1, y+1);SDL_RenderDrawPoint(renderer, x, y+1);SDL_RenderDrawPoint(renderer, x+1, y+1);
+            }
+
         }
     }
 }

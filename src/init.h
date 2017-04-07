@@ -29,7 +29,7 @@
 #define TITLEX TITLEW+10 //coordonnée x du centre du bouton
 #define TITLEY TITLEH/2 //coordonnée y du centre du bouton
 #define TITLEW 230
-#define TITLEH 50
+#define TITLEH 48
 
 
     #define DICESWIDTH 15 //largeur de la fenetre
