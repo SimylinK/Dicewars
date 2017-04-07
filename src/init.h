@@ -16,10 +16,21 @@
 	#define nbDicesPerCell 3
 	#define minDistBetweenCells 0 // distance en pixels
 
-	#define BUTTONX 80+BUTTONW //coordonnée x du centre du bouton
-	#define BUTTONY WHEIGHT-50 //coordonnée y du centre du bouton
-	#define BUTTONW 100
-	#define BUTTONH 40
+
+
+//Caracteristiques du bouton endturn
+#define BUTTONX WWIDTH+15-BUTTONW //coordonnée x du centre du bouton
+#define BUTTONY WHEIGHT-50 //coordonnée y du centre du bouton
+#define BUTTONW 130
+#define BUTTONH 55
+
+
+//Caracteristiques du logo dicewars
+#define TITLEX TITLEW+10 //coordonnée x du centre du bouton
+#define TITLEY TITLEH/2 //coordonnée y du centre du bouton
+#define TITLEW 230
+#define TITLEH 48
+
 
     #define DICESWIDTH 15 //largeur de la fenetre
     #define DICESHEIGHT 15 //hauteur de la fenetre
