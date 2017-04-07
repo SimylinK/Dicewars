@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include "util.h"
 #include "interface.h"
-
+#include "init.h"
+#include <dlfcn.h>
 
 // Retourne un unsigned int entre 0 et max compris
 unsigned int goodRandom(unsigned int max) {
@@ -140,9 +141,9 @@ void printColourOfPlayer(int id){
         case 7:
             printf("vert\n");
             break;
-		default:
-			printf("Pas de couleur\n");
-			break;
+        default:
+            printf("Pas de couleur\n");
+            break;
     }
 }
 
@@ -176,9 +177,9 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 		// On doit le faire à chaque tour
 		if (cellsFull(player, mapContext)) {
 			mapContext->map->stack[idPlayer] += 1;
-            if (mapContext->map->stack[idPlayer] > 40){ // On excède pas 40
-                mapContext->map->stack[idPlayer] = 40;
-            }
+			if (mapContext->map->stack[idPlayer] > 40){ // On excède pas 40
+				mapContext->map->stack[idPlayer] = 40;
+			}
 		} else {
 			// On fait un random sur toutes les cellules restantes
 			idGiven = goodRandom((unsigned int) player->nbOfCells-1); // Max est compris dans goodRandom
@@ -201,17 +202,17 @@ void giveReinforcements(MapContext *mapContext, int nbPlayer, int idPlayer) {
 			mapContext->map->cells[idCell].nbDices++;
 
 			mapContext->map->stack[idPlayer]--;
+		}
 	}
-}
 
 	// On libère les ressources
-//	for (int i=0; i<player->nbIslets; i++){
-//		free(player->islet[i].cells);
-//	}
-//
-//	free(player->allMyCells);
-//	free(player->islet);
-//	free(player);
+	for (int i=0; i<mapContext->nbNodes; i++){
+		free(player->islet[i].cells);
+	}
+
+	free(player->allMyCells);
+	free(player->islet);
+	free(player);
 }
 
 
@@ -299,7 +300,8 @@ int cellsFull(PlayerIslets *player, MapContext *mapContext){
 			index++;
 		}
 	}
-	
+
+	free(player->allMyCells);
 	// On réalloue le tableau à la bonne taille
 	goodTab = realloc(goodTab, sizeof(SCell)*index);
 	// On remplace le tableau
@@ -310,13 +312,19 @@ int cellsFull(PlayerIslets *player, MapContext *mapContext){
 	return full;
 }
 
+void freeDl(SInterface *interfaces, int nbIA){
+	for (int i=0; i<nbIA; i++){
+		dlclose(interfaces[i].plib);
+	}
+
+}
+
 void updateGraph(Centre *cellsList, MapContext *mapContext){
-	for(int i = 0 ; i < WIDTH ; i++) {
-		for (int j = 0 ; j < HEIGHT ; j++) {
-			for (int k = 0 ; k < mapContext->nbNodes ; k++) {
-				if (mapContext->graph[i][j]->id == cellsList[k].cell->id)
-					mapContext->graph[i][j] = cellsList[k].cell;
-			}
+	int id;
+	for (int i = 0; i < WIDTH; i++) {
+		for (int j = 0; j < HEIGHT; j++) {
+			id = mapContext->graph[i][j]->id;
+			mapContext->graph[i][j] = cellsList[id].cell;
 		}
 	}
 }

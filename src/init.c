@@ -7,7 +7,7 @@
 
 MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	// Nombre de SCell sur la map
-	unsigned int nbNodes = randomBounds(30,60);
+	unsigned int nbNodes = randomBounds(30, 60);
 
 	// Initialisation de la map
 	SMap *map = malloc(sizeof(SMap));
@@ -75,8 +75,8 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 	// Nombre de SCell en plus (distribuées sur les premiers joueurs)
 	unsigned int nbCellsLeft = nbNodes % nbPlayer;
 
-    // On considère que le nombre de dés par SCell est environ de 3
-    unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
+	// On considère que le nombre de dés par SCell est environ de 3
+	unsigned int dicesToGive = (nbNodes * nbDicesPerCell) / nbPlayer;
 
 	// Nombre de SCell exact par joueur
 	unsigned int nbCellPerPlayer[nbPlayer];
@@ -97,17 +97,17 @@ void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map) {
 
 	int *indices = calloc(nbPlayer, sizeof(int));
 	// On donne à chaque joueur ses cellules
-    int owner;
+	int owner;
 	for (int i = 0; i<nbNodes; i++) {
-            owner = map->cells[i].owner;
-			playerCells[owner][indices[owner]] = &(map->cells[i]);
-			indices[owner] += 1;
+		owner = map->cells[i].owner;
+		playerCells[owner][indices[owner]] = &(map->cells[i]);
+		indices[owner] += 1;
 	}
 
 	// On remet les indices à 0
 	for (int i=0; i<nbPlayer; i++){
-        indices[i] = 0;
-    }
+		indices[i] = 0;
+	}
 
 	// Pour chaque joueur, on donne un dé à chacune de ses SCell
 	for (int i = 0; i < nbPlayer; i++) {
@@ -218,60 +218,61 @@ void assignNeighbor(int id1, int id2, SMap *map) {
 //renvoie 0 si ça c'est bien passé, 1 sinon
 int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]){
 
-  // Le nombre d'humains
-  int nbHumans = nbPlayer - argc + 3;
+	// Le nombre d'humains
+	int nbHumans = nbPlayer - argc + 3;
 	printf("nbHumans : %d\n", nbHumans);
 
 	int indexArgcLibs = 0;
 	int indexInterfaces = 0;
-  for (int i=0; i<nbPlayer; i++){
-    //Initialisation des joueurs humains
-    if (i < nbHumans){
-      players[i].id = i;
-      players[i].interface = -1;
+	for (int i=0; i<nbPlayer; i++){
+		//Initialisation des joueurs humains
+		if (i < nbHumans){
+			players[i].id = i;
+			players[i].interface = -1;
 
-    //Initialisation des joueurs IA
-    } else {
-      void *ia;
-      pfInitGame InitGame;
-      pfPlayTurn PlayTurn;
-      pfEndGame EndGame;
+			//Initialisation des joueurs IA
+		} else {
+			void *ia;
+			pfInitGame InitGame;
+			pfPlayTurn PlayTurn;
+			pfEndGame EndGame;
 
 			printf("Ouverture de : %s\n", argv[3+indexArgcLibs]);
-      if ((ia=dlopen(argv[3+indexArgcLibs],RTLD_LAZY))==NULL) {
-        // Erreur de chargement de la librairie
-        printf("La librairie %s n'a pas pu être chargée\n", argv[3+indexArgcLibs]);
-        return(1);
-      }
+			if ((ia=dlopen(argv[3+indexArgcLibs],RTLD_LAZY))==NULL) {
+				// Erreur de chargement de la librairie
+				printf("La librairie %s n'a pas pu être chargée\n", argv[3+indexArgcLibs]);
+				return(1);
+			}
 
-      if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[3+indexArgcLibs]);
-        return(1);
-      }
-      if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[3+indexArgcLibs]);
-        return(1);
-      }
-      if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
-        // Erreur lors du chragement de la fonction
-        printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[3+indexArgcLibs]);
-        return(1);
-      }
-      indexArgcLibs++;
+			if ((InitGame=(pfInitGame)dlsym(ia,"InitGame"))==NULL) {
+				// Erreur lors du chragement de la fonction
+				printf("Une erreur s'est produite lors de la lecture de InitGame de %s\n", argv[3+indexArgcLibs]);
+				return(1);
+			}
+			if ((PlayTurn=(pfPlayTurn)dlsym(ia,"PlayTurn"))==NULL) {
+				// Erreur lors du chragement de la fonction
+				printf("Une erreur s'est produite lors de la lecture de PlayTurn de %s\n", argv[3+indexArgcLibs]);
+				return(1);
+			}
+			if ((EndGame=(pfEndGame)dlsym(ia,"EndGame"))==NULL) {
+				// Erreur lors du chragement de la fonction
+				printf("Une erreur s'est produite lors de la lecture de EndGame de %s\n", argv[3+indexArgcLibs]);
+				return(1);
+			}
+			indexArgcLibs++;
 
-      interfaces[indexInterfaces].InitGame = InitGame;
-      interfaces[indexInterfaces].PlayTurn = PlayTurn;
-      interfaces[indexInterfaces].EndGame = EndGame;
+			interfaces[indexInterfaces].InitGame = InitGame;
+			interfaces[indexInterfaces].PlayTurn = PlayTurn;
+			interfaces[indexInterfaces].EndGame = EndGame;
+			interfaces[indexInterfaces].plib = ia;
 
-      //Initialisation du joueur représentant l'IA
-      players[i].id = i;
-      players[i].interface = indexInterfaces;
+			//Initialisation du joueur représentant l'IA
+			players[i].id = i;
+			players[i].interface = indexInterfaces;
 
-      indexInterfaces++;
-    }
-  }
+			indexInterfaces++;
+		}
+	}
 
-  return 0;
+	return 0;
 }
