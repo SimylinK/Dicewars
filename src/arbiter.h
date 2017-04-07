@@ -14,6 +14,7 @@
 	int checkMove(STurn *turn, MapContext *mapContext);
 	void destroyMap(MapContext *mapContextToDestroy);
     void getNbPlayersCells(int *nbPlayersCells, int nbPlayer, SCell *cells, int nbCells);
+    void getNbPlayersCells(int *nbPlayersCells, int nbOlayer, SCell *cells, int nbCells);
     int gameIsOver(int *nbPlayersCells, int nbPlayer);
 
 

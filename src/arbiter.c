@@ -262,13 +262,13 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
 }
 
 void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
-
     Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
     for (int i = 0 ; i < mapCopy->nbCells ; i++){
         cellsList[i].x = mapContextToUpdate->cellsList[i].x;
         cellsList[i].y = mapContextToUpdate->cellsList[i].y ;
         cellsList[i].cell = &(mapCopy->cells[i]);
     }
+
 
     updateGraph(cellsList, mapContextToUpdate);
 
@@ -279,7 +279,6 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
 }
 
 void destroyMap(MapContext *mapContextToDestroy) {
-    // On détruit la map
     for (int i = 0; i < mapContextToDestroy->map->nbCells; i++) {
         free(mapContextToDestroy->map->cells[i].neighbors);
     }
@@ -289,8 +288,8 @@ void destroyMap(MapContext *mapContextToDestroy) {
 
     free(mapContextToDestroy->map);
 
-	// On détruit cellsList
-	free(mapContextToDestroy->cellsList);
+    // On detruit cellsList
+    free(mapContextToDestroy->cellsList);
 }
 
 //Met à jour la liste du nombre des cellules de chaque joueur
