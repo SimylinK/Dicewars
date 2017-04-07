@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "util.h"
-#include "arbiter.h"
+
+#include "game.h"
+#include "utils/util.h"
+
 
 
 int main(int argc, char *argv[]) {

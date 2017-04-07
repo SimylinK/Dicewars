@@ -4,17 +4,21 @@
 
 FILE *file = NULL;
 
+//Fonction qui ouvre l'écriture sur le fichier de log
 void outputOpen(){
     if ((file = fopen(OUTPUTFILE, "w")) == NULL) {
         printf("Erreur : l'ouverture du fichier de sortie a échoué.\n");
     }
 }
 
+//Fonction qui ferme l'écriture sur le fichier de log
 void outputClose(){
     if (file != NULL)  fclose(file);
 }
 
-//Affiche info sur les IA
+//Fonction qui logs les infos d'un IA
+//id : l'id de Player de l'IA
+//player : les informations du player
 void outputPlayer(int id, SPlayerInfo player){
     if (file != NULL) {
         int nameLen = strlen(player.name);
@@ -32,6 +36,8 @@ void outputPlayer(int id, SPlayerInfo player){
     }
 }
 
+//Fonction qui logs les informations de chaque cellule de la map
+//map : la map dont on veut log les informations
 void outputInit(SMap *map){
     if (file != NULL) {
         for (int i=0; i<map->nbCells; i++){
@@ -48,6 +54,10 @@ void outputInit(SMap *map){
     }
 }
 
+//Fonction qui logs les informations d'un coup joué
+//cellFrom : l'id de la cellule d'où part l'attaque
+//cellTo : l'id de la cellule qui est attaquée
+//attackWin : 1 si l'attque a réussi, 0 si elle a échoué
 void outputTurn(int cellFrom, int cellTo, int attackWin){
     if (file != NULL) {
         fprintf(file, "turn %d %d %d\n", cellFrom, cellTo, attackWin);
@@ -57,6 +67,8 @@ void outputTurn(int cellFrom, int cellTo, int attackWin){
 
 }
 
+//Fonction qui logs le vainqueur de la partie
+//idWin : id du joueur qui a gagné
 void outputEndGame(int idWin){
 
     if (file != NULL) {

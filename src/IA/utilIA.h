@@ -1,6 +1,6 @@
 #ifndef DICEWARS_UTILIA_H
 #define DICEWARS_UTILIA_H
-#include "../interface.h"
+#include "../utils/interface.h"
 
 	// Un ilot définit un ensemble connexe
 	typedef struct Islet{

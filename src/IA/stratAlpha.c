@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#include "../interface.h"
+#include "../utils/interface.h"
 #include "utilIA.h"
 #include "proba.h"
 
@@ -92,14 +91,14 @@ int PlayTurn(unsigned int id, const SMap *map, STurn *turn) {
 
 	// On choisit les tours qui sont meilleurs : on essaie de relier nos composantes connexes
 	STurn *bestTurns = malloc(sizeof(STurn)*numberOfPlayableTurns);
-//	int nbBestTurns = pickBestTurns(player, playableTurns, bestTurns, numberOfPlayableTurns, map, id, reinforcements);
+	int nbBestTurns = pickBestTurns(player, playableTurns, bestTurns, numberOfPlayableTurns, map, id, reinforcements);
 
 	// On cherche la meilleure probabilité, selon s'il existe des bestTurns ou non
 	int bestFrom = 0;
 	int bestTo = 0;
 	double bestProb = 0;
 
-    if (0>0){
+    if (bestTurns>0){
 		for (int i=0; i<10; i++){
 			idFrom = bestTurns[i].cellFrom;
 			idTo = bestTurns[i].cellTo;

@@ -1,10 +1,10 @@
 #ifndef _OUTPUT_H
 #define _OUTPUT_H
 
-	#include "interface.h"
+	#include "../utils/interface.h"
 
 	//chemin vers le fichier de sortie
-	#define OUTPUTFILE "../resultats"
+	#define OUTPUTFILE "resultats"
 
 	void outputOpen();
 	void outputClose();

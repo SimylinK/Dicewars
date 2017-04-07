@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <stdio.h>
+
 #include "init.h"
 #include "util.h"
 
@@ -34,6 +35,9 @@ MapContext* initMap(MapContext *mapContext, unsigned int nbPlayer){
 	//Création du graph
     initGraph(mapContext, cellsList, nbNodes);
 
+	//On centre les dés pour l'affichage
+	centerDices(mapContext);
+
 	return mapContext;
 }
 
@@ -46,6 +50,43 @@ void initGraph(MapContext *mapContext, Centre *cellsList, unsigned int nbNodes){
 			mapContext->graph[i][j] = (closer.cell);
         }
     }
+}
+
+//Fonction permettant de recentrer les dés d'un map
+//mapContext : la map dont les dés vont être recentré
+void centerDices(MapContext *mapContext){
+	unsigned int nbNodes = mapContext->nbNodes;
+
+	//Structure comportant 3 entiers
+	typedef struct {
+		unsigned int x;
+		unsigned int y;
+		unsigned int nbPixels;
+	} SumPixels;
+
+	//Une instance avec tous les paramètres initialisé à zéro
+	SumPixels sp[nbNodes];
+	for(int i=0; i<nbNodes; i++){
+		sp[i].x = 0;
+		sp[i].y = 0;
+		sp[i].nbPixels = 0;
+	}
+
+	//Chaque pixel va incrémenter les paramètres de sa cellule dans sp
+    for(int i = BORDERLANDR ; i < WIDTH ; i++){
+        for(int j = BORDERTOP ; j < HEIGHT ; j++){
+            sp[mapContext->graph[i][j]->id].x += i;
+			sp[mapContext->graph[i][j]->id].y += j;
+			sp[mapContext->graph[i][j]->id].nbPixels++;
+        }
+    }
+
+	//Calcul et mise en place des nouveaux centres
+	Centre *cellsList = mapContext->cellsList;
+	for(int i=0; i<nbNodes; i++){
+		cellsList[i].x = sp[i].x / sp[i].nbPixels;
+		cellsList[i].y = sp[i].y / sp[i].nbPixels;
+	}
 }
 
 // Assigne les SCell aux joueurs

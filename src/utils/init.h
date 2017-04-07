@@ -1,7 +1,7 @@
 #ifndef DICEWARS_INIT_H
 #define DICEWARS_INIT_H
 
-	#include "interface.h"
+	#include "../utils/interface.h"
 
 	// Initialisation de la map
 	#define WWIDTH 800 //largeur de la fenetre
@@ -58,6 +58,7 @@
 	void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void neighbors(Centre *cellsList, SMap *map, unsigned int nbNodes);
     void initGraph(MapContext *mapContext, Centre *cellsList, unsigned int nbNodes);
+	void centerDices(MapContext *mapContext);
 
 	// Initialisation des joueurs
 	typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
@@ -79,7 +80,6 @@
 	} SPlayer;
 
 	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
-
 
 
 #endif //DICEWARS_INIT_H

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "../interface.h"
+#include "../utils/interface.h"
 #include "utilIA.h"
 
 // Structure pour garder les informations du contexte de la partie
