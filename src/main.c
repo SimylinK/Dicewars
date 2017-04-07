@@ -4,7 +4,7 @@
 
 #include "game.h"
 #include "utils/util.h"
-
+#include "display/map.h"
 
 
 int main(int argc, char *argv[]) {
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
 
 			free(playersRandom);
 			free(mapContext);
+			destroyWindow();
 		}
 		// Libération des ressources
 		freeDl(interfaces, nbPlayer-nbHumans);

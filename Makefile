@@ -28,7 +28,7 @@ BIN=bin/
 $(EXECUTABLE): $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o $(BIN)game.o
 	$(CC) -o $(EXECUTABLE)  $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o $(BIN)game.o $(LLIBS) -lm -ldl
 
-$(BIN)main.o: $(MAIN_C) $(UTIL_H) $(GAME_H)
+$(BIN)main.o: $(MAIN_C) $(UTIL_H) $(GAME_H) $(MAP_H)
 	$(CC) $(CFLAGS) -c $(MAIN_C) -o $(BIN)main.o
 
 $(BIN)game.o:$(GAME_C) $(GAME_H) $(INTERFACE_H) $(OUTPUT_H) $(INIT_H) $(MAP_H) $(ARBITER_H)

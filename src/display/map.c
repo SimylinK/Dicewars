@@ -27,16 +27,14 @@ void mainMap(MapContext *mapContext) {
     // Affichage de la map une première fois
 	drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
 
-	//Destruction des ressources
 }
 
 
-void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
+void destroyWindow() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 
-	//TODO : des free ?
 }
 
 
