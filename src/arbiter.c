@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include "arbiter.h"
 
-
-//renvoie l'id de la cellule gagnant le lancé de dé
+//Fonction qui joue une attque d'une cellule vers une autre
+//cellFrom : la cellule attaquante
+//cellTo : la cellule attaquée
+//retourne l'id de la cellule gagnant le lancé de dé
 int whoWins(SCell cellFrom, SCell cellTo){
     int thisDiceValueFrom = 0;
     int dicesValueFrom = 0;
@@ -27,7 +29,10 @@ int whoWins(SCell cellFrom, SCell cellTo){
     }
 }
 
-//renvoie 1 si le coup est autorisé, 0 sinon
+//Fonction qui vérifie si un coup est autorisé
+//turn : le tour qui va être vérifié
+//mapContext : la map sur laquelle le coup est joué
+//retourne 1 si le coup est autorisé, 0 sinon
 int checkMove(STurn *turn, MapContext *mapContext){
     int authorized = 1;
     if(mapContext->map->cells[turn->cellFrom].nbDices <= 1){
@@ -45,7 +50,11 @@ int checkMove(STurn *turn, MapContext *mapContext){
 }
 
 
-//Met à jour la liste du nombre des cellules de chaque joueur
+//Fonction qui met à jour la liste du nombre de cellules de chaque joueur
+//nbPlayersCells : tableau qui va être mis à jour, regroupe le nombre de cases de chaque joueur
+//nbPlayer : nombre de joueur dans la partie
+//cells : tableau de toute les cases de la partie
+//nbCells : nombre de case sur la carte
 void getNbPlayersCells(int *nbPlayersCells, int nbPlayer, SCell *cells, int nbCells){
     for(int i=0; i<nbPlayer; i++){
         nbPlayersCells[i]=0;
@@ -56,7 +65,9 @@ void getNbPlayersCells(int *nbPlayersCells, int nbPlayer, SCell *cells, int nbCe
     }
 }
 
-//Regarde s'il ne reste plus qu'un joueur possédant des cellules
+//Fonction qui regarde s'il ne reste plus qu'un joueur possédant des cellules, et donc que la partie est finie
+//nbPlayersCells : tableau qui regroupe le nombre de cases de chaque joueur
+//nbPlayer : nombre de joueur dans la partie
 int gameIsOver(int *nbPlayersCells, int nbPlayer){
     int nbPlayersWIthCells = 0;
     for (int i=0; i<nbPlayer; i++) {

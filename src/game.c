@@ -6,8 +6,13 @@
 #include "logs/output.h"
 
 
-//isFirst vaut 1 si c'est le premier appel de gameLoop, 0 sinon
-//isLast vaut 1 si c'est le dernier appel de gameLoop, 0 sinon
+//Fonction qui fais jouer une partie
+//mapContext : la map initiale, sur laquelle la partie va être jouée
+//players : tableau des joueurs qui vont jouer la partie
+//interfaces : tableau contenant toutes fonctions de chaque IA
+//nbPlayer : nombre de joueurs dans le tableau players
+//isFirst : 1 si c'est le premier appel de gameLoop, 0 sinon
+//isLast : vaut 1 si c'est le dernier appel de gameLoop, 0 sinon
 void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, int nbPlayer, int isFirst, int isLast) {
 
     // Initialisation des IA
@@ -148,6 +153,9 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
 
 }
 
+//Fonction qui joue un coup d'un joueur
+//turn : le coup qui veut être joué
+//mapContext : la carte sur laquelle va être joué le coup
 void runTurn(STurn *turn, MapContext *mapContext) {
     int idWinner;
     int idLoser;
@@ -173,7 +181,7 @@ void runTurn(STurn *turn, MapContext *mapContext) {
     }
 }
 
-// Met à jour le nombre de dés après une attaque
+// Fonction qui met à jour le nombre de dés après une attaque
 // cellWinner : la cellule gagnante du jet de dés
 // cellLoser : la sellule perdante du jet de dés
 // attackWin : 1 si c'est la cellule attaquante qui a gagné, 0 si c'est la cellule défensive qui a gagné
@@ -187,6 +195,10 @@ void updateDices(SCell *cellWinner, SCell *cellLoser, int attackWin){
     }
 }
 
+//Fonction qui copie une map
+//mapContextToCopy : la map qui va être copiée
+//nbPlayer : le nombre de joueur dans la partie
+//retourne une nouvelle map indépendante de la map en paramètre
 SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
     // Initialisation de la copie de la map
     SMap *newMap = malloc(sizeof(SMap));
@@ -218,6 +230,9 @@ SMap* copyMap(MapContext *mapContextToCopy, int nbPlayer){
     return newMap;
 }
 
+//Fonction qui met à jour une map, à partir d'une autre map
+//mapCopy : map qui va être copié, puis détruite
+//mapContextToUpdate : map qui va être mise à jour
 void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
 
     Centre *cellsList = malloc(sizeof(Centre)*(mapCopy->nbCells));
@@ -235,6 +250,8 @@ void updateMapContext(SMap *mapCopy, MapContext *mapContextToUpdate){
     mapContextToUpdate->cellsList = cellsList;
 }
 
+//Fonction qui libère les ressources d'un MapContext
+//mapContextToDestroy : map ddont on veux libérer les ressources en mémoire
 void destroyMap(MapContext *mapContextToDestroy) {
     // On détruit la map
     for (int i = 0; i < mapContextToDestroy->map->nbCells; i++) {
