@@ -5,7 +5,6 @@
 	#include <SDL2/SDL.h>
 
 	void mainMap(MapContext *mapContext);
-	void displayMap(Centre* cellsList, int nbNodes, SMap *map, SDL_Window *window, SDL_Renderer* renderer);
 	Centre* generateList(int nbNodes, SMap *map);
 	void assignNeighbor(int id1, int id2, SMap *map);
 	void drawMap(Centre* cellsList, unsigned int nbNodes, Graph *graph);
