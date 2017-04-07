@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 
-#include "arbiter.h"
+#include "game.h"
 #include "utils/util.h"
 
 

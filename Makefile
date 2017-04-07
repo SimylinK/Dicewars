@@ -18,16 +18,21 @@ OUTPUT_C=src/logs/output.c
 
 ARBITER_H=src/arbiter.h
 ARBITER_C=src/arbiter.c
+GAME_H=src/game.h
+GAME_C=src/game.c
 MAIN_C=src/main.c
 
 BIN=bin/
 
 
-$(EXECUTABLE): $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o
-	$(CC) -o $(EXECUTABLE)  $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o $(LLIBS) -lm -ldl
+$(EXECUTABLE): $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o $(BIN)game.o
+	$(CC) -o $(EXECUTABLE)  $(BIN)main.o $(BIN)util.o $(BIN)map.o $(BIN)init.o $(BIN)arbiter.o $(BIN)output.o $(BIN)game.o $(LLIBS) -lm -ldl
 
-$(BIN)main.o: $(MAIN_C) $(UTIL_H) $(ARBITER_H)
+$(BIN)main.o: $(MAIN_C) $(UTIL_H) $(GAME_H)
 	$(CC) $(CFLAGS) -c $(MAIN_C) -o $(BIN)main.o
+
+$(BIN)game.o:$(GAME_C) $(GAME_H) $(INTERFACE_H) $(OUTPUT_H) $(INIT_H) $(MAP_H) $(ARBITER_H)
+	$(CC) $(CFLAGS) -c $(GAME_C) -o $(BIN)game.o -lm
 
 $(BIN)util.o: $(UTIL_C) $(UTIL_H) $(INTERFACE_H) $(UTIL_H) $(MAP_H)
 	$(CC) $(CFLAGS) -c $(UTIL_C) -o $(BIN)util.o
@@ -38,11 +43,11 @@ $(BIN)map.o: $(MAP_C) $(MAP_H) $(INIT_H) $(INTERFACE_H) $(UTIL_H)
 $(BIN)init.o: $(INIT_C) $(INIT_H) $(INTERFACE_H) $(UTIL_H)
 	$(CC) $(CFLAGS) -c $(INIT_C) -o $(BIN)init.o -lm
 
-$(BIN)arbiter.o: $(ARBITER_C) $(ARBITER_H) $(INTERFACE_H) $(OUTPUT_H) $(INIT_H) $(UTIL_H) $(MAP_H)
-	$(CC) $(CFLAGS) -c $(ARBITER_C) -o $(BIN)arbiter.o -lm
+$(BIN)arbiter.o: $(ARBITER_C) $(ARBITER_H) $(UTIL_H)
+	$(CC) $(CFLAGS) -c $(ARBITER_C) -o $(BIN)arbiter.o
 
 $(BIN)output.o: $(OUTPUT_C) $(OUTPUT_H) $(INTERFACE_H)
-	$(CC) $(CFLAGS) -c $(OUTPUT_C) -o $(BIN)output.o -lm
+	$(CC) $(CFLAGS) -c $(OUTPUT_C) -o $(BIN)output.o
 
 clean:
 	rm $(BIN)*.o $(EXECUTABLE)
