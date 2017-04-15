@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "map.h"
-#include "util.h"
-#include "interface.h"
 #include <time.h>
+
+#include "map.h"
+#include "../utils/util.h"
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -27,48 +27,45 @@ void mainMap(MapContext *mapContext) {
     // Affichage de la map une première fois
 	drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
 
-	//Destruction des ressources
-}
-
-
-void destroyWindow(SDL_Window *window, SDL_Renderer* renderer) {
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
-
-	//TODO : des free ?
 }
 
 void drawDiceOfPlayer(int id){
     switch (id){ // On définit les couleurs des joueurs
         case 0:
-            insertPicture("../sprites/yellowdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/yellowdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 1:
-            insertPicture("../sprites/whitedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/whitedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 2:
-            insertPicture("../sprites/cyandice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/cyandice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 3:
-            insertPicture("../sprites/reddice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/reddice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 4:
-            insertPicture("../sprites/bluedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/bluedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 5:
-            insertPicture("../sprites/pinkdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/pinkdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 6:
-            insertPicture("../sprites/orangedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/orangedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 7:
-            insertPicture("../sprites/greendice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/greendice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         default:
             printf("Pas de couleur\n");
             break;
     }
+}
+
+void destroyWindow() {
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+
 }
 
 void drawBorders(SDL_Renderer* renderer, Graph *graph){
@@ -122,7 +119,7 @@ void drawPixels(SDL_Renderer* renderer, Graph *graph){
                     SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
                     break;
                 default:
-                    printf("Cellule sans owner\n");
+                    break;
             }
             SDL_RenderDrawPoint(renderer, x, y);
             if(x == BORDERLANDR || y == BORDERTOP || x == WIDTH-1 || y == HEIGHT-1){
@@ -162,31 +159,30 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
     for (int i=0; i<nbNodes; i++) {
         switch (cellsList[i].cell->nbDices) {
             case 1:
-            insertPicture("../sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/1.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 2:
-            insertPicture("../sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/2.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 3:
-            insertPicture("../sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/3.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 4:
-            insertPicture("../sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/4.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 5:
-            insertPicture("../sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/5.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 6:
-            insertPicture("../sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+            insertPicture("sprites/6.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 7:
-              insertPicture("../sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+              insertPicture("sprites/7.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
             case 8:
-                insertPicture("../sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
+                insertPicture("sprites/8.bmp", window, cellsList[i].x, cellsList[i].y, DICESWIDTH, DICESHEIGHT);
                 break;
 			default:
-				printf("Cellule sans de\n");
 				break;
         }
     }
@@ -194,7 +190,7 @@ void displayDices(SDL_Window *window, Centre *cellsList, int nbNodes)
 
 
 void drawScore(int joueur, int diceValue, int i){
-	
+
 	int positionY;
 	int positionX = BUTTONX+60+20*i;
 	int largeurDes = DICESWIDTH*2;
@@ -208,33 +204,32 @@ void drawScore(int joueur, int diceValue, int i){
 
 	switch (diceValue) {
         case 1:
-            insertPicture("../sprites/1.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/1.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
 
         case 2:
-            insertPicture("../sprites/2.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/2.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
 
         case 3:
-            insertPicture("../sprites/3.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/3.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
 
         case 4:
-            insertPicture("../sprites/4.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/4.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
 
         case 5:
-            insertPicture("../sprites/5.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/5.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
 
         case 6:
-            insertPicture("../sprites/6.bmp", window, positionX, positionY, largeurDes, hauteurDes);
+            insertPicture("sprites/6.bmp", window, positionX, positionY, largeurDes, hauteurDes);
             break;
     }
 
 	SDL_RenderPresent(renderer);
 }
-
 
 void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph) {
 
@@ -245,12 +240,12 @@ void drawMap(Centre *cellsList, unsigned int nbNodes, Graph *graph) {
     // On affiche les dés
     displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
-    insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    insertPicture("sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
     //On affiche le titre
-    insertPicture("../sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
+    insertPicture("sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
 }
 
-void drawMapTurn(Centre *cellsList, unsigned int nbNodes, Graph *graph, int id){
+void drawMapTurn(Centre *cellsList, unsigned int nbNodes, Graph *graph, int idPlayer, SMap *map){
 
     // On dessine les pixels
     drawPixels(renderer, graph);
@@ -259,13 +254,66 @@ void drawMapTurn(Centre *cellsList, unsigned int nbNodes, Graph *graph, int id){
     // On affiche les dés
     displayDices(window, cellsList, nbNodes);
     //On ajoute le bouton "tour suivant"
-    insertPicture("../sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    insertPicture("sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
     //On affiche le titre
-    insertPicture("../sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
+    insertPicture("sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
     //On affiche le dé coloré du joueur à qui c'est le tour
-    drawDiceOfPlayer(id);
+    drawDiceOfPlayer(idPlayer);
+    //stack
+    drawStackOfPlayer(map, idPlayer);
 
-	SDL_RenderPresent(renderer);
-	SDL_RenderClear(renderer);
+
+    SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
+
+}
+
+void drawStackOfPlayer(SMap *map, int id){
+    int digit = 0;
+    int taille = 1;
+    if (map->stack[id]>9){
+        taille = 2;
+    }
+    for (int i = 0 ; i < taille ; i++){
+        if (i == 0){
+            digit = map->stack[id]/10;
+        } else digit = map->stack[id]%10;
+
+        switch (digit){ // On définit les couleurs des joueurs
+            case 0:
+                insertPicture("sprites/zero.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 1:
+                insertPicture("sprites/un.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 2:
+                insertPicture("sprites/deux.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 3:
+                insertPicture("sprites/trois.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 4:
+                insertPicture("sprites/quatre.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 5:
+                insertPicture("sprites/cinq.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 6:
+                insertPicture("sprites/six.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 7:
+                insertPicture("sprites/sept.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 8:
+                insertPicture("sprites/huit.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            case 9:
+                insertPicture("sprites/neuf.bmp", window, DIGITX + i*(DIGITWIDTH), DIGITY, DIGITWIDTH, DIGITHEIGHT);
+                break;
+            default:
+                printf("Pas de couleur\n");
+                break;
+        }
+    }
 
 }

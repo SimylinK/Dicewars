@@ -1,7 +1,7 @@
 #ifndef DICEWARS_INIT_H
 #define DICEWARS_INIT_H
 
-	#include "interface.h"
+	#include "../utils/interface.h"
 
 	// Initialisation de la map
 	#define WWIDTH 800 //largeur de la fenetre
@@ -38,6 +38,13 @@
 	#define DICESCOLOURWIDTH 70 //hauteur des dés des centres
 	#define DICESCOLOURHEIGHT 70 //hauteur des dés des centres
 
+	//digit stack
+	#define DIGITX DICESCOLOURX+10+DICESCOLOURWIDTH //largeur des dés des centres
+	#define DIGITY WHEIGHT-50 //hauteur des dés des centres
+	#define DIGITWIDTH 30 //hauteur des dés des centres
+	#define DIGITHEIGHT 70 //hauteur des dés des centres
+
+
 // Une SCell avec des coordonnées
 	typedef struct Centre{
 
@@ -61,6 +68,7 @@
 	void giveDices(unsigned int nbPlayer, unsigned int nbNodes, SMap *map);
 	void neighbors(Centre *cellsList, SMap *map, unsigned int nbNodes);
     void initGraph(MapContext *mapContext, Centre *cellsList, unsigned int nbNodes);
+	void centerDices(MapContext *mapContext);
 
 	// Initialisation des joueurs
 	typedef void (*pfInitGame)(unsigned int, unsigned int, SPlayerInfo*);
@@ -82,7 +90,6 @@
 	} SPlayer;
 
 	int initPlayers(int nbPlayer, SPlayer *players, SInterface *interfaces, int argc, char *argv[]);
-
 
 
 #endif //DICEWARS_INIT_H
