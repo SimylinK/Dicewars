@@ -64,6 +64,7 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 printColourOfPlayer(playerTurn);
                 drawMapTurn(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map);
                 click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+                drawMapTurnOnClick(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map, click);
 
                 if (click == -2) {
                     end = 1;
@@ -81,6 +82,8 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                         int cellFrom = click;
                         int cellTo;
                         cellTo = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
+                        drawMapTurnOnClick(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map, cellTo);
+
                         if (cellTo == -2) {
                             end = 1;
                         } else if (cellTo == -1) {
@@ -114,7 +117,8 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                     if (continueTurn){
                         runTurn(turn, mapContext);
                         drawMap(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph);
-
+                        drawMapTurnOnClick(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map, turn->cellFrom);
+                        drawMapTurnOnClick(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map, turn->cellTo);
                     }
 
                 }
@@ -267,3 +271,5 @@ void destroyMap(MapContext *mapContextToDestroy) {
 	// On détruit cellsList
 	free(mapContextToDestroy->cellsList);
 }
+
+

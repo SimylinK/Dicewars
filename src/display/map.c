@@ -317,3 +317,84 @@ void drawStackOfPlayer(SMap *map, int id){
     }
 
 }
+
+void drawPixelsOnClick(SDL_Renderer* renderer, Graph *graph, int idCell){
+    SDL_SetRenderDrawColor(renderer, 205, 181, 205, 255); // Couleur du background
+    SDL_RenderClear(renderer);
+    for (unsigned int x=BORDERLANDR; x<WIDTH; x++) {
+        for (unsigned int y = BORDERTOP; y < HEIGHT; y++) {
+            switch ((*graph)[x][y]->owner) { // On définit les couleurs des joueurs
+                case 0:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 100, 100, 0, 255); // jaune foncé
+                    } else SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // jaune
+                    break;
+                case 1:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255); // gris foncé
+                    } else SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // blanc
+                    break;
+                case 2:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 11, 70, 56, 255); // cyan foncé
+                    } else SDL_SetRenderDrawColor(renderer, 20, 134, 107, 255); // cyan
+                    break;
+                case 3:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 50, 0, 0, 255); // rouge foncé
+                    } else SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255); // rouge
+                    break;
+                case 4:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 0, 22, 43, 255); // bleu foncé
+                    } else SDL_SetRenderDrawColor(renderer, 0, 66, 100, 255); // bleu
+                    break;
+                case 5:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 151, 23, 103, 255); // rose foncé
+                    } else SDL_SetRenderDrawColor(renderer, 229, 91, 176, 255); // rose
+                    break;
+                case 6:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 125, 29, 0, 255); // orange foncé
+                    } else SDL_SetRenderDrawColor(renderer, 255, 60, 4, 255); // orange
+                    break;
+                case 7:
+                    if ((*graph)[x][y]->id == idCell) {
+                        SDL_SetRenderDrawColor(renderer, 12, 64, 0, 255); // vert foncé
+                    } else SDL_SetRenderDrawColor(renderer, 22, 128, 0, 255); // vert
+                    break;
+                default:
+                    printf("Cellule sans owner\n");
+            }
+            SDL_RenderDrawPoint(renderer, x, y);
+            if(x == BORDERLANDR || y == BORDERTOP || x == WIDTH-1 || y == HEIGHT-1){
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+                SDL_RenderDrawPoint(renderer, x-1, y-1);SDL_RenderDrawPoint(renderer, x, y-1);SDL_RenderDrawPoint(renderer, x+1, y-1);
+                SDL_RenderDrawPoint(renderer, x-1, y);SDL_RenderDrawPoint(renderer, x, y);SDL_RenderDrawPoint(renderer, x+1, y);
+                SDL_RenderDrawPoint(renderer, x-1, y+1);SDL_RenderDrawPoint(renderer, x, y+1);SDL_RenderDrawPoint(renderer, x+1, y+1);
+            }
+        }
+    }
+}
+
+void drawMapTurnOnClick(Centre *cellsList, unsigned int nbNodes, Graph *graph, int idPlayer, SMap *map, int idCell){
+
+    // On dessine les pixels
+    drawPixelsOnClick(renderer, graph, idCell);
+    // On dessine les bordures
+    drawBorders(renderer, graph);
+    // On affiche les dés
+    displayDices(window, cellsList, nbNodes);
+    //On ajoute le bouton "tour suivant"
+    insertPicture("sprites/end_turn.bmp", window, BUTTONX, BUTTONY, BUTTONW, BUTTONH);
+    //On affiche le titre
+    insertPicture("sprites/dicewarslogo.bmp", window, TITLEX, TITLEY, TITLEW, TITLEH);
+    //On affiche le dé coloré du joueur à qui c'est le tour
+    drawDiceOfPlayer(idPlayer);
+    //stack
+    drawStackOfPlayer(map, idPlayer);
+
+    SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
+}

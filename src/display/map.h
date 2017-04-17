@@ -27,6 +27,8 @@
 	void drawMapTurn(Centre *cellsList, unsigned int nbNodes, Graph *graph, int idPlayer, SMap *map);
 	void drawDiceOfPlayer(int id);
 	void drawStackOfPlayer(SMap *map, int id);
+    void drawMapTurnOnClick(Centre *cellsList, unsigned int nbNodes, Graph *graph, int idPlayer, SMap *map, int idCell);
+    void drawPixelsOnClick(SDL_Renderer* renderer, Graph *graph, int idCell);
 
 
 #endif //DICEWARS_MAP_H
