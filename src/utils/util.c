@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 
+#include <string.h>
+
 #include "util.h"
 #include "init.h"
 
@@ -83,8 +85,8 @@ unsigned int getIdOnClick(unsigned int nbNodes, Centre *cellsList){
 						//si le clic se fait sur le bouton tour suivant
 						if((event.button.y>(BUTTONY - BUTTONH/2))
 							&& (event.button.y<(BUTTONY + BUTTONH/2))
-								&& (event.button.x>(BUTTONX - BUTTONW/2))
-									&& (event.button.x<(BUTTONX + BUTTONW/2))){
+						   && (event.button.x>(BUTTONX - BUTTONW/2))
+						   && (event.button.x<(BUTTONX + BUTTONW/2))){
 
 							id = -1;
 							noEvent = 0;
@@ -330,3 +332,36 @@ void updateGraph(Centre *cellsList, MapContext *mapContext){
 		}
 	}
 }
+
+char* recupText(char *text){
+
+	const char *eventext;
+
+	int done = 0;
+	SDL_Event event;
+
+	SDL_StartTextInput();
+	while (!done) {
+		SDL_WaitEvent(&event);
+			switch (event.type) {
+				case SDL_TEXTINPUT:
+					printf("Lettre entree : %s \n", event.text.text);
+					printf("%s \n", text);
+					eventext = event.text.text;
+					strcat(text, eventext);
+					printf("%s \n", text);
+					break;
+				case SDL_QUIT:
+					done = 1;
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+					done = 1;
+					break;
+				default:
+					done = 0;
+					break;
+			}
+		}
+
+	return text;
+	}

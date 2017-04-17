@@ -6,7 +6,7 @@
 #include "logs/output.h"
 
 
-//Fonction qui fais jouer une partie
+//Fonction qui fait jouer une partie
 //mapContext : la map initiale, sur laquelle la partie va être jouée
 //players : tableau des joueurs qui vont jouer la partie
 //interfaces : tableau contenant toutes fonctions de chaque IA
@@ -65,6 +65,12 @@ void gameLoop(MapContext *mapContext, SPlayer *players, SInterface *interfaces, 
                 drawMapTurn(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map);
                 click = getIdOnClick(mapContext->nbNodes, mapContext->cellsList);
                 drawMapTurnOnClick(mapContext->cellsList, mapContext->nbNodes, &mapContext->graph, playerTurn, mapContext->map, click);
+
+         /*       char *text;
+                text = calloc(4, sizeof(char));
+                recupText(text);
+
+                printf("%s \n", text);*/
 
                 if (click == -2) {
                     end = 1;

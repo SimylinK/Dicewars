@@ -34,9 +34,8 @@ typedef struct PlayerIslets{
 
 	void freeDl(SInterface *interfaces, int nbIA);
 
-//CHANGEMENT
-void updateGraph(Centre *cellsList, MapContext *mapContext);
+	void updateGraph(Centre *cellsList, MapContext *mapContext);
 
-
+	char* recupText(char *text);
 
 #endif

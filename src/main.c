@@ -8,20 +8,24 @@
 
 
 int main(int argc, char *argv[]) {
+	unsigned int nbHumansMenu;
+	unsigned int nbIAMenu;
+	menuInit(&nbHumansMenu, &nbIAMenu);
+
 	//Pas assez d'arguments
-	if (argc < 2) {
-		printf("Erreur !\nIl faut passer au moins 2 arguments : le nombre de parties et le nombre de joueurs\n");
+	if (argc < 1) {
+		printf("Erreur !\nIl faut passer au moins 1 argument : le nombre de parties\n");
 	}
 		//Pas assez de joueurs
-	else if ((unsigned int) atoi(argv[2]) <= 1 || (unsigned int) atoi(argv[2]) > 8) {
-		printf("Erreur !\nLa partie peut comporter de 2 à 8 joueurs\n");
-	} else {
+	//else if ((unsigned int) atoi(argv[2]) <= 1 || (unsigned int) atoi(argv[2]) > 8) {
+	//	printf("Erreur !\nLa partie peut comporter de 2 à 8 joueurs\n");
+	/*}*/ else {
 		srand((unsigned int) time(NULL));
 		unsigned int nbGame = (unsigned int)atoi(argv[1]);
 		unsigned int nbPlayer = (unsigned int) atoi(argv[2]);
 		// Le nombre d'humains
-		int nbHumans = nbPlayer - argc + 3;
-
+	//	int nbHumans = nbPlayer - argc + 3;
+		int nbHumans = (int)nbHumansMenu;
 		// Initialisation des joueurs via interfaces
 
 		//Malloc sur les 2 tableaux

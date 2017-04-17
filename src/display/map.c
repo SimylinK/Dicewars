@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <string.h>
 #include "map.h"
 #include "../utils/util.h"
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
+
+SDL_Window *menuWindow = NULL;
+SDL_Renderer *menuRenderer = NULL;
 
 // Fichier chargé de déterminer les paramètres aléatoires et de créer la map
 void mainMap(MapContext *mapContext) {
@@ -32,28 +35,28 @@ void mainMap(MapContext *mapContext) {
 void drawDiceOfPlayer(int id){
     switch (id){ // On définit les couleurs des joueurs
         case 0:
-            insertPicture("sprites/yellowdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/yellowdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 1:
-            insertPicture("sprites/whitedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/whitedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 2:
-            insertPicture("sprites/cyandice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/cyandice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 3:
-            insertPicture("sprites/reddice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/reddice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 4:
-            insertPicture("sprites/bluedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/bluedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 5:
-            insertPicture("sprites/pinkdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/pinkdice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 6:
-            insertPicture("sprites/orangedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/orangedice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         case 7:
-            insertPicture("sprites/greendice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
+            insertPicture("sprites/dicesOfPlayer/greendice.bmp", window, DICESCOLOURX, DICESCOLOURY, DICESCOLOURWIDTH, DICESCOLOURHEIGHT);
             break;
         default:
             printf("Pas de couleur\n");
@@ -143,7 +146,7 @@ void insertPicture(char* name, SDL_Window* window, int x, int y, int width, int 
 	surface = SDL_LoadBMP(name);
 
 	texture = SDL_CreateTextureFromSurface(renderer,surface); // Préparation du sprite
-	surface->w = width; surface->h = height;//on adapte la taille de la surface aux dimensions demandées en paramètres
+	surface->w = width; surface->h = height; //on adapte la taille de la surface aux dimensions demandées en paramètres
 
 
 	SDL_Rect dest = {x - surface->w/2, y - surface->h/2, surface->w, surface->h};
@@ -397,4 +400,232 @@ void drawMapTurnOnClick(Centre *cellsList, unsigned int nbNodes, Graph *graph, i
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
+}
+
+int displayWinner(int idPlayer){
+
+    SDL_Window *finalWindow = NULL;
+    SDL_Renderer *finalRenderer = NULL;
+
+    finalWindow = SDL_CreateWindow(
+            "Who is the winner ?",                  // window title
+            SDL_WINDOWPOS_UNDEFINED,           // initial x position
+            SDL_WINDOWPOS_UNDEFINED,           // initial y position
+            WWIDTH,                               // width, in pixels
+            WHEIGHT,                               // height, in pixels
+            SDL_WINDOW_SHOWN                  // flags
+    );
+
+    finalRenderer = SDL_CreateRenderer(finalWindow, -1, 0);
+
+
+
+
+    return 0;
+}
+
+void menuInit(unsigned int *nbPlayer, unsigned int *nbIA){
+    SDL_Init(SDL_INIT_VIDEO);
+
+    menuWindow = SDL_CreateWindow(
+            "Let's init the game",                  // window title
+            SDL_WINDOWPOS_UNDEFINED,           // initial x position
+            SDL_WINDOWPOS_UNDEFINED,           // initial y position
+            WWIDTH,                               // width, in pixels
+            WHEIGHT,                               // height, in pixels
+            SDL_WINDOW_SHOWN                  // flags
+    );
+
+    menuRenderer = SDL_CreateRenderer(menuWindow, -1, 0);
+    SDL_SetRenderDrawColor(menuRenderer, 205, 181, 205, 255); // Couleur du background
+    SDL_RenderClear(menuRenderer);
+
+    drawMenu(-5, -5);
+
+    displayNumberOfPlayer(5);
+    displayNumberOfIA(5);
+
+    SDL_RenderPresent(menuRenderer);
+    *nbPlayer = 2;
+    *nbIA = 0;
+    howManyPlayers(nbPlayer, nbIA);
+    printf("Nb de joueurs : %d \n", *nbPlayer);
+
+    SDL_DestroyRenderer(menuRenderer);
+    SDL_DestroyWindow(menuWindow);
+}
+
+void howManyPlayers(unsigned int *nbPlayer, unsigned int *nbIA){
+    SDL_Event event;
+    int end = 0;
+
+    while (!end){
+        SDL_WaitEvent(&event);
+        switch(event.type){
+            case SDL_MOUSEBUTTONDOWN:
+                if (SDL_BUTTON_LEFT){
+                    //si le clic se fait sur le bouton "+" d'humains
+                    if (event.button.y>NB_PLAYER_PLUS_Y - NB_PLAYER_PLUS_HEIGHT/2
+                        && event.button.y<NB_PLAYER_PLUS_Y + NB_PLAYER_PLUS_HEIGHT/2
+                        && event.button.x>NB_PLAYER_PLUS_X - NB_PLAYER_PLUS_WIDTH/2
+                        && event.button.x<NB_PLAYER_PLUS_X + NB_PLAYER_PLUS_WIDTH/2){
+                        printf("PLUS \n");
+                        if(*nbIA + *nbPlayer < 8){
+                            (*nbPlayer) ++;
+                            printf("nbOfplayer : %d  \n", *nbPlayer);
+                        }
+
+                    //si le clic se fait sur le bouton "-" d'humains
+                    } else if (event.button.y>NB_PLAYER_MOINS_Y - NB_PLAYER_MOINS_HEIGHT/2
+                        && event.button.y<NB_PLAYER_MOINS_Y + NB_PLAYER_MOINS_HEIGHT/2
+                        && event.button.x>NB_PLAYER_MOINS_X - NB_PLAYER_MOINS_WIDTH/2
+                        && event.button.x<NB_PLAYER_MOINS_X + NB_PLAYER_MOINS_WIDTH/2){
+
+                        printf("MOINS\n");
+                        if(*nbIA + *nbPlayer > 2) {
+                            (*nbPlayer)--;
+                            printf("nbOfplayer : %d  \n", *nbPlayer);
+                        }
+
+                    //si le clic se fait sur le bouton "-" d'IA
+                    } else if (event.button.y>NB_IA_MOINS_Y - NB_IA_MOINS_HEIGHT/2
+                               && event.button.y<NB_IA_MOINS_Y + NB_IA_MOINS_HEIGHT/2
+                               && event.button.x>NB_IA_MOINS_X - NB_IA_MOINS_WIDTH/2
+                               && event.button.x<NB_IA_MOINS_X + NB_IA_MOINS_WIDTH/2){
+
+                        printf("MOINS\n");
+                        if(*nbIA + *nbPlayer > 2) {
+                            (*nbIA)--;
+                            printf("nbOfIA : %d  \n", *nbIA);
+                        }
+
+                        //si le clic se fait sur le bouton "+" d'IA
+                    }else if (event.button.y>NB_IA_PLUS_Y - NB_IA_PLUS_HEIGHT/2
+                              && event.button.y<NB_IA_PLUS_Y + NB_IA_PLUS_HEIGHT/2
+                              && event.button.x>NB_IA_PLUS_X - NB_IA_PLUS_WIDTH/2
+                              && event.button.x<NB_IA_PLUS_X + NB_IA_PLUS_WIDTH/2){
+
+                        printf("PLUS\n");
+                        if(*nbIA + *nbPlayer < 8) {
+                            (*nbIA)++;
+                            printf("nbOfIA : %d  \n", *nbIA);
+                        }
+
+                        //si le clic se fait sur le bouton "ok"
+                    } else if (event.button.y>OK_Y - OK_HEIGHT/2
+                        && event.button.y<OK_Y + OK_HEIGHT/2
+                        && event.button.x>OK_X - OK_WIDTH/2
+                        && event.button.x<OK_X + OK_WIDTH/2){
+
+                        printf("OK\n");
+                        end = 1;
+                    }
+                }
+                break;
+            case SDL_QUIT:
+                printf("SDL_QUIT\n");
+                end = 1;
+                break;
+            default:
+                end = 0;
+                break;
+            }
+        drawMenu(*nbPlayer, *nbIA);
+    }
+}
+
+void displayNumberOfPlayer(int nbOfPlayer){
+    switch (nbOfPlayer){ // On définit les couleurs des joueurs
+        case 0:
+            insertPicture("sprites/un.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 1:
+            insertPicture("sprites/un.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 2:
+            insertPicture("sprites/deux.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 3:
+            insertPicture("sprites/trois.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 4:
+            insertPicture("sprites/quatre.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 5:
+            insertPicture("sprites/cinq.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 6:
+            insertPicture("sprites/six.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 7:
+            insertPicture("sprites/sept.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        case 8:
+            insertPicture("sprites/huit.bmp", menuWindow, DIGIT_NB_PLAYER_X, DIGIT_NB_PLAYER_Y, DIGIT_NB_PLAYER_WIDTH, DIGIT_NB_PLAYER_HEIGHT);
+            break;
+        default:
+            printf("Pas de nombre\n");
+            break;
+    }
+}
+
+void displayNumberOfIA(int nbOfIA){
+    switch (nbOfIA){ // On définit les couleurs des joueurs
+        case 0:
+            insertPicture("sprites/zero.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 1:
+            insertPicture("sprites/un.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 2:
+            insertPicture("sprites/deux.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 3:
+            insertPicture("sprites/trois.bmp", menuWindow,DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 4:
+            insertPicture("sprites/quatre.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 5:
+            insertPicture("sprites/cinq.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 6:
+            insertPicture("sprites/six.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 7:
+            insertPicture("sprites/sept.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        case 8:
+            insertPicture("sprites/huit.bmp", menuWindow, DIGIT_NB_IA_X, DIGIT_NB_IA_Y, DIGIT_NB_IA_WIDTH, DIGIT_NB_IA_HEIGHT);
+            break;
+        default:
+            printf("Pas de nombre\n");
+            break;
+    }
+}
+
+void drawMenu(int nbPlayer, int nbIA) {
+    //On affiche le titre
+    insertPicture("sprites/dicewarslogo.bmp", menuWindow, TITLEX, TITLEY, TITLEW, TITLEH);
+    //- humains
+    insertPicture("sprites/menu/moins.bmp", menuWindow, NB_PLAYER_MOINS_X, NB_PLAYER_MOINS_Y, NB_PLAYER_MOINS_WIDTH, NB_PLAYER_MOINS_HEIGHT);
+    //+ humains
+    insertPicture("sprites/menu/plus.bmp", menuWindow, NB_PLAYER_PLUS_X, NB_PLAYER_PLUS_Y, NB_PLAYER_PLUS_WIDTH, NB_PLAYER_PLUS_HEIGHT);
+    //- IA
+    insertPicture("sprites/menu/moins.bmp", menuWindow, NB_IA_MOINS_X, NB_IA_MOINS_Y, NB_IA_MOINS_WIDTH, NB_IA_MOINS_HEIGHT);
+    //+ IA
+    insertPicture("sprites/menu/plus.bmp", menuWindow, NB_IA_PLUS_X, NB_IA_PLUS_Y, NB_IA_PLUS_WIDTH, NB_IA_PLUS_HEIGHT);
+    //ok
+    insertPicture("sprites/menu/ok.bmp", menuWindow, OK_X, OK_Y, OK_WIDTH, OK_HEIGHT);
+    //nbOfPlayer
+    insertPicture("sprites/menu/nbOfPlayer.bmp", menuWindow, NB_PLAYER_X, NB_PLAYER_Y, NB_PLAYER_WIDTH, NB_PLAYER_HEIGHT);
+    //nbOfIA
+    insertPicture("sprites/menu/nbOfIA.bmp", menuWindow, NB_IA_X, NB_IA_Y, NB_IA_WIDTH, NB_IA_HEIGHT);
+    //
+    displayNumberOfPlayer(nbPlayer);
+    //
+    displayNumberOfIA(nbIA);
+
+    SDL_RenderPresent(menuRenderer);
+    SDL_RenderClear(menuRenderer);
 }
