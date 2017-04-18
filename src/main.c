@@ -11,6 +11,9 @@ int main(int argc, char *argv[]) {
 	unsigned int nbHumansMenu;
 	unsigned int nbIAMenu;
 	menuInit(&nbHumansMenu, &nbIAMenu);
+    unsigned int nbPlayer = nbHumansMenu + nbIAMenu;
+    unsigned int nbGame = 1;
+
 
 	//Pas assez d'arguments
 	if (argc < 1) {
@@ -21,8 +24,8 @@ int main(int argc, char *argv[]) {
 	//	printf("Erreur !\nLa partie peut comporter de 2 à 8 joueurs\n");
 	/*}*/ else {
 		srand((unsigned int) time(NULL));
-		unsigned int nbGame = (unsigned int)atoi(argv[1]);
-		unsigned int nbPlayer = (unsigned int) atoi(argv[2]);
+	//	unsigned int nbGame = (unsigned int)atoi(argv[1]);
+	//	unsigned int nbPlayer = (unsigned int) atoi(argv[2]);
 		// Le nombre d'humains
 	//	int nbHumans = nbPlayer - argc + 3;
 		int nbHumans = (int)nbHumansMenu;
